@@ -83,10 +83,11 @@ Contributions to the benchmark and its tools are welcome.
 - [CONTRIBUTING.md](CONTRIBUTING.md) explains how to run the checks, the
   conventions, DCO sign-off and how to open a pull request.
 - [Open an issue](https://github.com/OpenLAIR/red-flag-research/issues/new/choose)
-  with one of the forms: bug report, feature request, wrong result about a
-  paper, or fix to a benchmark case.
+  for a problem with the benchmark or its tools: bug report, feature request,
+  or fix to a benchmark case.
 - [MAINTAINERS.md](MAINTAINERS.md) describes how we triage, review and merge.
-- To report a wrong result about your paper privately, see
+- To report a wrong result about your paper, email
+  red.flag.autoresearch@gmail.com (never a public issue); see
   [docs/CORRECTIONS.md](docs/CORRECTIONS.md).
 - To report a vulnerability or an exposed credential, see
   [SECURITY.md](SECURITY.md).

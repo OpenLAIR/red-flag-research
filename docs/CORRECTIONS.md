@@ -5,9 +5,8 @@ your paper is wrong, email **red.flag.autoresearch@gmail.com**. We will correct 
 away, and we take the result off the live page and the public data while we
 check.
 
-You can also open a public
-[Wrong result about a paper](https://github.com/OpenLAIR/red-flag-research/issues/new?template=3-wrong_result.yml)
-issue. Email is private and does not need a GitHub account.
+Please use e-mail rather than a public issue: it is private, needs no GitHub
+account, and does not draw public attention to your paper.
 
 ## What a result means
 

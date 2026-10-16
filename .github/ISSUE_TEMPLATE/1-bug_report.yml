@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for reporting. If the problem is a wrong result about a paper, use **Wrong result about a paper** instead. For a security problem or an exposed credential, follow SECURITY.md and do not open an issue.
+        Thanks for reporting. If the problem is a wrong result about a paper, email red.flag.autoresearch@gmail.com instead; do not open an issue. For a security problem or an exposed credential, follow SECURITY.md and do not open an issue.
   - type: textarea
     id: what
     attributes:

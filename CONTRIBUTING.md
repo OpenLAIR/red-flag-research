@@ -24,7 +24,7 @@ Open an issue with the matching form on the
 | --- | --- |
 | Report something that does not work | **Bug report** |
 | Suggest a new feature or an improvement to the benchmark or its tools | **Feature request** |
-| Tell us a result about a specific paper pair is wrong | **Wrong result about a paper** — or, faster and private, email **red.flag.autoresearch@gmail.com** ([corrections process](docs/CORRECTIONS.md)) |
+| Tell us a result about a specific paper pair is wrong | Email **red.flag.autoresearch@gmail.com** — never a public issue ([corrections process](docs/CORRECTIONS.md)) |
 | Fix a label or evidence location in an existing case, or report a data problem | **Fix a benchmark case** |
 | Propose a new case (a pair of papers you think needs source review) | Email **red.flag.autoresearch@gmail.com** — never a public issue |
 | Report a security problem or an exposed credential | Do not open an issue; follow [SECURITY.md](SECURITY.md) |
@@ -35,9 +35,11 @@ paper you suspect in a public issue: a public issue would read as an
 accusation before anyone has compared the papers. Send suspected cases to
 **red.flag.autoresearch@gmail.com** instead.
 
-Wrong-result reports are handled separately from other issues. We correct a
-wrong result right away and take the result off the live page and the public
-data while we check; see [docs/CORRECTIONS.md](docs/CORRECTIONS.md).
+Wrong-result reports come by e-mail only and are handled separately from
+issues. We correct a wrong result right away and take the result off the live
+page and the public data while we check; see
+[docs/CORRECTIONS.md](docs/CORRECTIONS.md). Public issues are for problems with
+the benchmark, its data and its tools.
 
 ## Set up and run the checks
 

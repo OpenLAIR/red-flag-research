@@ -18,7 +18,7 @@ so that one absence never delays a takedown.
 
 | Item | First response | Then |
 | --- | --- | --- |
-| Wrong-result report (e-mail or issue) | Take the result down when read; reply within 1 working day | Corrected or explained within 5 working days |
+| Wrong-result report (e-mail) | Take the result down when read; reply within 1 working day | Corrected or explained within 5 working days |
 | Security report | 5 working days (as in `SECURITY.md`) | Fix or mitigation plan agreed with the reporter |
 | Bug report | 5 working days | Labelled and prioritised at the next weekly triage |
 | Feature request or data contribution | Next weekly triage | Accepted, declined with a reason, or marked `help wanted` |
@@ -29,7 +29,7 @@ so that one absence never delays a takedown.
 | Label | Meaning |
 | --- | --- |
 | `type: bug` / `type: feature` / `type: data` / `type: docs` | Kind of issue (set by the issue forms) |
-| `type: correction` | Wrong-result report; handled by the corrections owner, not in normal triage |
+| `type: correction` | A wrong-result report posted as an issue by mistake: take the result down, reply by e-mail, then lock and close the issue |
 | `priority: urgent` / `priority: high` / `priority: normal` / `priority: low` | Urgency |
 | `status: needs triage` | New; nobody has looked yet |
 | `status: needs info` | Waiting for the reporter; closed after 30 days without a reply |

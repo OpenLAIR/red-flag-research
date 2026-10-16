@@ -1,7 +1,7 @@
 cff-version: 1.2.0
 message: "If you use this benchmark or code, please cite it as below."
 type: dataset
-title: "Red-flag Research: live, open-source screening for automated-research attacks on peer review"
+title: "Red-flag Research: live, public screening for automated-research attacks on peer review"
 abstract: >-
   Benchmark release of a research project that screens conference submissions
   for passages, numbers or tables that closely match an earlier public paper

@@ -1,12 +1,13 @@
 # Red-flag Research
 
-**Live, open-source screening for automated-research attacks on peer review.**
+**Live, public screening for automated-research attacks on peer review.**
 
 Project site and live broadcast: <https://openlair.github.io/red-flag-research.github.io/>
 
-Red-flag Research is a research project that screens conference submissions for
-passages, numbers or tables that closely match an earlier public paper without
-clear attribution. When it finds such a match, it labels the pair
+Red-flag Research is a research project from OpenLAIR that screens conference
+submissions for automated-research attacks, starting with paper laundering in
+ICLR 2027. It looks for passages, numbers or tables that closely match an
+earlier public paper without clear attribution. When it finds such a match, it labels the pair
 **Source review recommended**, which means a person should compare the two papers
 side by side. The label is not a finding of plagiarism or misconduct (see
 [About these results](#about-these-results)).

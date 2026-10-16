@@ -6,16 +6,20 @@ Project site and live broadcast: <https://openlair.github.io/red-flag-research.g
 
 Red-flag Research is a research project from OpenLAIR that screens conference
 submissions for automated-research attacks, starting with paper laundering in
-ICLR 2027. It looks for passages, numbers or tables that closely match an
-earlier public paper without clear attribution. When it finds such a match, it labels the pair
+ICLR 2027. Paper laundering means rewriting earlier public work into a submission
+that looks new, without credit. Red-flag Research looks for passages, numbers or
+tables that closely match an earlier public paper without clear attribution. When it finds such a match, it labels the pair
 **Source review recommended**, which means a person should compare the two papers
 side by side. The label is not a finding of plagiarism or misconduct (see
 [About these results](#about-these-results)).
 
-This repository publishes the project's **benchmark**: an anonymized diagnostic
-set of ICLR 2027 target papers with candidate sources, evidence locations, human
-labels, saved baseline outputs and evaluation tools. The
-screening pipeline itself is not part of this release.
+By Ziqian Zhang at OpenLAIR (Lehigh AI Research Lab). This is an independent
+research project with no ICLR affiliation.
+
+This repository publishes the project's **benchmark**: 20 anonymized ICLR 2027
+target papers, 34 target–source pairs, human labels for every target, evidence
+locations, evaluation tools and saved baseline outputs. Labels are leads for human
+review, not verdicts.
 
 | Path | Contents |
 | --- | --- |

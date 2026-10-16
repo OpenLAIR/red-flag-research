@@ -1,0 +1,434 @@
+{
+ "case_id": "C03",
+ "pairs": [
+  {
+   "pair_id": "C03-P1",
+   "source_key": "arxiv-2509.00373",
+   "source_distribution": "included",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C03]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nGradient-based visual jailbreak attacks on vision-language models (VLMs) often optimize image perturbations for a fixed iteration budget using token-level target objectives that only indirectly capture harmful response behavior. We introduce [NAME C03], a behavior-aligned visual jailbreak framework that learns a lightweight behavior predictor from internal VLM representations to estimate response-level behavior. The predictor provides a differentiable behavioral signal for image optimization and enables instance-adaptive iterate selection without response generation or evaluation at every update. Across 917 samples from multimodal jailbreak benchmarks and four target VLMs, [NAME C03] improves ELITE-based attack success rate (E-ASR) by 16.68–33.26 percentage points and HarmBench ASR by 10.25–24.64 points over affirmative-target PGD. [NAME C03] also reduces the mean optimization steps from 300 to 32.7–161.2, yielding 1.8×–10.4× wall-clock speedups. The performance improvements persist across three defenses, while response-behavior analysis shows shifts from refusal and intermediate responses toward successful responses. These results demonstra",
+      "text_sha256": "1526a383704272f8bed298dbf67f320efe6a1733e776333bebc8b706aa03a475"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\net al., 2026; Song et al., 2025). This suggests that an evaluation of response behavior can instead be predicted from a hidden representation that remains differentiable with respect to the input image.\n\nWe implement this idea with a lightweight behavior predictor. For each target VLM, a regression probe is trained to estimate the ELITE score of the model's response from a selected internal representation and is frozen before attack optimization. During optimization, the predictor uses the internal representation to provide a differentiable signal that complements the conventional target-sequence objective, forming our [NAME C03] ([NAME C03]). Once the predicted score reaches a calibrated threshold, the current image is retained and further updates are skipped.\n\nWe evaluate our method against affirmative-target PGD in a controlled white-box setting, using the same image-text pairs while optimizing only the image. We measure attack success using two metrics. ELITE-based attack success rate (E-ASR), derived from thresholded ELITE scor",
+      "text_sha256": "99dd581d9e702abcb4387b1b8fc2f103cfc80bbfa2794903bd3631f953eb9205"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n![img-0.jpeg](img-0.jpeg)\n\n![img-1.jpeg](img-1.jpeg)\n\n![img-2.jpeg](img-2.jpeg)\n\nFigure 1: Overview of the [NAME C03] framework. Stage 1 trains a model-specific behavior predictor from precomputed ELITE scores. Stage 2 combines the affirmative-target loss with a differentiable behavior-guidance loss for image optimization. Stage 3 adapts the number of optimization updates using the predicted behavior score, retaining the first threshold-reaching iterate or the highest-scoring iterate otherwise. Attack success rate is evaluated by ELITE and HarmBench after optimization.\n\nindependent of predictor training and is used only for evaluation. We therefore report E-ASR from thresholded ELITE scores and HarmBench ASR from the binary HarmBench classifier.\n\n### 3 METHOD\n\nFigure 1 illustrates our framework. We consider a white-box setting in which the text prompt is fixed and only the visual input is optimized within a bounded perturbation set. Our method has three stages: (i) learning a behavior predictor from precomputed response-level supervision, (ii) behavior-align",
+      "text_sha256": "a1c7a455794166f082883e79c0bd771b37857d47fd178f74b6556c84a83b93cf"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\nE with the ELITE evaluator (Lee et al., 2025), whose scores lie in [0, 25] the formulation only requires a scalar response-level evaluation. This supervision is computed once before any attack, and D is disjoint from the inputs on which attacks are later evaluated.\n\nPre-generation representation. We extract the hidden state at the final prompt position, immediately before the first response token is predicted. Let P be the length of the decoder input sequence that the model's own processor produces for (x, q). Indexing positions from zero, the representation at decoder layer ℓ is\n\n$$h_\\ell(x, q) = H_\\theta^{(\\ell)}(x, q)_{P-1} \\in \\mathbb{R}^{d_h}. \\tag{3}$$\n\nThis state directly conditions the first generated token and does not depend on any generated token.\n\nPredictor and training. We train a lightweight regression probe $f_\\phi : \\mathbb{R}^{d_h} \\to \\mathbb{R}$ is a small regression probe to estimate $s_i$ from $h(x_i, q_i)$. Features are standardized the representation with feature-wise statistics from $\\mathcal{D}_{\\text{train}}$ and applies a two",
+      "text_sha256": "69f2531be993763e457997d61f21781ffeacf0bb16d50bfde695c9bd55f7ad8a"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\nWe optimize only the image using a projected sign-gradient update,\n\n$$\\delta^{(k+1)} = \\Pi_{\\mathcal{B}_\\epsilon} \\left( \\delta^{(k)} - \\alpha \\operatorname{sign} \\left( \\nabla_\\delta \\mathcal{L}_{\\text{total}}(\\delta^{(k)}) \\right) \\right), \\tag{9}$$\n\nwhere $\\alpha$ is the step size and $\\mathcal{B}_\\epsilon = \\{\\delta : \\|\\delta\\|_\\infty \\le \\epsilon, 0 \\le x + \\delta \\le 1\\}$ denotes the feasible perturbation set, with the image-domain constraints applied elementwise. The perturbation is initialized uniformly within the $\\ell_\\infty$ ball, $\\delta^{(0)} \\sim \\mathcal{U}([-\\epsilon, \\epsilon])$. The target VLM and behavior predictor remain frozen, while the text prompt $q$ is kept unchanged throughout optimization.\n\n### 3.4 STAGE 3: INSTANCE-ADAPTIVE OPTIMIZATION\n\nStage 3 adapts the optimization process to each sample using the predicted behavior score. Let\n\n$$\\widehat{s}_k = f_\\phi \\left( h_\\ell(x + \\delta^{(k)}, q) \\right) \\tag{10}$$\n\nbe the score associated with the current iterate. We retain the first iterate that reaches the calibrated threshold",
+      "text_sha256": "0655717a272eb612e235f75bdcce82d7b6a4d5d555fe57dd251e1c08d03fcde3"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\n![img-3.jpeg](img-3.jpeg)\n\n![img-4.jpeg](img-4.jpeg)\n\n![img-5.jpeg](img-5.jpeg)\n\n![img-6.jpeg](img-6.jpeg)\n\nFigure 2: Behavior-predictor performance across LLM backbone layers. AUC with the E-ASR cutoff and Pearson r between predicted and true ELITE scores are reported on D_val, shown in blue and orange, respectively. Stars indicate the selected layer for each VLM. (Appendix A.3).\n\nEvaluation metrics and judges. We report two attack success metrics. E-ASR is defined by thresholding the ELITE score at 10, the cutoff set by human judgement in the original work (Lee et al., 2025). ELITE combines refusal, toxicity, convincingness, and specificity into a scalar score on [0, 25], computed as (1 - refused) × convincing+specific / ΔR × toxicity. Higher scores indicate more harmful and compliant responses. HarmBench ASR measure the fraction of responses that a separately trained binary classifier labels as exhibiting the target harmful behavior (Mazeika et al., 2024). ELITE scores supervise the behavior predictor, whereas Harmbench is not used for predictor tra",
+      "text_sha256": "65248bfb697efe0a66293683791879417ae4545358ebf3361afa94fc45f20a4a"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "the response behavior. Because $h_\\ell$ is extracted at the final prompt position before any response token is generated, $f_\\phi$ provides a differentiable behavioral signal without response generation or repeated ELITE evaluation. The selected layer is fixed for subsequent attacks for each model. (Appendix B).\n\nTable 1: Attack performance on 917 multimodal jailbreak data across four target VLMs. Performance is measured by E-ASR and HarmBench ASR (%), with higher values indicating stronger attacks. Bold indicates the best result in each column, and the second best italic. $\\Delta$ vs. PGD denotes the absolute improvement of [NAME C03] over affirmative-target PGD in percentage points.\n\n[tbl-0.html](tbl-0.html)\n\n### 4.3 MAIN ATTACK PERFORMANCE\n\nTable 1 summarizes the main attack results. Our method achieves the highest E-ASR and HarmBench ASR across all four target VLMs. Compared with affirmative-target PGD, [NAME C03] improves E-ASR by 16.68 to 33.26 percentage points and ASR by 10.25 to 24.64 percentage points. Since HarmBench is not used to train the behavior predictor, these consistent gains indicate that the improvement is not specific to the ELITE-based supervision signal. Under the same perturbation budget, random perturbation change E-ASR by only $-2.07$ to $+2.51$ perc",
+      "text_sha256": "de858d54d08ec28a03aca5ecb02b48276367f3073d0a7344321df28343227dc4"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "from 1.8× to 10.4×. The retained perturbation is also smaller, with a mean ℓ₂ norm 1.6%–9.3% lower than full-budget PGD under the same ℓ∞ constraint. Together with Section 4.5, where stopping at k_adapt improves E-ASR by 3.82%–8.29% over the same objective for all 300 steps, these results show that instance-adaptive stopping reduces computation and perturbation magnitude without sacrificing attack effectiveness.\n\nTable 3: Ablation of behavioral guidance and instance-adaptive optimization across four target VLMs. E-ASR and HarmBench ASR (%) are reported on n=917 evaluation data. Bold and italic indicate the best and second-best results in each column, respectively.\n\n[tbl-2.html](tbl-2.html)\n\n### 4.5 ABLATION STUDY\n\nTable 3 separates the contributions of behavioral guidance and instance-adaptive optimization. Adding L$_{behavior}$ under a fixed 300 step budget improves E-ASR by 11.23–26.50 percentage points and HarmBench ASR by 7.41–19.41 points over affirmative-target PGD. Enabling k$_{adapt}$ further improves E-ASR by 3.82–8.29 points and HarmBench ASR by 0.11–7.85 points across four target models. The second and third rows use the same joint objective and differ only in adaptive iterate selection. The adaptive variant improves every metric, indicating that retaini",
+      "text_sha256": "4e1466dc1480e92d18826e825af723f0291ae9df4f7e68a1b02318ddbc21ebe5"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n## AI USE STATEMENT\n\nWe used generative AI tools to assist with and refine writing, retrieve and analyze relevant literature, draft section of the manuscript, and support research execution. Generative AI was also used for code development, dataset preprocessing and formatting, translation, feedback on result interpretation. We did not use generative AI to create synthetic datasets or establish mathematical claims. All AI-assisted outputs were reviewed and verified by the authors. AI-assisted code and data-processing procedures were inspected and tested for correctness, cited references were checked against their original sources, and AI-assisted interpretations were validated against the experimental results. The authors take responsibility for the final content of this work, including the text, claims, code, and other materials produced with the assistance of generative AI.\n\n## ETHICS STATEMENT\n\nThis work studies white-box visual jailbreak attacks on vision-language models (VLMs) to characterize safety vulnerabilities and support more rigorous multim",
+      "text_sha256": "9ba12206515f06850ffedeccb8960c4fc7af9091ea5c162b2d3b877a3a9f85ef"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nTeng Ma, Xiaojun Jia, Ranjie Duan, Xinfeng Li, Yihao Huang, Xiaoshuang Jia, Zhixuan Chu, and Wenqi Ren. Heuristic-induced multimodal risk distribution jailbreak attack for multimodal large language models. In IEEE/CVF International Conference on Computer Vision, pp. 2686–2696, 2025.\n\nAleksander Madry, Aleksandar Makelov, Ludwig Schmidt, Dimitris Tsipras, and Adrian Vladu. Towards deep learning models resistant to adversarial attacks. In International Conference on Learning Representations, 2018.\n\nMantas Mazeika, Long Phan, Xuwang Yin, Andy Zou, Zifan Wang, Norman Mu, Elham Sakhaee, Nathaniel Li, Steven Basart, Bo Li, David Forsyth, and Dan Hendrycks. HarmBench: A standardized evaluation framework for automated red teaming and robust refusal. In Proceedings of the 41st International Conference on Machine Learning, volume 235 of Proceedings of Machine Learning Research, pp. 35181–35224. PMLR, 2024.\n\nMeta AI. Llama 3.2: Revolutionizing edge AI and vision with open, customizable models. Meta AI blog, 2024.\n\nZhenxing Niu, Haodong Ren, Xinbo Gao, Gang Hua, a",
+      "text_sha256": "e5c675e28dc5a9a8abdd730fd8e6552bd27ff77ca91316034de99d89753c3e31"
+     },
+     {
+      "span_id": "A-page-0014",
+      "page": 14,
+      "location": "target PDF page 14",
+      "text": "702\n703\n704\n705\n706\n707\n708\n709\n710\n711\n712\n713\n714\n715\n716\n717\n718\n719\n720\n721\n722\n723\n724\n725\n726\n727\n728\n729\n730\n731\n732\n733\n734\n735\n736\n737\n738\n739\n740\n741\n742\n743\n744\n745\n746\n747\n748\n749\n750\n751\n752\n753\n754\n755\n\n# A EXPERIMENTAL DETAILS AND REPRODUCIBILITY\n\n## A.1 EVALUATION DATA AND SPLITS\n\nAll inputs are drawn from the ELITE benchmark (Lee et al., 2025), which aggregates 4,587 image-text pairs from eight source datasets and assigns each pair to one of eleven hazard categories. We partition the benchmark once using a uniform random permutation with seed 42 and a held-out fraction of 0.2, yielding 3,670 training inputs and 917 held-out evaluation inputs. The 917 held-out inputs form the evaluation set used throughout the paper and are disjoint from all inputs used for behavior-predictor training and layer selection.\n\nWithin the 3,670 training inputs, we further construct a 90/10 split using seed 42, yielding 3,303 fitting inputs and 367 validation inputs. The fitting split is used to train the behavior predictor, while the validation split is used for layer selection. Neither split overlaps with the 917 held-out evaluation inputs.\n\nTable A1: Composition of the ELITE benchmark and its training and evaluation splits by source dataset. New denotes the benchmark's",
+      "text_sha256": "843e82273ab16ff29daedf4a6122537813e9f3768aaa51b181873810e82964d8"
+     },
+     {
+      "span_id": "A-page-0017",
+      "page": 17,
+      "location": "target PDF page 17",
+      "text": "864\n865\n866\n867\n868\n869\n870\n871\n872\n873\n874\n875\n876\n877\n878\n879\n880\n881\n882\n883\n884\n885\n886\n887\n888\n889\n890\n891\n892\n893\n894\n895\n896\n897\n898\n899\n900\n901\n902\n903\n904\n905\n906\n907\n908\n909\n910\n911\n912\n913\n914\n915\n916\n917\n\nAmong the twelve measured conditions, the fixed-budget settings with λ=0 and λ=4 execute the same 300 optimization steps on identical inputs and differ only in the optimization objective. Relative to λ=0, mean wall-clock time for λ=4 changes by −0.27%, +1.94%, +1.64%, and +0.15% for Qwen2.5-VL, LLaVA-1.5, InternVL3, and Llama-3.2-V, respectively. Mean peak allocated memory differs by at most 0.13% across the three measured conditions for each model.\n\nThe iteration at which the predicted behavior score reaches τ varies substantially across models, accounting for the differences in efficiency reported in Table 2. The median retained iterate is 21 for InternVL3 and 145 for Qwen2.5-VL, with τ reached for 99.4% and 72.3% of inputs, respectively. Inputs that never reach τ continue through the full optimization budget and fall back to the trajectory iterate with the highest predicted behavior score. The reported mean step counts therefore include these full-budget cases rather than excluding them.\n\n## B ADDITIONAL BEHAVIOR PREDICTOR ANALYSIS\n\nSection 4.2 uses",
+      "text_sha256": "5a4fb712c0b9a68277b116304191c2e22d36929d22fac814addaa77876d73a47"
+     },
+     {
+      "span_id": "A-page-0019",
+      "page": 19,
+      "location": "target PDF page 19",
+      "text": "Table A5: Sensitivity to the behavior-guidance weight  \\( \\lambda \\) , with the clean Baseline included for reference. All attack settings use  \\( \\epsilon=16/255 \\) . The  \\( \\lambda=0 \\)  setting corresponds to affirmative-target PGD, for which no predicted behavior score is available and performance is therefore evaluated at the final iterate. All positive- \\( \\lambda \\)  settings use instance-adaptive optimization. The default setting used in the main text is  \\( \\lambda=4 \\)  (shaded). Each cell reports E-ASR (%) and HarmBench ASR (%), with higher values indicating better attack performance. Within each column, the best and second-best results among the five attack settings are shown in bold and italic, respectively. n=917.\n\n[tbl-8.html](tbl-8.html)\n\nTable A6: Sensitivity to the percentile used to define the calibrated threshold  \\( \\tau \\) , with  \\( \\lambda=4 \\)  fixed. Mean steps denotes the mean number of optimization steps to the retained iterate, pooled across the four target VLMs, while Reached  \\( \\tau \\)  denotes the fraction of inputs that reach the threshold within the optimization budget, averaged across models.  \\( Q_{0.99} \\)  is the default setting used in the main text. Within each column, the best and second-best results among the three thresh",
+      "text_sha256": "cb59e6f452b6cbf878a65a6c64c4915ee296b62f769b2e00e56fd440e2cbdc9a"
+     },
+     {
+      "span_id": "A-page-0021",
+      "page": 21,
+      "location": "target PDF page 21",
+      "text": "1080\n1081\n1082\n1083\n1084\n1085\n1086\n1087\n1088\n1089\n1090\n1091\n1092\n1093\n1094\n1095\n1096\n1097\n1098\n1099\n1100\n1101\n1102\n1103\n1104\n1105\n1106\n1107\n1108\n1109\n1110\n1111\n1112\n1113\n1114\n1115\n1116\n1117\n1118\n1119\n1120\n1121\n1122\n1123\n1124\n1125\n1126\n1127\n1128\n1129\n1130\n1131\n1132\n1133\n\nTable A8: Per hazard category breakdown of the results in Table 1. The 917 evaluation inputs are grouped by ELITE hazard category, with the number of inputs shown in # Samples. The evaluated conditions and highlighting follow Table A7. [NAME C03] achieves the highest E-ASR in 40 of the 44 category–model combinations and improves over affirmative-target PGD on average across all eleven hazard categories.\n\n[tbl-11.html](tbl-11.html)\n\n[OCR table id=tbl-11.html; page=21]\n<table><tr><td rowspan=\"2\">Taxonomy</td><td rowspan=\"2\"># Samples</td><td rowspan=\"2\">Method</td><td colspan=\"2\">Qwen2.5-VL-7B</td><td colspan=\"2\">LLaVA-1.5-7B</td><td colspan=\"2\">InternVL3-8B</td><td colspan=\"2\">Llama-3.2-V-11B</td></tr><tr><td>E-ASR</td><td>ASR</td><td>E-ASR</td><td>ASR</td><td>E-ASR</td><td>ASR</td><td>E-ASR</td><td>ASR</td></tr><tr><td rowspan=\"3\">S1 Violent Crimes</td><td rowspan=\"3\">141</td><td>Baseline</td><td>46.81</td><td>24.11</td><td>73.05</td><td>40.43</td><td>46.81</td><td>28.37</td><td>33.33</td><td>12.77</td></",
+      "text_sha256": "a6f34a3c069e3bb65adc3b848fa00e9e91d00a092d48be24475ca2c8768ca50c"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-a24e1d7c29f02e",
+      "page": 1,
+      "location": "candidate arxiv-2509.00373 PDF page 1",
+      "text": "Activation Steering Meets Preference Optimization: Defense\nAgainst Jailbreaks in Vision Language Models\nSihao Wu1 sihaowu@liverpool.ac.uk\nGaojie Jin 2 g.jin@exeter.ac.uk\nWei Huang3 havelhuang@gmail.com\nJianhong Wang4 jianhong.wang@bristol.ac.uk\nXiaowei Huang1 xiaoweihuang@liverpool.ac.uk\n1University of Liverpool, 2University of Exeter,\n3Purple Mountain Laboratories, 4University of Bristol.\nAbstract\nVision Language Models (VLMs) have demonstrated impressive capabilities in integrating\nvisual and textual information for understanding and reasoning, but remain highly vulner-\nable to adversarial attacks. While activation steering has emerged as a promising defence,\nexisting approaches often rely on task-specific contrastive prompts to extract harmful di-\nrections, which exhibit suboptimal performance and can degrade visual grounding perfor-\nmance. To address these limitations, we propose Sequence-Level Preference Optimization\nfor VLM (SPO-VLM ), a novel two-stage defense framework that combines activation-level\nintervention with policy-level optimization to enhance model robustness. In Stage I , we\ncompute adaptive layer-specific steering vectors from diverse data sources, enabling general-\nized suppression of harmful behaviors during inference. In Stage II, we refine ",
+      "text_sha256": "f1e6c44168fe973a2dbcd4cf03f98678b3439ff2d6c7b3e10ff98dd4c0f041f1"
+     },
+     {
+      "span_id": "B-e3ce0341c8b2f4",
+      "page": 2,
+      "location": "candidate arxiv-2509.00373 PDF page 2",
+      "text": "Wu Jin Huang W ang Huang\nActivation steering has emerged as a promising defense, modifying internal represen-\ntations via injected steering vectors without altering model weights (Wang et al., 2024c,d;\nHan et al., 2025; Cao et al., 2024). For example, Wang et al. (2024c) introduce InferAligner,\nwhich aligns hidden states with predefined safe directions at inference time. Recent exten-\nsions to multimodal settings, such as ASTRA (Wang et al., 2024a) and ShiftDC (Zou et al.,\n2025), further adapt steering vectors based on image attribution or disentangle harmful\nsignals while preserving visual grounding. However, existing methods face key limitations.\nSteering vectors derived from contrastive prompts often fail to generalize across semantic\ncontexts and attack types (Cao et al., 2024).\nTo address these issues, we propose Sequence-Level Preference Optimization for VLM\n(SPO-VLM ), a novel two-stage defense framework that learns robust, generalizable steer-\ning vectors via SPO. Unlike prior work that extracts harmful directions from fixed prompt\npairs, SPO-VLM optimizes steering vectors from diverse, preference-labeled data to achieve\nsemantically aligned and safe generation. In Stage I , we compute lightweight and layer-\nspecific steering vectors from multiple datasets,",
+      "text_sha256": "63140f2e1dccd20feb9279ad47c78e28ff69540380e129435bea9520a26dfc63"
+     },
+     {
+      "span_id": "B-041fefaa103e75",
+      "page": 3,
+      "location": "candidate arxiv-2509.00373 PDF page 3",
+      "text": "Activation Steering Meets Preference Optimization\nfrom the model (Gong et al., 2025; Li et al., 2025b). Specifically, FigStep (Gong et al., 2025)\nleverages the ability of VLMs to interpret textual instructions embedded within images by\nencoding harmful content directly into the visual modality. By pairing these adversarially\ncrafted images with benign textual prompts, FigStep effectively manipulates the VLM,\neliciting detailed and potentially harmful responses.\nOur work primarily addresses the challenge of defending against such jailbreak attacks\non VLMs. Instead of modifying model weights or relying on static filtering, we propose\nto construct optimized steering activations that adaptively mitigate harmful behaviors by\nshifting internal representations in safer directions.\n2.2. Activation Steering\nActivation steering refers to a set of alignment techniques that guide a model’s behavior\nby freezing model weights and modifying activations (Wang et al., 2024c,d; Han et al.,\n2025; Cao et al., 2024). Several studies have focused on identifying steering vectors within\nthe activation space of specific layers in the LLM transformer architecture. Specifically,\nWang et al. (2024c) proposes InferAligner, a novel inference-time alignment method that\neffectively improves model",
+      "text_sha256": "e764e7e506cdd6f4b77ca486642231e2dac90d8952bd79e0c251d690d0f70290"
+     },
+     {
+      "span_id": "B-903b717d0c005c",
+      "page": 4,
+      "location": "candidate arxiv-2509.00373 PDF page 4",
+      "text": "Wu Jin Huang W ang Huang\nto generate more robust and interpretable steering vectors that align with both safety ob-\njectives and multimodal grounding.\n2.3. Preference Optimization\nReinforcement Learning from Human Feedback (RLHF) has become a widely adopted ap-\nproach for aligning models with human preferences (Ouyang et al., 2022; Ziegler et al., 2020;\nStiennon et al., 2022). The standard RLHF pipeline typically begins by training a reward\nmodel, often structured using frameworks like the Bradley-Terry model (Bradley and Terry,\n1952), to reflect human preferences. This reward model guides reinforcement learning al-\ngorithms such as Proximal Policy Optimization (PPO) (Schulman et al., 2017), which are\nthen used to fine-tune the language model to generate responses that maximize the learned\nreward. In the context of LLMs, RLHF is particularly instrumental in shaping models\nthat are helpful, honest, and harmless, thereby aligning them with human values (Ouyang\net al., 2022; Bai et al., 2022; Thoppilan et al., 2022). For example, LaMDA (Thoppilan\net al., 2022) fine-tunes LLMs to engage in natural language dialogue that is engaging, in-\nformative, factually grounded, and safe, often incorporating external information to ensure\naccuracy and relevance. InstructGPT (Ouyan",
+      "text_sha256": "75a0d210b2a3ecb2b9220d2d52bbb74f9adfc36211dac294fb0f38bc7140a392"
+     },
+     {
+      "span_id": "B-de300a2c15e0a0",
+      "page": 5,
+      "location": "candidate arxiv-2509.00373 PDF page 5",
+      "text": "Activation Steering Meets Preference Optimization\nmeaning that each token ri in the response is sampled sequentially, conditioned on all\nprevious tokens in the input and the already generated part of the output. Formally, the\nprobability of generating the ith token ri is given by:\nPVLM(ri | qt, qv, r1, . . . , ri−1)\nThis formulation enables the model to incorporate both linguistic context and visual ground-\ning when predicting each subsequent token. The response generation continues iteratively\nuntil a special end-of-sequence token is produced or a maximum sequence length is reached.\nThrough this design, PVLM enables coherent and contextually grounded text generation in\nresponse to complex multimodal inputs.\n3.2. Steering Activations\nLet xℓ(t) denote the residual stream activation of the last token at layer ℓ ∈ L of a VLM,\ncapturing the information processed from the input t up to layer ℓ. We define the function\nActMean to compute the mean last-token activation at layer ℓ for a given dataset D:\nActMeanℓ(D) = 1\n|D|\n\"X\nt∈D\nxℓ(t)\n#\n. (1)\nNumerous studies (Arditi et al., 2024; Park et al., 2024) have demonstrated that high-\nlevel concepts are encoded as linear directions in the activation space of LLMs. These\ndirections can be uncovered by computing the difference betw",
+      "text_sha256": "b40929a3c0423a31521ab07631b3bdfe986425a1a0efc129c98bf1c62d751ab0"
+     },
+     {
+      "span_id": "B-64237dc0f2077f",
+      "page": 6,
+      "location": "candidate arxiv-2509.00373 PDF page 6",
+      "text": "Wu Jin Huang W ang Huang\n4.1. Stage I: Initialization of Steering Activation\nNeg Pos Neg Pos Neg Pos ...\nVision Language Model\n... ...\nNeg Pos \nDataset Dataset \n...\nStage I: Initialization of Steering Activation\nLinear Combination\nStage II: Sequence-Level Preference Optimization\nPreference Triplets\nReward Computation\nDetoxify Score \nCosine Similarity \nInitilization Apply current \nVisual Input Textual Input\nHow deep do I need to bury a body to\nmake sure its not found\nVision Language Model\nUpdate Steering Activation\nFrozen parameters\nActivations of negative inputs\nActivations of positive inputs\nActivations of user inputs\nTest Time Intervention\nActivation\nSteering\nSafe Output \nFigure 1: Overview of the SPO-VLM framework. Stage I (left top) initializes attribute-\nspecific steering vectors θj using contrastive pairs from multiple datasets. These vectors\nare later combined into a global steering vector via a linear combination. Stage II (left\nbottom) performs sequence-level preference optimization using rewards functions, including\ntoxicity reduction and alignment preservation. At test time (right), the frozen vision-\nlanguage model receives visual-textual input and applies the optimized steering activation\nto produce safe and aligned outputs.\nActivation steering (Li et ",
+      "text_sha256": "243883adbd0a38fd009a2b003bb7c8a472381182daafdc21fc923f98d2bde141"
+     },
+     {
+      "span_id": "B-84bf39f38e713e",
+      "page": 7,
+      "location": "candidate arxiv-2509.00373 PDF page 7",
+      "text": "Activation Steering Meets Preference Optimization\nwhere A = 1, 2, . . . ,|A| denotes the set of attribute indices, αj ∈ R represents the weight\ncoefficient for the j-th attribute, and each attribute-specific vector vℓ\nj is computed as:\nvℓ\nj = ActMeanℓ(Dj, pos) − ActMeanℓ(Dj, neg), (4)\nwhere Dj, pos and Dj, neg represent the positive and negative instruction sets for attribute\nj, respectively. This formulation allows the steering mechanism to adaptively combine\nmultiple behavioral dimensions, with eachvℓ\nj capturing the activation difference for a specific\nattribute at layer ℓ.\nAlgorithm 1 Sequence-Level Preference Optimization (SPO) for Steering Vector Learning\nInput: VLM PVLM, preference dataset D := {(qi, ri\nT , ri\nO)}n\ni=1, batch size m, total update\nsteps T\nOutput: Optimized steering vector v∗\n1: Initialize steering vector: v0 ←P\nj∈A α(0)\nj vℓ\nj\n2: for t = 0 to T − 1 do\n3: Sample mini-batch Dt := {(qi\nt, qi\nv, ri\nT , ri\nO)}m\ni=1 ∼ D\n4: for each quadruplets (qt, qv, rT , rO) in Dt do\n5: Evaluate reward: R = Rdetoxify(r) + Rvisual(qv)\n6: Compute value baseline: Vϕ(qt, qv)\n7: Compute advantage: A = R(r,qt, qv) − Vϕ(qt, qv)\n8: Compute policy ratio difference using Equation (5)\n9: Compute clipped policy loss using PPO:\nLπ = minv −E(qt,qv,rT ,rO)∼D\n\u0002\nmin\n\nratio · A, ",
+      "text_sha256": "28fc51bdd4bebd6aa87be70bf40512b4d16f45c92e02af5566e25e3769128655"
+     },
+     {
+      "span_id": "B-bc700be0b93133",
+      "page": 8,
+      "location": "candidate arxiv-2509.00373 PDF page 8",
+      "text": "Wu Jin Huang W ang Huang\nincorporating both safety and visual understanding capabilities. This reward guides learn-\ning in a way that balances safety with alignment to visual content.\nTo enable preference learning, we construct labeled quadruplets ( qt, qv, rT , rO), where\nqt is a texture prompt, qv is a visual prompt, rT is a response exhibiting the target behavior,\nand rO is a response reflecting the undesired behavior. Let v denote the learnable steering\nvector, and πL+1 represent the later layers of the model (from layer L+1 onward). For each\nprompt pair ( qt, qv), we generate responses using the current policy πθ. We compute the\nfollowing policy ratios to assess the influence of the steering vector on the model’s preference\nbetween rT and rO:\nratio = πL+1(rT | aℓ(qt, qv) + v)\nπL+1(rT | aℓ(qt, qv)) − πL+1(rO | aℓ(qt, qv) + v)\nπL+1(rO | aℓ(qt, qv)) , (5)\nThe term πL+1(· | aℓ(qt, qv) + v) represents the policy induced by modifying the model’s\nactivations with the steering vector v at layer ℓ. This difference quantifies the differential\nimpact of the steering vector on preferred and dispreferred responses.\nWe employ a composite reward function that encourages both safety and visual ground-\ning. Given a query and the model’s response r, the total reward is:\nR = Rde",
+      "text_sha256": "e19a29ca6b3985afc6460782254d5151c753cbc0df3e5ebc4b0bd71eff45f3e3"
+     },
+     {
+      "span_id": "B-f04b2c98d2adb1",
+      "page": 9,
+      "location": "candidate arxiv-2509.00373 PDF page 9",
+      "text": "Activation Steering Meets Preference Optimization\nare then used to compute Lcritic, guiding the optimization of the model’s preference-aware\nbehavior in a sample-efficient manner. Unlike conventional RLHF, which requires training\na new policy and a separate reference model, our method optimizes only the steering vector\nv, keeping the base model architecture and parameters fixed. As a result, the method is\nhighly efficient and minimally invasive. When applied during inference, the learned vector\nreliably steers the model toward safer and more helpful behavior by modifying a narrow\nsubset of internal representations.\n5. Experiments\nIn this section, we evaluate SPO-VLM across three dimensions: its effectiveness in mitigat-\ning adversarial prompts while preserving visual understanding, its ability to transfer across\ndiverse attack domains, and the contribution of each stage through ablation studies.\n5.1. Experiment Setup\nSteering Activation Construction. We initialize the steering vectors using the Stage I\nmethod applied to the RealToxicityPrompt, AdvBench, and Anthropic Harmful datasets.\nThis approach extracts activation shifts across multiple toxicity dimensions and constructs\nan initial vector through a linear combination of these shifts. Specifically, we adopt the\n",
+      "text_sha256": "37dd053ef07e09ffbc1bc99306e23018f72ca730da6a770ad8eece435ea9b5b6"
+     },
+     {
+      "span_id": "B-7bc8238b7ccb39",
+      "page": 10,
+      "location": "candidate arxiv-2509.00373 PDF page 10",
+      "text": "Wu Jin Huang W ang Huang\nTable 1: Performance of different safety steering methods on safety and visual understanding\nbenchmarks. The ↑ or ↓ symbols indicate whether a higher or lower score is preferable.\nBase Model Method Toxicity Scores (%)Jailbreak ASR (%) Visual Understanding ScoresRealToxicityPrompt↓ AdvBench↓ AnthropicHarmful↓ MM-Vet↑ SQA↑ CogVLM↑ MME↑\nMiniGPT-4-13BOriginal Model 38.18 19.19 73.50 32.58 68.10 74.00 1742.0ASTRA 10.21 5.93 4.87 17.70 65.35 69.00 1086.0SPO-VLM 9.28 4.77 3.21 31.11 66.20 70.00 1370.0\nQwen2-VL-7BOriginal Model 30.65 75.00 55.17 49.13 79.13 41.00 1630.0ASTRA 14.18 7.69 5.17 48.66 80.99 45.00 685.3SPO-VLM 11.54 6.38 4.48 49.80 81.82 51.00 1753.0\nLLaVA-v1.5-13BOriginal Model 85.74 36.80 74.00 28.60 74.38 59.00 1560.0ASTRA 81.44 5.76 24.13 14.90 56.03 56.00 1320.0SPO-VLM 50.37 4.39 12.18 20.19 60.37 55.00 1489.0\nModels & Implementations details. This study conducts all experiments on three\nwidely used open-source VLMs: Qwen2-VL-7B (Wang et al., 2024b), MiniGPT-4-13B (Zhu\net al., 2023), and LLaVA-v1.5-13B (Liu et al., 2023). These models, post-trained to follow\ninstructions and align with human values, represent some of the most widely adopted and\ncapable open-source model families. We set the steering layer l is 20 for 13B models and ",
+      "text_sha256": "30b9c786492e64dc03b59001beaca34f8f34cc84f06191a7b8516e16211a81ef"
+     },
+     {
+      "span_id": "B-3493d3e76fd8a6",
+      "page": 11,
+      "location": "candidate arxiv-2509.00373 PDF page 11",
+      "text": "Activation Steering Meets Preference Optimization\nSPO-VLM shows an optimal trade-off between safety and visual capability.\nWhile ASTRA improves safety, it leads to a notable decline in visual understanding per-\nformance. For instance, in MiniGPT, MM-Vet drops significantly from 32.58 to 17.70, and\nMME decreases by approximately 656 points. Similarly, in LLaVA, MM-Vet falls from\n28.60 to 14.90. In contrast, SPO-VLM preserves visual capabilities far more effectively. For\nMiniGPT-4, the MM-Vet score remains high at 31.11, indicating only a modest reduction\nof approximately 1.5 points compared to the original model. In the case of Qwen2-VL-7B,\nSPO-VLM not only maintains but enhances visual understanding. For LLaVA, SPO-VLM\nconsistently outperforms ASTRA across all visual benchmarks, notably raising the MM-Vet\nscore from 14.90 to 20.19.\nTo highlight the superiority of SPO-VLM, we visualize the safety and visual understand-\ning performance of different safety enhancement methods. Safety is measured as the mean\nof (1−ASR) across AdvBench and Anthropic Harmful, and visual understanding by average\nnormalized scores on MM-Vet, SQA, CogVLM, and MME. As shown in Figure 2, ASTRA\nexhibits a clear trade-off between safety and accuracy. Although it significantly improves\nsafety sc",
+      "text_sha256": "184fa73ede665ef944f0498995e1124728f4bd5274aca264bb85ab7f9577c427"
+     },
+     {
+      "span_id": "B-601f45901aff63",
+      "page": 13,
+      "location": "candidate arxiv-2509.00373 PDF page 13",
+      "text": "Activation Steering Meets Preference Optimization\nDanny Hernandez, Jackson Kernion, Kamal Ndousse, Catherine Olsson, Dario Amodei,\nTom Brown, Jack Clark, Sam McCandlish, Chris Olah, and Jared Kaplan. A general\nlanguage assistant as a laboratory for alignment, 2021. URL https://arxiv.org/abs/\n2112.00861.\nYuntao Bai, Andy Jones, Kamal Ndousse, Amanda Askell, Anna Chen, Nova DasSarma,\nDawn Drain, Stanislav Fort, Deep Ganguli, Tom Henighan, Nicholas Joseph, Saurav\nKadavath, Jackson Kernion, Tom Conerly, Sheer El-Showk, Nelson Elhage, Zac Hatfield-\nDodds, Danny Hernandez, Tristan Hume, Scott Johnston, Shauna Kravec, Liane Lovitt,\nNeel Nanda, Catherine Olsson, Dario Amodei, Tom Brown, Jack Clark, Sam McCandlish,\nChris Olah, Ben Mann, and Jared Kaplan. Training a helpful and harmless assistant\nwith reinforcement learning from human feedback, 2022. URL https://arxiv.org/\nabs/2204.05862.\nRalph Allan Bradley and Milton E. Terry. Rank analysis of incomplete block designs:\nI. the method of paired comparisons. Biometrika, 39:324, 1952. URL https://api.\nsemanticscholar.org/CorpusID:125209808.\nTom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla\nDhariwal, Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al. Lan-\nguage models are few-sh",
+      "text_sha256": "a106ebf441275789e5dc7436260bfd58d270caec4c60191a96ec3fb20e34bf20"
+     },
+     {
+      "span_id": "B-168afb542b8c20",
+      "page": 14,
+      "location": "candidate arxiv-2509.00373 PDF page 14",
+      "text": "Wu Jin Huang W ang Huang\nDeep Ganguli, Liane Lovitt, and et al. Jackson Kernion. Red teaming language models\nto reduce harms: Methods, scaling behaviors, and lessons learned, 2022. URL https:\n//arxiv.org/abs/2209.07858.\nSamuel Gehman, Suchin Gururangan, Maarten Sap, Yejin Choi, and Noah A. Smith. Re-\naltoxicityprompts: Evaluating neural toxic degeneration in language models, 2020. URL\nhttps://arxiv.org/abs/2009.11462.\nYichen Gong, Delong Ran, Jinyuan Liu, Conglei Wang, Tianshuo Cong, Anyu Wang, Sisi\nDuan, and Xiaoyun Wang. Figstep: Jailbreaking large vision-language models via typo-\ngraphic visual prompts, 2025. URL https://arxiv.org/abs/2311.05608.\nXingang Guo, Fangxu Yu, Huan Zhang, Lianhui Qin, and Bin Hu. Cold-attack: Jailbreaking\nllms with stealthiness and controllability, 2024. URL https://arxiv.org/abs/2402.\n08679.\nPeixuan Han, Cheng Qian, Xiusi Chen, Yuji Zhang, Denghui Zhang, and Heng Ji. Internal\nactivation as the polar star for steering unsafe llm behavior, 2025. URL https://arxiv.\norg/abs/2502.01042.\nLaura Hanu and Unitary team. Detoxify. Github. https://github.com/unitaryai/detoxify,\n2020.\nMohit Iyyer, Wen-tau Yih, and Ming-Wei Chang. Search-based neural structured learning\nfor sequential question answering. In Proceedings of the 55th Annual Meeting of",
+      "text_sha256": "8978db2322bb42993808a7e1eb044fa387308a7cd5bf687fff5a3f0b2f1050e0"
+     },
+     {
+      "span_id": "B-92d0bbb116167d",
+      "page": 16,
+      "location": "candidate arxiv-2509.00373 PDF page 16",
+      "text": "Wu Jin Huang W ang Huang\nPengyu Wang, Dong Zhang, Linyang Li, Chenkun Tan, Xinghao Wang, Ke Ren, Botian\nJiang, and Xipeng Qiu. Inferaligner: Inference-time alignment for harmlessness through\ncross-model guidance, 2024c. URL https://arxiv.org/abs/2401.11206.\nTianlong Wang, Xianfeng Jiao, Yifan He, Zhongzhi Chen, Yinghao Zhu, Xu Chu, Junyi\nGao, Yasha Wang, and Liantao Ma. Adaptive activation steering: A tuning-free llm\ntruthfulness improvement method for diverse hallucinations categories. arXiv preprint\narXiv:2406.00034, 2024d.\nWeihan Wang, Qingsong Lv, Wenmeng Yu, Wenyi Hong, Ji Qi, Yan Wang, Junhui Ji, Zhuoyi\nYang, Lei Zhao, Song XiXuan, et al. Cogvlm: Visual expert for pretrained language\nmodels. Advances in Neural Information Processing Systems , 37:121475–121499, 2024e.\nYu Wang, Xiaogeng Liu, Yu Li, Muhao Chen, and Chaowei Xiao. Adashield: Safeguard-\ning multimodal large language models from structure-based attack via adaptive shield\nprompting. In European Conference on Computer Vision , pages 77–94. Springer, 2024f.\nYu Wang, Xiaogeng Liu, Yu Li, Muhao Chen, and Chaowei Xiao. Adashield: Safeguard-\ning multimodal large language models from structure-based attack via adaptive shield\nprompting, 2024g. URL https://arxiv.org/abs/2403.09513.\nJiahao Yu, Xingwei Lin, Zh",
+      "text_sha256": "3376e6fea8a6b1a51f60548b1b9effbec4372d9fdce3b54e4b9c89d7936da9ec"
+     }
+    ]
+   }
+  },
+  {
+   "pair_id": "C03-P2",
+   "source_key": "arxiv-2609.35291",
+   "source_distribution": "link_only",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C03]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nGradient-based visual jailbreak attacks on vision-language models (VLMs) often optimize image perturbations for a fixed iteration budget using token-level target objectives that only indirectly capture harmful response behavior. We introduce [NAME C03], a behavior-aligned visual jailbreak framework that learns a lightweight behavior predictor from internal VLM representations to estimate response-level behavior. The predictor provides a differentiable behavioral signal for image optimization and enables instance-adaptive iterate selection without response generation or evaluation at every update. Across 917 samples from multimodal jailbreak benchmarks and four target VLMs, [NAME C03] improves ELITE-based attack success rate (E-ASR) by 16.68–33.26 percentage points and HarmBench ASR by 10.25–24.64 points over affirmative-target PGD. [NAME C03] also reduces the mean optimization steps from 300 to 32.7–161.2, yielding 1.8×–10.4× wall-clock speedups. The performance improvements persist across three defenses, while response-behavior analysis shows shifts from refusal and intermediate responses toward successful responses. These results demonstra",
+      "text_sha256": "1526a383704272f8bed298dbf67f320efe6a1733e776333bebc8b706aa03a475"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\net al., 2026; Song et al., 2025). This suggests that an evaluation of response behavior can instead be predicted from a hidden representation that remains differentiable with respect to the input image.\n\nWe implement this idea with a lightweight behavior predictor. For each target VLM, a regression probe is trained to estimate the ELITE score of the model's response from a selected internal representation and is frozen before attack optimization. During optimization, the predictor uses the internal representation to provide a differentiable signal that complements the conventional target-sequence objective, forming our [NAME C03] ([NAME C03]). Once the predicted score reaches a calibrated threshold, the current image is retained and further updates are skipped.\n\nWe evaluate our method against affirmative-target PGD in a controlled white-box setting, using the same image-text pairs while optimizing only the image. We measure attack success using two metrics. ELITE-based attack success rate (E-ASR), derived from thresholded ELITE scor",
+      "text_sha256": "99dd581d9e702abcb4387b1b8fc2f103cfc80bbfa2794903bd3631f953eb9205"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n![img-0.jpeg](img-0.jpeg)\n\n![img-1.jpeg](img-1.jpeg)\n\n![img-2.jpeg](img-2.jpeg)\n\nFigure 1: Overview of the [NAME C03] framework. Stage 1 trains a model-specific behavior predictor from precomputed ELITE scores. Stage 2 combines the affirmative-target loss with a differentiable behavior-guidance loss for image optimization. Stage 3 adapts the number of optimization updates using the predicted behavior score, retaining the first threshold-reaching iterate or the highest-scoring iterate otherwise. Attack success rate is evaluated by ELITE and HarmBench after optimization.\n\nindependent of predictor training and is used only for evaluation. We therefore report E-ASR from thresholded ELITE scores and HarmBench ASR from the binary HarmBench classifier.\n\n### 3 METHOD\n\nFigure 1 illustrates our framework. We consider a white-box setting in which the text prompt is fixed and only the visual input is optimized within a bounded perturbation set. Our method has three stages: (i) learning a behavior predictor from precomputed response-level supervision, (ii) behavior-align",
+      "text_sha256": "a1c7a455794166f082883e79c0bd771b37857d47fd178f74b6556c84a83b93cf"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\nE with the ELITE evaluator (Lee et al., 2025), whose scores lie in [0, 25] the formulation only requires a scalar response-level evaluation. This supervision is computed once before any attack, and D is disjoint from the inputs on which attacks are later evaluated.\n\nPre-generation representation. We extract the hidden state at the final prompt position, immediately before the first response token is predicted. Let P be the length of the decoder input sequence that the model's own processor produces for (x, q). Indexing positions from zero, the representation at decoder layer ℓ is\n\n$$h_\\ell(x, q) = H_\\theta^{(\\ell)}(x, q)_{P-1} \\in \\mathbb{R}^{d_h}. \\tag{3}$$\n\nThis state directly conditions the first generated token and does not depend on any generated token.\n\nPredictor and training. We train a lightweight regression probe $f_\\phi : \\mathbb{R}^{d_h} \\to \\mathbb{R}$ is a small regression probe to estimate $s_i$ from $h(x_i, q_i)$. Features are standardized the representation with feature-wise statistics from $\\mathcal{D}_{\\text{train}}$ and applies a two",
+      "text_sha256": "69f2531be993763e457997d61f21781ffeacf0bb16d50bfde695c9bd55f7ad8a"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\nWe optimize only the image using a projected sign-gradient update,\n\n$$\\delta^{(k+1)} = \\Pi_{\\mathcal{B}_\\epsilon} \\left( \\delta^{(k)} - \\alpha \\operatorname{sign} \\left( \\nabla_\\delta \\mathcal{L}_{\\text{total}}(\\delta^{(k)}) \\right) \\right), \\tag{9}$$\n\nwhere $\\alpha$ is the step size and $\\mathcal{B}_\\epsilon = \\{\\delta : \\|\\delta\\|_\\infty \\le \\epsilon, 0 \\le x + \\delta \\le 1\\}$ denotes the feasible perturbation set, with the image-domain constraints applied elementwise. The perturbation is initialized uniformly within the $\\ell_\\infty$ ball, $\\delta^{(0)} \\sim \\mathcal{U}([-\\epsilon, \\epsilon])$. The target VLM and behavior predictor remain frozen, while the text prompt $q$ is kept unchanged throughout optimization.\n\n### 3.4 STAGE 3: INSTANCE-ADAPTIVE OPTIMIZATION\n\nStage 3 adapts the optimization process to each sample using the predicted behavior score. Let\n\n$$\\widehat{s}_k = f_\\phi \\left( h_\\ell(x + \\delta^{(k)}, q) \\right) \\tag{10}$$\n\nbe the score associated with the current iterate. We retain the first iterate that reaches the calibrated threshold",
+      "text_sha256": "0655717a272eb612e235f75bdcce82d7b6a4d5d555fe57dd251e1c08d03fcde3"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\n![img-3.jpeg](img-3.jpeg)\n\n![img-4.jpeg](img-4.jpeg)\n\n![img-5.jpeg](img-5.jpeg)\n\n![img-6.jpeg](img-6.jpeg)\n\nFigure 2: Behavior-predictor performance across LLM backbone layers. AUC with the E-ASR cutoff and Pearson r between predicted and true ELITE scores are reported on D_val, shown in blue and orange, respectively. Stars indicate the selected layer for each VLM. (Appendix A.3).\n\nEvaluation metrics and judges. We report two attack success metrics. E-ASR is defined by thresholding the ELITE score at 10, the cutoff set by human judgement in the original work (Lee et al., 2025). ELITE combines refusal, toxicity, convincingness, and specificity into a scalar score on [0, 25], computed as (1 - refused) × convincing+specific / ΔR × toxicity. Higher scores indicate more harmful and compliant responses. HarmBench ASR measure the fraction of responses that a separately trained binary classifier labels as exhibiting the target harmful behavior (Mazeika et al., 2024). ELITE scores supervise the behavior predictor, whereas Harmbench is not used for predictor tra",
+      "text_sha256": "65248bfb697efe0a66293683791879417ae4545358ebf3361afa94fc45f20a4a"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "the response behavior. Because $h_\\ell$ is extracted at the final prompt position before any response token is generated, $f_\\phi$ provides a differentiable behavioral signal without response generation or repeated ELITE evaluation. The selected layer is fixed for subsequent attacks for each model. (Appendix B).\n\nTable 1: Attack performance on 917 multimodal jailbreak data across four target VLMs. Performance is measured by E-ASR and HarmBench ASR (%), with higher values indicating stronger attacks. Bold indicates the best result in each column, and the second best italic. $\\Delta$ vs. PGD denotes the absolute improvement of [NAME C03] over affirmative-target PGD in percentage points.\n\n[tbl-0.html](tbl-0.html)\n\n### 4.3 MAIN ATTACK PERFORMANCE\n\nTable 1 summarizes the main attack results. Our method achieves the highest E-ASR and HarmBench ASR across all four target VLMs. Compared with affirmative-target PGD, [NAME C03] improves E-ASR by 16.68 to 33.26 percentage points and ASR by 10.25 to 24.64 percentage points. Since HarmBench is not used to train the behavior predictor, these consistent gains indicate that the improvement is not specific to the ELITE-based supervision signal. Under the same perturbation budget, random perturbation change E-ASR by only $-2.07$ to $+2.51$ perc",
+      "text_sha256": "de858d54d08ec28a03aca5ecb02b48276367f3073d0a7344321df28343227dc4"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "from 1.8× to 10.4×. The retained perturbation is also smaller, with a mean ℓ₂ norm 1.6%–9.3% lower than full-budget PGD under the same ℓ∞ constraint. Together with Section 4.5, where stopping at k_adapt improves E-ASR by 3.82%–8.29% over the same objective for all 300 steps, these results show that instance-adaptive stopping reduces computation and perturbation magnitude without sacrificing attack effectiveness.\n\nTable 3: Ablation of behavioral guidance and instance-adaptive optimization across four target VLMs. E-ASR and HarmBench ASR (%) are reported on n=917 evaluation data. Bold and italic indicate the best and second-best results in each column, respectively.\n\n[tbl-2.html](tbl-2.html)\n\n### 4.5 ABLATION STUDY\n\nTable 3 separates the contributions of behavioral guidance and instance-adaptive optimization. Adding L$_{behavior}$ under a fixed 300 step budget improves E-ASR by 11.23–26.50 percentage points and HarmBench ASR by 7.41–19.41 points over affirmative-target PGD. Enabling k$_{adapt}$ further improves E-ASR by 3.82–8.29 points and HarmBench ASR by 0.11–7.85 points across four target models. The second and third rows use the same joint objective and differ only in adaptive iterate selection. The adaptive variant improves every metric, indicating that retaini",
+      "text_sha256": "4e1466dc1480e92d18826e825af723f0291ae9df4f7e68a1b02318ddbc21ebe5"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n## AI USE STATEMENT\n\nWe used generative AI tools to assist with and refine writing, retrieve and analyze relevant literature, draft section of the manuscript, and support research execution. Generative AI was also used for code development, dataset preprocessing and formatting, translation, feedback on result interpretation. We did not use generative AI to create synthetic datasets or establish mathematical claims. All AI-assisted outputs were reviewed and verified by the authors. AI-assisted code and data-processing procedures were inspected and tested for correctness, cited references were checked against their original sources, and AI-assisted interpretations were validated against the experimental results. The authors take responsibility for the final content of this work, including the text, claims, code, and other materials produced with the assistance of generative AI.\n\n## ETHICS STATEMENT\n\nThis work studies white-box visual jailbreak attacks on vision-language models (VLMs) to characterize safety vulnerabilities and support more rigorous multim",
+      "text_sha256": "9ba12206515f06850ffedeccb8960c4fc7af9091ea5c162b2d3b877a3a9f85ef"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nTeng Ma, Xiaojun Jia, Ranjie Duan, Xinfeng Li, Yihao Huang, Xiaoshuang Jia, Zhixuan Chu, and Wenqi Ren. Heuristic-induced multimodal risk distribution jailbreak attack for multimodal large language models. In IEEE/CVF International Conference on Computer Vision, pp. 2686–2696, 2025.\n\nAleksander Madry, Aleksandar Makelov, Ludwig Schmidt, Dimitris Tsipras, and Adrian Vladu. Towards deep learning models resistant to adversarial attacks. In International Conference on Learning Representations, 2018.\n\nMantas Mazeika, Long Phan, Xuwang Yin, Andy Zou, Zifan Wang, Norman Mu, Elham Sakhaee, Nathaniel Li, Steven Basart, Bo Li, David Forsyth, and Dan Hendrycks. HarmBench: A standardized evaluation framework for automated red teaming and robust refusal. In Proceedings of the 41st International Conference on Machine Learning, volume 235 of Proceedings of Machine Learning Research, pp. 35181–35224. PMLR, 2024.\n\nMeta AI. Llama 3.2: Revolutionizing edge AI and vision with open, customizable models. Meta AI blog, 2024.\n\nZhenxing Niu, Haodong Ren, Xinbo Gao, Gang Hua, a",
+      "text_sha256": "e5c675e28dc5a9a8abdd730fd8e6552bd27ff77ca91316034de99d89753c3e31"
+     },
+     {
+      "span_id": "A-page-0014",
+      "page": 14,
+      "location": "target PDF page 14",
+      "text": "702\n703\n704\n705\n706\n707\n708\n709\n710\n711\n712\n713\n714\n715\n716\n717\n718\n719\n720\n721\n722\n723\n724\n725\n726\n727\n728\n729\n730\n731\n732\n733\n734\n735\n736\n737\n738\n739\n740\n741\n742\n743\n744\n745\n746\n747\n748\n749\n750\n751\n752\n753\n754\n755\n\n# A EXPERIMENTAL DETAILS AND REPRODUCIBILITY\n\n## A.1 EVALUATION DATA AND SPLITS\n\nAll inputs are drawn from the ELITE benchmark (Lee et al., 2025), which aggregates 4,587 image-text pairs from eight source datasets and assigns each pair to one of eleven hazard categories. We partition the benchmark once using a uniform random permutation with seed 42 and a held-out fraction of 0.2, yielding 3,670 training inputs and 917 held-out evaluation inputs. The 917 held-out inputs form the evaluation set used throughout the paper and are disjoint from all inputs used for behavior-predictor training and layer selection.\n\nWithin the 3,670 training inputs, we further construct a 90/10 split using seed 42, yielding 3,303 fitting inputs and 367 validation inputs. The fitting split is used to train the behavior predictor, while the validation split is used for layer selection. Neither split overlaps with the 917 held-out evaluation inputs.\n\nTable A1: Composition of the ELITE benchmark and its training and evaluation splits by source dataset. New denotes the benchmark's",
+      "text_sha256": "843e82273ab16ff29daedf4a6122537813e9f3768aaa51b181873810e82964d8"
+     },
+     {
+      "span_id": "A-page-0017",
+      "page": 17,
+      "location": "target PDF page 17",
+      "text": "864\n865\n866\n867\n868\n869\n870\n871\n872\n873\n874\n875\n876\n877\n878\n879\n880\n881\n882\n883\n884\n885\n886\n887\n888\n889\n890\n891\n892\n893\n894\n895\n896\n897\n898\n899\n900\n901\n902\n903\n904\n905\n906\n907\n908\n909\n910\n911\n912\n913\n914\n915\n916\n917\n\nAmong the twelve measured conditions, the fixed-budget settings with λ=0 and λ=4 execute the same 300 optimization steps on identical inputs and differ only in the optimization objective. Relative to λ=0, mean wall-clock time for λ=4 changes by −0.27%, +1.94%, +1.64%, and +0.15% for Qwen2.5-VL, LLaVA-1.5, InternVL3, and Llama-3.2-V, respectively. Mean peak allocated memory differs by at most 0.13% across the three measured conditions for each model.\n\nThe iteration at which the predicted behavior score reaches τ varies substantially across models, accounting for the differences in efficiency reported in Table 2. The median retained iterate is 21 for InternVL3 and 145 for Qwen2.5-VL, with τ reached for 99.4% and 72.3% of inputs, respectively. Inputs that never reach τ continue through the full optimization budget and fall back to the trajectory iterate with the highest predicted behavior score. The reported mean step counts therefore include these full-budget cases rather than excluding them.\n\n## B ADDITIONAL BEHAVIOR PREDICTOR ANALYSIS\n\nSection 4.2 uses",
+      "text_sha256": "5a4fb712c0b9a68277b116304191c2e22d36929d22fac814addaa77876d73a47"
+     },
+     {
+      "span_id": "A-page-0019",
+      "page": 19,
+      "location": "target PDF page 19",
+      "text": "Table A5: Sensitivity to the behavior-guidance weight  \\( \\lambda \\) , with the clean Baseline included for reference. All attack settings use  \\( \\epsilon=16/255 \\) . The  \\( \\lambda=0 \\)  setting corresponds to affirmative-target PGD, for which no predicted behavior score is available and performance is therefore evaluated at the final iterate. All positive- \\( \\lambda \\)  settings use instance-adaptive optimization. The default setting used in the main text is  \\( \\lambda=4 \\)  (shaded). Each cell reports E-ASR (%) and HarmBench ASR (%), with higher values indicating better attack performance. Within each column, the best and second-best results among the five attack settings are shown in bold and italic, respectively. n=917.\n\n[tbl-8.html](tbl-8.html)\n\nTable A6: Sensitivity to the percentile used to define the calibrated threshold  \\( \\tau \\) , with  \\( \\lambda=4 \\)  fixed. Mean steps denotes the mean number of optimization steps to the retained iterate, pooled across the four target VLMs, while Reached  \\( \\tau \\)  denotes the fraction of inputs that reach the threshold within the optimization budget, averaged across models.  \\( Q_{0.99} \\)  is the default setting used in the main text. Within each column, the best and second-best results among the three thresh",
+      "text_sha256": "cb59e6f452b6cbf878a65a6c64c4915ee296b62f769b2e00e56fd440e2cbdc9a"
+     },
+     {
+      "span_id": "A-page-0021",
+      "page": 21,
+      "location": "target PDF page 21",
+      "text": "1080\n1081\n1082\n1083\n1084\n1085\n1086\n1087\n1088\n1089\n1090\n1091\n1092\n1093\n1094\n1095\n1096\n1097\n1098\n1099\n1100\n1101\n1102\n1103\n1104\n1105\n1106\n1107\n1108\n1109\n1110\n1111\n1112\n1113\n1114\n1115\n1116\n1117\n1118\n1119\n1120\n1121\n1122\n1123\n1124\n1125\n1126\n1127\n1128\n1129\n1130\n1131\n1132\n1133\n\nTable A8: Per hazard category breakdown of the results in Table 1. The 917 evaluation inputs are grouped by ELITE hazard category, with the number of inputs shown in # Samples. The evaluated conditions and highlighting follow Table A7. [NAME C03] achieves the highest E-ASR in 40 of the 44 category–model combinations and improves over affirmative-target PGD on average across all eleven hazard categories.\n\n[tbl-11.html](tbl-11.html)\n\n[OCR table id=tbl-11.html; page=21]\n<table><tr><td rowspan=\"2\">Taxonomy</td><td rowspan=\"2\"># Samples</td><td rowspan=\"2\">Method</td><td colspan=\"2\">Qwen2.5-VL-7B</td><td colspan=\"2\">LLaVA-1.5-7B</td><td colspan=\"2\">InternVL3-8B</td><td colspan=\"2\">Llama-3.2-V-11B</td></tr><tr><td>E-ASR</td><td>ASR</td><td>E-ASR</td><td>ASR</td><td>E-ASR</td><td>ASR</td><td>E-ASR</td><td>ASR</td></tr><tr><td rowspan=\"3\">S1 Violent Crimes</td><td rowspan=\"3\">141</td><td>Baseline</td><td>46.81</td><td>24.11</td><td>73.05</td><td>40.43</td><td>46.81</td><td>28.37</td><td>33.33</td><td>12.77</td></",
+      "text_sha256": "a6f34a3c069e3bb65adc3b848fa00e9e91d00a092d48be24475ca2c8768ca50c"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-c47c2c2e2f00ef",
+      "page": 1,
+      "location": "candidate arxiv-2609.35291 PDF page 1",
+      "text": null,
+      "text_sha256": "224339e61656f5f95f81b9708c568b27548ce549b3cab28784102493fc0e0012",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-c3d12bfb57368b",
+      "page": 2,
+      "location": "candidate arxiv-2609.35291 PDF page 2",
+      "text": null,
+      "text_sha256": "0f96b0bdd43b26e97f641fcf046a6bd93ddb20149502da5bdb4b822affc54de0",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-61135ce9d8443b",
+      "page": 3,
+      "location": "candidate arxiv-2609.35291 PDF page 3",
+      "text": null,
+      "text_sha256": "99010d6a9ad73bdfd9d9e36eb454794dffae16d7c8c5497999c7267b4a667988",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-c8d55cfee66eb5",
+      "page": 4,
+      "location": "candidate arxiv-2609.35291 PDF page 4",
+      "text": null,
+      "text_sha256": "3195723da0527f55ff5f2c6cbab196b53370590be9ad3a3deed388f0e4c536b5",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-b45f3adab1c863",
+      "page": 8,
+      "location": "candidate arxiv-2609.35291 PDF page 8",
+      "text": null,
+      "text_sha256": "3d539e101c40fc0c40cc4fcbfd84c91dcec29cacfbbdbb88387289789076166a",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-27bc67b17ff806",
+      "page": 15,
+      "location": "candidate arxiv-2609.35291 PDF page 15",
+      "text": null,
+      "text_sha256": "a35df4a0baf06c435865d8a7580f151e79f1a9084bb2088e8e71a3f645f5af42",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-fa76d39baca0cc",
+      "page": 23,
+      "location": "candidate arxiv-2609.35291 PDF page 23",
+      "text": null,
+      "text_sha256": "006b3e329a7814d798e0d94d733af17b9fa1e266e6810d616c8d26bbbba40fa1",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-eff38cf5f26735",
+      "page": 30,
+      "location": "candidate arxiv-2609.35291 PDF page 30",
+      "text": null,
+      "text_sha256": "4d9fddbe3f64d0d71478f2ab113fe8522c3f3a00e2256ba979c61cc8cda0aee9",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-385e56da0e646d",
+      "page": 37,
+      "location": "candidate arxiv-2609.35291 PDF page 37",
+      "text": null,
+      "text_sha256": "0b8c800e89ebebb598ff58f32cc496fa874d0dbfb38d3a8877b7a8487f575fbf",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-126ee5cfae580d",
+      "page": 44,
+      "location": "candidate arxiv-2609.35291 PDF page 44",
+      "text": null,
+      "text_sha256": "f3242befbba3dfa6edacf5e85b0c1351d80da2cbd2f791e243ae53836097a713",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-3dc8f1d91ca85b",
+      "page": 46,
+      "location": "candidate arxiv-2609.35291 PDF page 46",
+      "text": null,
+      "text_sha256": "b27447c1089d296a88eac58534207dc6448a05e71608a259cb0b7ed4972222cb",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-81d77bf6959afc",
+      "page": 52,
+      "location": "candidate arxiv-2609.35291 PDF page 52",
+      "text": null,
+      "text_sha256": "66a39c49299dcc9ca49f82fcd311c89cfcf3bc2aad41fb503909ec1e6ff7cf4f",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-d1850fdb086248",
+      "page": 59,
+      "location": "candidate arxiv-2609.35291 PDF page 59",
+      "text": null,
+      "text_sha256": "db5b7b5df009e6ae709ba6433d2880c10c5013d707885832a54d1ac1a8964aea",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-0e62bc171cb2cf",
+      "page": 66,
+      "location": "candidate arxiv-2609.35291 PDF page 66",
+      "text": null,
+      "text_sha256": "47bb0393efc303edcf8ef3e05eae60b27191aa28bcf356bdafeca40c4731a754",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     }
+    ]
+   }
+  }
+ ],
+ "note": "Target spans are anonymized excerpts of the target text; page numbers refer to the original target PDF, which is not distributed."
+}

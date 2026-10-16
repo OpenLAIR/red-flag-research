@@ -1,0 +1,12 @@
+*.json text eol=lf
+*.jsonl text eol=lf
+*.md text eol=lf
+*.py text eol=lf
+*.html text eol=lf
+*.js text eol=lf
+*.css text eol=lf
+*.pdf binary
+*.tar.gz binary
+*.zip binary
+# Every published artifact is checksummed; preserve its bytes exactly.
+benchmark/** -text

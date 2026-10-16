@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Wrong result about your paper (private, fastest)
+    url: https://github.com/OpenLAIR/red-flag-research/blob/main/docs/CORRECTIONS.md
+    about: Authors can email red.flag.autoresearch@gmail.com. We correct wrong results right away and take the result down while we check.
+  - name: Security problem or exposed credential
+    url: https://github.com/OpenLAIR/red-flag-research/security/policy
+    about: Report privately; do not open a public issue.

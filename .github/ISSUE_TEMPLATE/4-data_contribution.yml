@@ -1,0 +1,62 @@
+name: Fix a benchmark case
+description: Fix a label or evidence location in an existing benchmark case, or report a data problem.
+labels: ["type: data", "status: needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Please do not name papers you suspect in a public issue.** A public issue would read as an accusation before anyone has compared the papers. To propose a new case, email **red.flag.autoresearch@gmail.com** instead; we check it privately.
+
+        This form is for existing benchmark cases. Cases are anonymized: refer to them by case id only, never by a paper's title or link. Benchmark files are checksummed, so maintainers apply changes with the project scripts and credit you in the release notes. Please read the annotation guidelines first.
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Kind of contribution
+      options:
+        - Label correction
+        - Evidence location correction
+        - Other data problem
+    validations:
+      required: true
+  - type: input
+    id: case
+    attributes:
+      label: Case id
+      description: The benchmark case id. Do not give the paper's title or link.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Page, section, table or line, and what it shows.
+    validations:
+      required: true
+  - type: dropdown
+    id: label
+    attributes:
+      label: Proposed label
+      options:
+        - source_review_recommended
+        - same_work_preprint
+        - no_source_finding
+        - inconclusive
+        - not a label change
+    validations:
+      required: true
+  - type: textarea
+    id: reasoning
+    attributes:
+      label: Reasoning
+      description: Why this label or change follows the annotation guidelines.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you submit
+      options:
+        - label: This issue does not name or link any paper I suspect, and refers to benchmark cases by case id only.
+          required: true
+        - label: I agree that my annotations and other data I contribute are licensed under CC BY 4.0.
+          required: true

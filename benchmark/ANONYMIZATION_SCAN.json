@@ -1,0 +1,20 @@
+{
+ "schema": "anonymization-scan-summary.v1",
+ "files_scanned": {
+  "text": 118,
+  "binary": 20
+ },
+ "strict_patterns": 443,
+ "iclr2027_openreview_ids_checked": 43008,
+ "residual_matches": {
+  "title": 0,
+  "name": 0,
+  "id": 0,
+  "hash": 0,
+  "withheld": 0,
+  "openreview": 0
+ },
+ "residual_total": 0,
+ "advisory_title_ngram_matches": 0,
+ "note": "Counts only. Patterns are kept private because they would identify the targets."
+}

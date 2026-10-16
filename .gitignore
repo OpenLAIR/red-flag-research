@@ -1,0 +1,24 @@
+**/__pycache__/
+*.pyc
+.DS_Store
+.env
+.env.*
+*.env
+
+# Link-only source papers downloaded by benchmark/tools/fetch_sources.py may not be
+# redistributed; never commit them.
+*.part
+*.mismatch
+benchmark/sources/arxiv-2509.22047/
+benchmark/sources/arxiv-2510.10262/
+benchmark/sources/arxiv-2510.25941/
+benchmark/sources/arxiv-2603.06009/
+benchmark/sources/arxiv-2603.25730/
+benchmark/sources/arxiv-2604.03118/
+benchmark/sources/arxiv-2604.05743/
+benchmark/sources/arxiv-2604.10056/
+benchmark/sources/arxiv-2604.21700/
+benchmark/sources/arxiv-2606.01207/
+benchmark/sources/arxiv-2607.10172/
+benchmark/sources/arxiv-2609.04148/
+benchmark/sources/arxiv-2609.35291/

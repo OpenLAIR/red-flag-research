@@ -1,0 +1,448 @@
+{
+ "case_id": "C16",
+ "pairs": [
+  {
+   "pair_id": "C16-P1",
+   "source_key": "arxiv-2603.25730",
+   "source_distribution": "link_only",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C16]\n\n## Anonymous authors\n\nPaper under double-blind review\n\n![img-0.jpeg](img-0.jpeg)\n\nFigure 1: [NAME C16] is a real-time interactive world model enabling versatile controls with long-horizon consistency. Top: It supports flexible interactions, including navigation controls and complex semantic events. Middle: It executes multi-turn interactions to achieve coherent storytelling. Bottom: It maintains long-horizon consistency under complex navigation controls.\n\n## ABSTRACT\n\nInteractive world models require responding in real time to versatile controls and maintaining long-horizon consistency. However, modeling heterogeneous controls remains difficult, while explosive contexts and unstable distillation impede achieving both long-horizon consistency and real-time responsiveness. In this paper, we present [NAME C16], an interactive world model that couples a factorized hybrid control interface with a co-design of compressed memory and stable distillation. 1) Our factorized hybrid control interface integrates frame-aligned action control with structured semantic control that explicitly disentangles scene appearance, character identity, and dynamic semantic events, thereby facilitating effectiv",
+      "text_sha256": "1edd1c6719878020b76a2f8b0420e96caf2d074f67dd9ad891ea8957311d855f"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\n# 1 INTRODUCTION\n\nInteractive world models (Parker-Holder et al., 2025; Sun et al., 2026; He et al., 2025; Team et al., 2026d; Alibaba, 2026; Hong et al., 2025; Xu et al., 2026; Jiang et al., 2026; Zhu et al., 2026a) are beginning to transform video generators (Wan et al., 2025; Wu et al., 2025; Deepmind, 2025) from passive content-creation systems into interactive environments that evolve in response to user input. Such models have the potential to serve as general-purpose simulators (Agarwal et al., 2026; Brooks et al., 2024), allowing users to explore, interact with, and reshape the generated environments while providing scalable data generators and policy evaluators for embodied agents (Wiedemer et al., 2025; Team et al., 2025). Realizing these applications requires world models to support versatile controls, preserve coherent world states over long horizons, and operate in real time.\n\nControllability represents a primary challenge for world models. Early efforts (Sun et al., 2026; He et al., 2025; Team et al., 2026d) focused on navigation-oriented",
+      "text_sha256": "4633c6042b930617328e7ca577dccc90f0d4f34c610fbadc5f15a8b544b70eda"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\nlong-horizon rollouts from gradient backpropagation. During the forward rollout phase, each chunk undergoes full few-step sampling to maintain fidelity and bolster stability. Meanwhile, a random intermediate step is recorded and replayed with gradients during the backward pass. Combining our initialization with full-rollout replay preserves rollout quality over long horizons, thereby achieving stable and robust distillation.\n\nTaken together, our model demonstrates remarkable generalization across different scenes and characters. As shown in Fig. 1, it not only supports versatile, multi-turn interactive controls, but also preserves geometric consistency over long horizons. Moreover, extensive quantitative and qualitative experiments validate the effectiveness of our methods, demonstrating superior performance compared to existing methods.\n\n## 2 RELATED WORK\n\nInteractive World Models. Interactive world models generate future visual frames conditioned on previous observations and current actions, enabling users or embodied agents to interact with the envi",
+      "text_sha256": "33ddf643a0b0e8b70106b48a8150f508d38f7a8c602972b4884f9da57e1f7288"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\n![img-1.jpeg](img-1.jpeg)\n\nFigure 2: Overview of [NAME C16]. We employ factorized hybrid control interface to decouple heterogeneous inputs into frame-aligned action control and structured semantic control, ensuring accurate interactive responses. Concurrently, a history compressor abstracts past contexts into compact memory tokens to achieve efficient long-horizon inference.\n\n### 3.1 FACTORIZED HYBRID CONTROL INTERFACE\n\nInteractive world models require versatile responsiveness to heterogeneous controls, which often exhibit varying levels of abstraction. Camera motion and character locomotion demand precise, frame-aligned signals, whereas complex interactions and content factors are more naturally expressed via high-level semantic instructions. Therefore, we propose a factorized hybrid control interface that disentangles low-level movements, high-level semantic interactions, and visual content factors. Specifically, each control signal is represented as $A_t = \\{a_t, d_t\\}$, where $a_t$ denotes frame-aligned action control and $d_t$ denotes structured ",
+      "text_sha256": "80e28461153b7ab1f9b89ea1ebf198f663e9dfaccd1e843ba95306a6d01bd6c1"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\nHong et al., 2025). However, this causes context length to scale linearly during autoregressive rollout, rapidly increasing inference latency and complicating long-horizon modeling. Moreover, this computational burden is further amplified during distillation, where the full-context bidirectional teacher is used to evaluate long student rollouts to provide supervision. To this end, we design a compressed memory mechanism inspired by Zhang et al. (2026a), shared across long-horizon modeling and distillation. This enables efficient context conditioning while keeping teacher evaluation during distillation computationally tractable.\n\nInstead of conditioning the model directly on the full-resolution contexts, we employ a learnable history compressor $\\mathcal{C}_{\\phi}$ to encode the history context into a compact sequence of memory tokens:\n\n$$m_{<t} = [x_{\\text{sink}}; x_{\\text{cmp}} = \\mathcal{C}_{\\phi}(x_{<t}, x_{<t}^{\\text{lr}}); x_{\\text{tmp}}], \\tag{4}$$\n\nwhere $[; ;]$ denotes sequence concatenation, $x_{\\text{sink}}$ denotes sink tokens providing a st",
+      "text_sha256": "c319c6c792ec3a472e14cb35f65538f6d80c0b987add457c20c15504987d7394"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\n![img-3.jpeg](img-3.jpeg)\n\nFigure 4: Overview of Stable Forcing. It integrates few-step initialization, full-rollout replay, and efficient score evaluation to achieve efficient and stable long-horizon distillation.\n\nadjacent intervals within a block in a single forward pass. The training objective is,\n\n$$\\mathcal{L}_{\\mathrm{PDD}} = \\mathbb{E}_{k \\in [0, C-1]} \\left\\| u_k - \\mathrm{sg}(N_\\theta(x_t^{\\sigma_k^i}, \\sigma_k^i, m_{<t}, A_{\\le t})) \\right\\|^2, \\tag{6}$$\n\nwhere $x_t^{\\sigma_k^i}$ is computed via parallel decoding sampling and $\\mathrm{sg}(\\cdot)$ denotes the stop-gradient operator. By predicting multiple consecutive denoising intervals in parallel, it reduces the number of network evaluations and provides a reliable few-step initialization to stabilize subsequent long-horizon distribution matching distillation.\n\n**Full-rollout Replay.** To further enhance the stability of distribution matching distillation, we decouple the rollout phase from gradient backpropagation. Specifically, during the rollout phase, each chunk performs full few-step s",
+      "text_sha256": "775c8b3d8a8c3f9a894a406cf53157822d04fe85d4380b53fb9b143a29fcff68"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\nTable 1: Quantitative comparisons. We benchmark our approach against recent interactive world models on both WBench and [NAME C16] to systematically evaluate controllability, long-horizon consistency, and visual fidelity. Abbreviations: Avg: Average, Qua: Quality, Set: Setting, Int: Interaction, Con: Consistency, Phy: Physical.\n\n[tbl-0.html](tbl-0.html)\n\n![img-4.jpeg](img-4.jpeg)\n\n![img-5.jpeg](img-5.jpeg)\n\n![img-6.jpeg](img-6.jpeg)\n\n![img-7.jpeg](img-7.jpeg)\n\n![img-8.jpeg](img-8.jpeg)\n\n![img-9.jpeg](img-9.jpeg)\n\n![img-10.jpeg](img-10.jpeg)\n\n![img-11.jpeg](img-11.jpeg)\n\n![img-12.jpeg](img-12.jpeg)\n\n![img-13.jpeg](img-13.jpeg)\n\n![img-14.jpeg](img-14.jpeg)\n\n![img-15.jpeg](img-15.jpeg)\n\n![img-16.jpeg](img-16.jpeg)\n\n![img-17.jpeg](img-17.jpeg)\n\n![img-18.jpeg](img-18.jpeg)\n\nFigure 5: Qualitative comparisons with existing methods. [NAME C16] supports versatile interactive events while demonstrating superior generalization across diverse characters and maintaining long-horizon geometric consistency.\n\nEvaluation Details. To assess controllability, consistenc",
+      "text_sha256": "5da179d3daeb7088b4863f6536cbf1a32af2e78b18571ba5aee16553661e767e"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "378\n379\n380\n381\n382\n383\n384\n385\n386\n387\n388\n389\n390\n391\n392\n393\n394\n395\n396\n397\n398\n399\n400\n401\n402\n403\n404\n405\n406\n407\n408\n409\n410\n411\n412\n413\n414\n415\n416\n417\n418\n419\n420\n421\n422\n423\n424\n425\n426\n427\n428\n429\n430\n431\n\nand our interactive event dataset as test cases, which are held out from training, to evaluate model responsiveness to diverse interactive events. We deploy a vision-language model (VLM) (Seed, 2025) as an automated evaluator to score instruction adherence and execution accuracy. We compare our approach against five interactive world models: WorldPlay (Sun et al., 2026), AlayaWorld (Team et al., 2026a), Lingbot-World-V2 (Gao et al., 2026), EchoWM (Zhang et al., 2026b), and Alaya-Evoke-Turbo (Yin et al., 2026).\n\n### 4.1 COMPARISONS WITH EXISTING METHODS\n\nQuantitative Results. Tab. 1 compares our method with five representative interactive world models on the navigation split of WBench and [NAME C16]. [NAME C16] achieves the highest overall average score of 83.1, surpassing the previous state-of-the-art baseline, Alaya-Evoke-Turbo (Yin et al., 2026), by 1.1 points. Notably, [NAME C16] demonstrates a pronounced advantage in Interaction and Consistency. This empirically validates that our factorized hybrid control interface, coupled with the co-design of",
+      "text_sha256": "9274c6dc9c381d5e8570b78941407819c8ef0a45e6b4e0a30d86112146dbb210"
+     },
+     {
+      "span_id": "A-page-0011",
+      "page": 11,
+      "location": "target PDF page 11",
+      "text": "540\n541\n542\n543\n544\n545\n546\n547\n548\n549\n550\n551\n552\n553\n554\n555\n556\n557\n558\n559\n560\n561\n562\n563\n564\n565\n566\n567\n568\n569\n570\n571\n572\n573\n574\n575\n576\n577\n578\n579\n580\n581\n582\n583\n584\n585\n586\n587\n588\n589\n590\n591\n592\n593\n\nYicong Hong, Yiqun Mei, Chongjian Ge, Yiran Xu, Yang Zhou, Sai Bi, Yannick Hold-Geoffroy, Mike Roberts, Matthew Fisher, Eli Shechtman, et al. RELIC: Interactive video world model with long-horizon memory. arXiv preprint arXiv:2512.04040, 2025.\n\nJiahui Huang, Qunjie Zhou, Hesam Rabeti, Aleksandr Korovko, Huan Ling, Xuanchi Ren, Tianchang Shen, Jun Gao, Dmitry Slepichev, Chen-Hsuan Lin, et al. ViPE: Video pose engine for 3d geometric perception. arXiv preprint arXiv:2508.10934, 2025.\n\nXun Huang, Zhengqi Li, Guande He, Mingyuan Zhou, and Eli Shechtman. Self Forcing: Bridging the train-test gap in autoregressive video diffusion. NeurIPS, 38:167283–167308, 2026.\n\nFan Jiang, Zhaoxu Sun, Mengchao Wang, Ziyu Zhu, Chiyu Wang, Yunpeng Zhang, Wenlin Liu, Yun Wang, Xue Zheng, Rui Sun, et al. ABot-World-0: Infinite interactive world rollout on a single desktop gpu. arXiv preprint arXiv:2607.19191, 2026.\n\nJiaqi Li, Junshu Tang, Zhiyong Xu, Longhuang Wu, Yuan Zhou, Shuai Shao, Tianbao Yu, Zhiguo Cao, and Qinglin Lu. Hunyuan-GameCraft: High-dynamic interactive game vi",
+      "text_sha256": "63cd832f76a63958b9065a2416d8ca3ecbea32ba07815d2f84cba62890cb09e0"
+     },
+     {
+      "span_id": "A-page-0013",
+      "page": 13,
+      "location": "target PDF page 13",
+      "text": "648\n649\n650\n651\n652\n653\n654\n655\n656\n657\n658\n659\n660\n661\n662\n663\n664\n665\n666\n667\n668\n669\n670\n671\n672\n673\n674\n675\n676\n677\n678\n679\n680\n681\n682\n683\n684\n685\n686\n687\n688\n689\n690\n691\n692\n693\n694\n695\n696\n697\n698\n699\n700\n701\n\nKaining Ying, Hengrui Hu, Siyu Ren, Jiamu Li, Fengjiao Chen, Ziwen Wang, Xuezhi Cao, Xunliang Cai, and Henghui Ding. WBench: A comprehensive multi-turn benchmark for interactive video world model evaluation. arXiv preprint arXiv:2605.25874, 2026.\n\nJiwen Yu, Jianhong Bai, Yiran Qin, Quande Liu, Xintao Wang, Pengfei Wan, Di Zhang, and Xihui Liu. Context as memory: Scene-consistent interactive long video generation with memory retrieval. In SIGGRAPH Asia, pp. 1–11, 2025.\n\nJintao Zhang, Haofeng Huang, Pengle Zhang, Jia Wei, Jun Zhu, and Jianfei Chen. SageAttention2: Efficient attention with thorough outlier smoothing and per-thread int4 quantization. arXiv preprint arXiv:2411.10958, 2024.\n\nLvmin Zhang, Shengqu Cai, Muyang Li, Chong Zeng, Beijia Lu, Anyi Rao, Song Han, Gordon Wetzstein, and Maneesh Agrawala. TinyHistory: Lightweight video history embeddings via two-stage context learning. In ECCV, 2026a.\n\nSongchun Zhang, Yaowei Li, Junhao Zhuang, Weiyang Jin, Haoyu Wang, Xin Lu, Yilang Sun, Shiyi Zhang, Haoran Li, Xiaoxiao Ma, et al. EchoWM: Open and entera",
+      "text_sha256": "eb7dee339094a4c98dce4d3c56de4b84b7db90563a1562320bd58cad08908aee"
+     },
+     {
+      "span_id": "A-page-0016",
+      "page": 16,
+      "location": "target PDF page 16",
+      "text": "810\n811\n812\n813\n814\n815\n816\n817\n818\n819\n820\n821\n822\n823\n824\n825\n826\n827\n828\n829\n830\n831\n832\n833\n834\n835\n836\n837\n838\n839\n840\n841\n842\n843\n844\n845\n846\n847\n848\n849\n850\n851\n852\n853\n854\n855\n856\n857\n858\n859\n860\n861\n862\n863\n\nTable 3: Data organization. We detail the data type, category, data source, clip counts, and their corresponding proportions in the training corpus.\n\n[tbl-2.html](tbl-2.html)\n\n![img-20.jpeg](img-20.jpeg)\n\nFigure 7: Overview of our interactive event dataset. The dataset encompasses three categories, including complex interaction, environmental transition, and object addition/removal. Left: The composition of the dataset. Right: Representative visual examples for each category.\n\nsubsequently stitched together by aligning metric scales using the overlapping windows. From the reconstructed camera poses, we derive frame-aligned action controls by decomposing the motion into discrete longitudinal and lateral translations alongside continuous pitch and yaw angles. Our internal gameplay recordings are captured under constant angular velocities per game. Leveraging this property, we compute the directional angular velocities offline for each game and adopt their empirical medians as the calibrated rotation rates along the corresponding axes.\n\nQuality Filtering.",
+      "text_sha256": "70f3190eeba4cb7eb3cfa2f03a9a7740d5a6446de5f171e0d3d5c851d8fc9a0a"
+     },
+     {
+      "span_id": "A-page-0018",
+      "page": 18,
+      "location": "target PDF page 18",
+      "text": "918\n919\n920\n921\n922\n923\n924\n925\n926\n927\n928\n929\n930\n931\n932\n933\n934\n935\n936\n937\n938\n939\n940\n941\n942\n943\n944\n945\n946\n947\n948\n949\n950\n951\n952\n953\n954\n955\n956\n957\n958\n959\n960\n961\n962\n963\n964\n965\n966\n967\n968\n969\n970\n971\n\nTable 4: Inference speed improvements from system optimizations. Latency is benchmarked as the average time per chunk across multiple generated chunks. Latency reductions are reported relative to the baseline.\n\n[tbl-3.html](tbl-3.html)\n\ntraining sequence is formulated over 16 target latents, i.e., 4 chunks, along with their corresponding memory context. To optimize AR training throughput, we pad the variable-length memory contexts to a uniform sequence length, which enables efficient kernel execution via FlexAttention (Dong et al., 2024). Furthermore, both bidirectional and AR models are trained using a progressive curriculum, increasing the maximum data length to facilitate smooth convergence. During Stable Forcing, we leverage the AR model as the student, distilling it into 4 steps under the supervision of the bidirectional teacher model. Specifically, the student model performs self-rollout over a horizon of 320 latents, which the teacher partitions into 10 clips to efficiently compute scores. To compute backward passes over these long-horizon seque",
+      "text_sha256": "d1a758a4a50ef5d2fc45fb6c527600b6cc72c8c9fd50c0ba6e427dee0ddb86d1"
+     },
+     {
+      "span_id": "A-page-0021",
+      "page": 21,
+      "location": "target PDF page 21",
+      "text": "1080\n1081\n1082\n1083\n1084\n1085\n1086\n1087\n1088\n1089\n1090\n1091\n1092\n1093\n1094\n1095\n1096\n1097\n1098\n1099\n1100\n1101\n1102\n1103\n1104\n1105\n1106\n1107\n1108\n1109\n1110\n1111\n1112\n1113\n1114\n1115\n1116\n1117\n1118\n1119\n1120\n1121\n1122\n1123\n1124\n1125\n1126\n1127\n1128\n1129\n1130\n1131\n1132\n1133\n\n![img-23.jpeg](img-23.jpeg)\n\nFigure 10: Qualitative visualizations on versatile controls. [NAME C16] supports a broad range of open-ended interactions, such as fine-grained hand-object manipulations (dexterous grasping and box opening), dynamic environmental transitions and anomaly events (weather shifts and explosion), and complex full-body interactions (getting in vehicles and riding animals).",
+      "text_sha256": "36093dbf064d34d9034a498bf90c0d02b710805e46aa4d13d6801fe11c5f9fdf"
+     },
+     {
+      "span_id": "A-page-0023",
+      "page": 23,
+      "location": "target PDF page 23",
+      "text": "1188\n1189\n1190\n1191\n1192\n1193\n1194\n1195\n1196\n1197\n1198\n1199\n1200\n1201\n1202\n1203\n1204\n1205\n1206\n1207\n1208\n1209\n1210\n1211\n1212\n1213\n1214\n1215\n1216\n1217\n1218\n1219\n1220\n1221\n1222\n1223\n1224\n1225\n1226\n1227\n1228\n1229\n1230\n1231\n1232\n1233\n1234\n1235\n1236\n1237\n1238\n1239\n1240\n1241\n\n![img-27.jpeg](img-27.jpeg)\n\n![img-28.jpeg](img-28.jpeg)\n\n![img-29.jpeg](img-29.jpeg)\n\nFigure 12: Qualitative visualizations on long-horizon consistency. Top: [NAME C16] maintains geometric consistency under compound navigation controls. Middle: It generates structurally plausible scene layouts and preserves spatial coherence over long horizons. Bottom: It preserves geometric consistency under 360° camera rotations.",
+      "text_sha256": "94f9ee5ea8896791738c9c290ed843356ae717dae236ee7872278ddf63c25b87"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-4ba253f4ef807c",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": null,
+      "text_sha256": "5640b1f274ef36cb5c68dc4155e1843ebcffaab4101110005d1573c99fbdd210",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-5d76b0eed17c36",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": null,
+      "text_sha256": "a753cfa657369cbd59d19561f5cd411b988564fbe026af5b9ced91df34c4e5cd",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-9fae1fb798a91c",
+      "page": 3,
+      "location": "B PDF page 3",
+      "text": null,
+      "text_sha256": "745271a886c6b1618b93a90b5b90e4d71e882a6c07a370dbd139ac51f6694326",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-138d4449a68aae",
+      "page": 4,
+      "location": "B PDF page 4",
+      "text": null,
+      "text_sha256": "5708be17e06f9ffd63a4a8580ca2d9a91cafa528158bb6803ea1f59d57817338",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-51ed2ab3f4235d",
+      "page": 8,
+      "location": "B PDF page 8",
+      "text": null,
+      "text_sha256": "38332645a68592d477dcbb29052a2e54678e949365a2855ec7866cbea2a3864d",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-ca35baf6ad940a",
+      "page": 15,
+      "location": "B PDF page 15",
+      "text": null,
+      "text_sha256": "a7d4455935e4591b13407ea189ebaaebff2170cac7f721ddd52adf69ce954b3d",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-ff3bb4ca587435",
+      "page": 21,
+      "location": "B PDF page 21",
+      "text": null,
+      "text_sha256": "58357d41917d071201c248379df77972f677303898a9e8062a7579cfc322a5eb",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-6a43bb9a02cf8c",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.25730#chars-2190-8461",
+      "text": null,
+      "text_sha256": "aef7fe5324fe9364296207f40d4f4cf3c99c58a6e4564715a3ca52252f09c036",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-4948d1fa5e4c07",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.25730#chars-252-349",
+      "text": null,
+      "text_sha256": "21da1603a45855da2cd1f41a83a4e5e266f2909aba7005f34f4d89c793f46949",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-a2eacf7361e7ce",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.25730#chars-349-2190",
+      "text": null,
+      "text_sha256": "64b442e9e8ce1e3440fbd02b1715bcd22e500c0f6e5e8bf598be371a2c015e57",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-bea9b489fa0bc7",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.25730#chars-46417-47000",
+      "text": null,
+      "text_sha256": "a99b50c493be66e02734f7e82f3f409ffc597f7d075ab7bd8c7173e7d907f0f2",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-55602195b43e72",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.25730#chars-51083-53957",
+      "text": null,
+      "text_sha256": "f74b2dd472054ffb04e7727b7db6c5d3009d18110001dac89ba8ba412056e447",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-b405372266a3c7",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.25730#chars-58578-59357",
+      "text": null,
+      "text_sha256": "5059fc5529365bba1e68b16ace8165e14af1235132a0109afcbf6d4473c7d471",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-1fc64619167fb1",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.25730#chars-8461-12512",
+      "text": null,
+      "text_sha256": "c131ba0bdd7b56fa98cdfba8a1d5a9d6776755bff123403707490715574d81fa",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     }
+    ]
+   }
+  },
+  {
+   "pair_id": "C16-P2",
+   "source_key": "arxiv-2604.03118",
+   "source_distribution": "link_only",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C16]\n\n## Anonymous authors\n\nPaper under double-blind review\n\n![img-0.jpeg](img-0.jpeg)\n\nFigure 1: [NAME C16] is a real-time interactive world model enabling versatile controls with long-horizon consistency. Top: It supports flexible interactions, including navigation controls and complex semantic events. Middle: It executes multi-turn interactions to achieve coherent storytelling. Bottom: It maintains long-horizon consistency under complex navigation controls.\n\n## ABSTRACT\n\nInteractive world models require responding in real time to versatile controls and maintaining long-horizon consistency. However, modeling heterogeneous controls remains difficult, while explosive contexts and unstable distillation impede achieving both long-horizon consistency and real-time responsiveness. In this paper, we present [NAME C16], an interactive world model that couples a factorized hybrid control interface with a co-design of compressed memory and stable distillation. 1) Our factorized hybrid control interface integrates frame-aligned action control with structured semantic control that explicitly disentangles scene appearance, character identity, and dynamic semantic events, thereby facilitating effectiv",
+      "text_sha256": "1edd1c6719878020b76a2f8b0420e96caf2d074f67dd9ad891ea8957311d855f"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\n# 1 INTRODUCTION\n\nInteractive world models (Parker-Holder et al., 2025; Sun et al., 2026; He et al., 2025; Team et al., 2026d; Alibaba, 2026; Hong et al., 2025; Xu et al., 2026; Jiang et al., 2026; Zhu et al., 2026a) are beginning to transform video generators (Wan et al., 2025; Wu et al., 2025; Deepmind, 2025) from passive content-creation systems into interactive environments that evolve in response to user input. Such models have the potential to serve as general-purpose simulators (Agarwal et al., 2026; Brooks et al., 2024), allowing users to explore, interact with, and reshape the generated environments while providing scalable data generators and policy evaluators for embodied agents (Wiedemer et al., 2025; Team et al., 2025). Realizing these applications requires world models to support versatile controls, preserve coherent world states over long horizons, and operate in real time.\n\nControllability represents a primary challenge for world models. Early efforts (Sun et al., 2026; He et al., 2025; Team et al., 2026d) focused on navigation-oriented",
+      "text_sha256": "4633c6042b930617328e7ca577dccc90f0d4f34c610fbadc5f15a8b544b70eda"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\nlong-horizon rollouts from gradient backpropagation. During the forward rollout phase, each chunk undergoes full few-step sampling to maintain fidelity and bolster stability. Meanwhile, a random intermediate step is recorded and replayed with gradients during the backward pass. Combining our initialization with full-rollout replay preserves rollout quality over long horizons, thereby achieving stable and robust distillation.\n\nTaken together, our model demonstrates remarkable generalization across different scenes and characters. As shown in Fig. 1, it not only supports versatile, multi-turn interactive controls, but also preserves geometric consistency over long horizons. Moreover, extensive quantitative and qualitative experiments validate the effectiveness of our methods, demonstrating superior performance compared to existing methods.\n\n## 2 RELATED WORK\n\nInteractive World Models. Interactive world models generate future visual frames conditioned on previous observations and current actions, enabling users or embodied agents to interact with the envi",
+      "text_sha256": "33ddf643a0b0e8b70106b48a8150f508d38f7a8c602972b4884f9da57e1f7288"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\n![img-1.jpeg](img-1.jpeg)\n\nFigure 2: Overview of [NAME C16]. We employ factorized hybrid control interface to decouple heterogeneous inputs into frame-aligned action control and structured semantic control, ensuring accurate interactive responses. Concurrently, a history compressor abstracts past contexts into compact memory tokens to achieve efficient long-horizon inference.\n\n### 3.1 FACTORIZED HYBRID CONTROL INTERFACE\n\nInteractive world models require versatile responsiveness to heterogeneous controls, which often exhibit varying levels of abstraction. Camera motion and character locomotion demand precise, frame-aligned signals, whereas complex interactions and content factors are more naturally expressed via high-level semantic instructions. Therefore, we propose a factorized hybrid control interface that disentangles low-level movements, high-level semantic interactions, and visual content factors. Specifically, each control signal is represented as $A_t = \\{a_t, d_t\\}$, where $a_t$ denotes frame-aligned action control and $d_t$ denotes structured ",
+      "text_sha256": "80e28461153b7ab1f9b89ea1ebf198f663e9dfaccd1e843ba95306a6d01bd6c1"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\nHong et al., 2025). However, this causes context length to scale linearly during autoregressive rollout, rapidly increasing inference latency and complicating long-horizon modeling. Moreover, this computational burden is further amplified during distillation, where the full-context bidirectional teacher is used to evaluate long student rollouts to provide supervision. To this end, we design a compressed memory mechanism inspired by Zhang et al. (2026a), shared across long-horizon modeling and distillation. This enables efficient context conditioning while keeping teacher evaluation during distillation computationally tractable.\n\nInstead of conditioning the model directly on the full-resolution contexts, we employ a learnable history compressor $\\mathcal{C}_{\\phi}$ to encode the history context into a compact sequence of memory tokens:\n\n$$m_{<t} = [x_{\\text{sink}}; x_{\\text{cmp}} = \\mathcal{C}_{\\phi}(x_{<t}, x_{<t}^{\\text{lr}}); x_{\\text{tmp}}], \\tag{4}$$\n\nwhere $[; ;]$ denotes sequence concatenation, $x_{\\text{sink}}$ denotes sink tokens providing a st",
+      "text_sha256": "c319c6c792ec3a472e14cb35f65538f6d80c0b987add457c20c15504987d7394"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\n![img-3.jpeg](img-3.jpeg)\n\nFigure 4: Overview of Stable Forcing. It integrates few-step initialization, full-rollout replay, and efficient score evaluation to achieve efficient and stable long-horizon distillation.\n\nadjacent intervals within a block in a single forward pass. The training objective is,\n\n$$\\mathcal{L}_{\\mathrm{PDD}} = \\mathbb{E}_{k \\in [0, C-1]} \\left\\| u_k - \\mathrm{sg}(N_\\theta(x_t^{\\sigma_k^i}, \\sigma_k^i, m_{<t}, A_{\\le t})) \\right\\|^2, \\tag{6}$$\n\nwhere $x_t^{\\sigma_k^i}$ is computed via parallel decoding sampling and $\\mathrm{sg}(\\cdot)$ denotes the stop-gradient operator. By predicting multiple consecutive denoising intervals in parallel, it reduces the number of network evaluations and provides a reliable few-step initialization to stabilize subsequent long-horizon distribution matching distillation.\n\n**Full-rollout Replay.** To further enhance the stability of distribution matching distillation, we decouple the rollout phase from gradient backpropagation. Specifically, during the rollout phase, each chunk performs full few-step s",
+      "text_sha256": "775c8b3d8a8c3f9a894a406cf53157822d04fe85d4380b53fb9b143a29fcff68"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\nTable 1: Quantitative comparisons. We benchmark our approach against recent interactive world models on both WBench and [NAME C16] to systematically evaluate controllability, long-horizon consistency, and visual fidelity. Abbreviations: Avg: Average, Qua: Quality, Set: Setting, Int: Interaction, Con: Consistency, Phy: Physical.\n\n[tbl-0.html](tbl-0.html)\n\n![img-4.jpeg](img-4.jpeg)\n\n![img-5.jpeg](img-5.jpeg)\n\n![img-6.jpeg](img-6.jpeg)\n\n![img-7.jpeg](img-7.jpeg)\n\n![img-8.jpeg](img-8.jpeg)\n\n![img-9.jpeg](img-9.jpeg)\n\n![img-10.jpeg](img-10.jpeg)\n\n![img-11.jpeg](img-11.jpeg)\n\n![img-12.jpeg](img-12.jpeg)\n\n![img-13.jpeg](img-13.jpeg)\n\n![img-14.jpeg](img-14.jpeg)\n\n![img-15.jpeg](img-15.jpeg)\n\n![img-16.jpeg](img-16.jpeg)\n\n![img-17.jpeg](img-17.jpeg)\n\n![img-18.jpeg](img-18.jpeg)\n\nFigure 5: Qualitative comparisons with existing methods. [NAME C16] supports versatile interactive events while demonstrating superior generalization across diverse characters and maintaining long-horizon geometric consistency.\n\nEvaluation Details. To assess controllability, consistenc",
+      "text_sha256": "5da179d3daeb7088b4863f6536cbf1a32af2e78b18571ba5aee16553661e767e"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "378\n379\n380\n381\n382\n383\n384\n385\n386\n387\n388\n389\n390\n391\n392\n393\n394\n395\n396\n397\n398\n399\n400\n401\n402\n403\n404\n405\n406\n407\n408\n409\n410\n411\n412\n413\n414\n415\n416\n417\n418\n419\n420\n421\n422\n423\n424\n425\n426\n427\n428\n429\n430\n431\n\nand our interactive event dataset as test cases, which are held out from training, to evaluate model responsiveness to diverse interactive events. We deploy a vision-language model (VLM) (Seed, 2025) as an automated evaluator to score instruction adherence and execution accuracy. We compare our approach against five interactive world models: WorldPlay (Sun et al., 2026), AlayaWorld (Team et al., 2026a), Lingbot-World-V2 (Gao et al., 2026), EchoWM (Zhang et al., 2026b), and Alaya-Evoke-Turbo (Yin et al., 2026).\n\n### 4.1 COMPARISONS WITH EXISTING METHODS\n\nQuantitative Results. Tab. 1 compares our method with five representative interactive world models on the navigation split of WBench and [NAME C16]. [NAME C16] achieves the highest overall average score of 83.1, surpassing the previous state-of-the-art baseline, Alaya-Evoke-Turbo (Yin et al., 2026), by 1.1 points. Notably, [NAME C16] demonstrates a pronounced advantage in Interaction and Consistency. This empirically validates that our factorized hybrid control interface, coupled with the co-design of",
+      "text_sha256": "9274c6dc9c381d5e8570b78941407819c8ef0a45e6b4e0a30d86112146dbb210"
+     },
+     {
+      "span_id": "A-page-0011",
+      "page": 11,
+      "location": "target PDF page 11",
+      "text": "540\n541\n542\n543\n544\n545\n546\n547\n548\n549\n550\n551\n552\n553\n554\n555\n556\n557\n558\n559\n560\n561\n562\n563\n564\n565\n566\n567\n568\n569\n570\n571\n572\n573\n574\n575\n576\n577\n578\n579\n580\n581\n582\n583\n584\n585\n586\n587\n588\n589\n590\n591\n592\n593\n\nYicong Hong, Yiqun Mei, Chongjian Ge, Yiran Xu, Yang Zhou, Sai Bi, Yannick Hold-Geoffroy, Mike Roberts, Matthew Fisher, Eli Shechtman, et al. RELIC: Interactive video world model with long-horizon memory. arXiv preprint arXiv:2512.04040, 2025.\n\nJiahui Huang, Qunjie Zhou, Hesam Rabeti, Aleksandr Korovko, Huan Ling, Xuanchi Ren, Tianchang Shen, Jun Gao, Dmitry Slepichev, Chen-Hsuan Lin, et al. ViPE: Video pose engine for 3d geometric perception. arXiv preprint arXiv:2508.10934, 2025.\n\nXun Huang, Zhengqi Li, Guande He, Mingyuan Zhou, and Eli Shechtman. Self Forcing: Bridging the train-test gap in autoregressive video diffusion. NeurIPS, 38:167283–167308, 2026.\n\nFan Jiang, Zhaoxu Sun, Mengchao Wang, Ziyu Zhu, Chiyu Wang, Yunpeng Zhang, Wenlin Liu, Yun Wang, Xue Zheng, Rui Sun, et al. ABot-World-0: Infinite interactive world rollout on a single desktop gpu. arXiv preprint arXiv:2607.19191, 2026.\n\nJiaqi Li, Junshu Tang, Zhiyong Xu, Longhuang Wu, Yuan Zhou, Shuai Shao, Tianbao Yu, Zhiguo Cao, and Qinglin Lu. Hunyuan-GameCraft: High-dynamic interactive game vi",
+      "text_sha256": "63cd832f76a63958b9065a2416d8ca3ecbea32ba07815d2f84cba62890cb09e0"
+     },
+     {
+      "span_id": "A-page-0013",
+      "page": 13,
+      "location": "target PDF page 13",
+      "text": "648\n649\n650\n651\n652\n653\n654\n655\n656\n657\n658\n659\n660\n661\n662\n663\n664\n665\n666\n667\n668\n669\n670\n671\n672\n673\n674\n675\n676\n677\n678\n679\n680\n681\n682\n683\n684\n685\n686\n687\n688\n689\n690\n691\n692\n693\n694\n695\n696\n697\n698\n699\n700\n701\n\nKaining Ying, Hengrui Hu, Siyu Ren, Jiamu Li, Fengjiao Chen, Ziwen Wang, Xuezhi Cao, Xunliang Cai, and Henghui Ding. WBench: A comprehensive multi-turn benchmark for interactive video world model evaluation. arXiv preprint arXiv:2605.25874, 2026.\n\nJiwen Yu, Jianhong Bai, Yiran Qin, Quande Liu, Xintao Wang, Pengfei Wan, Di Zhang, and Xihui Liu. Context as memory: Scene-consistent interactive long video generation with memory retrieval. In SIGGRAPH Asia, pp. 1–11, 2025.\n\nJintao Zhang, Haofeng Huang, Pengle Zhang, Jia Wei, Jun Zhu, and Jianfei Chen. SageAttention2: Efficient attention with thorough outlier smoothing and per-thread int4 quantization. arXiv preprint arXiv:2411.10958, 2024.\n\nLvmin Zhang, Shengqu Cai, Muyang Li, Chong Zeng, Beijia Lu, Anyi Rao, Song Han, Gordon Wetzstein, and Maneesh Agrawala. TinyHistory: Lightweight video history embeddings via two-stage context learning. In ECCV, 2026a.\n\nSongchun Zhang, Yaowei Li, Junhao Zhuang, Weiyang Jin, Haoyu Wang, Xin Lu, Yilang Sun, Shiyi Zhang, Haoran Li, Xiaoxiao Ma, et al. EchoWM: Open and entera",
+      "text_sha256": "eb7dee339094a4c98dce4d3c56de4b84b7db90563a1562320bd58cad08908aee"
+     },
+     {
+      "span_id": "A-page-0016",
+      "page": 16,
+      "location": "target PDF page 16",
+      "text": "810\n811\n812\n813\n814\n815\n816\n817\n818\n819\n820\n821\n822\n823\n824\n825\n826\n827\n828\n829\n830\n831\n832\n833\n834\n835\n836\n837\n838\n839\n840\n841\n842\n843\n844\n845\n846\n847\n848\n849\n850\n851\n852\n853\n854\n855\n856\n857\n858\n859\n860\n861\n862\n863\n\nTable 3: Data organization. We detail the data type, category, data source, clip counts, and their corresponding proportions in the training corpus.\n\n[tbl-2.html](tbl-2.html)\n\n![img-20.jpeg](img-20.jpeg)\n\nFigure 7: Overview of our interactive event dataset. The dataset encompasses three categories, including complex interaction, environmental transition, and object addition/removal. Left: The composition of the dataset. Right: Representative visual examples for each category.\n\nsubsequently stitched together by aligning metric scales using the overlapping windows. From the reconstructed camera poses, we derive frame-aligned action controls by decomposing the motion into discrete longitudinal and lateral translations alongside continuous pitch and yaw angles. Our internal gameplay recordings are captured under constant angular velocities per game. Leveraging this property, we compute the directional angular velocities offline for each game and adopt their empirical medians as the calibrated rotation rates along the corresponding axes.\n\nQuality Filtering.",
+      "text_sha256": "70f3190eeba4cb7eb3cfa2f03a9a7740d5a6446de5f171e0d3d5c851d8fc9a0a"
+     },
+     {
+      "span_id": "A-page-0018",
+      "page": 18,
+      "location": "target PDF page 18",
+      "text": "918\n919\n920\n921\n922\n923\n924\n925\n926\n927\n928\n929\n930\n931\n932\n933\n934\n935\n936\n937\n938\n939\n940\n941\n942\n943\n944\n945\n946\n947\n948\n949\n950\n951\n952\n953\n954\n955\n956\n957\n958\n959\n960\n961\n962\n963\n964\n965\n966\n967\n968\n969\n970\n971\n\nTable 4: Inference speed improvements from system optimizations. Latency is benchmarked as the average time per chunk across multiple generated chunks. Latency reductions are reported relative to the baseline.\n\n[tbl-3.html](tbl-3.html)\n\ntraining sequence is formulated over 16 target latents, i.e., 4 chunks, along with their corresponding memory context. To optimize AR training throughput, we pad the variable-length memory contexts to a uniform sequence length, which enables efficient kernel execution via FlexAttention (Dong et al., 2024). Furthermore, both bidirectional and AR models are trained using a progressive curriculum, increasing the maximum data length to facilitate smooth convergence. During Stable Forcing, we leverage the AR model as the student, distilling it into 4 steps under the supervision of the bidirectional teacher model. Specifically, the student model performs self-rollout over a horizon of 320 latents, which the teacher partitions into 10 clips to efficiently compute scores. To compute backward passes over these long-horizon seque",
+      "text_sha256": "d1a758a4a50ef5d2fc45fb6c527600b6cc72c8c9fd50c0ba6e427dee0ddb86d1"
+     },
+     {
+      "span_id": "A-page-0021",
+      "page": 21,
+      "location": "target PDF page 21",
+      "text": "1080\n1081\n1082\n1083\n1084\n1085\n1086\n1087\n1088\n1089\n1090\n1091\n1092\n1093\n1094\n1095\n1096\n1097\n1098\n1099\n1100\n1101\n1102\n1103\n1104\n1105\n1106\n1107\n1108\n1109\n1110\n1111\n1112\n1113\n1114\n1115\n1116\n1117\n1118\n1119\n1120\n1121\n1122\n1123\n1124\n1125\n1126\n1127\n1128\n1129\n1130\n1131\n1132\n1133\n\n![img-23.jpeg](img-23.jpeg)\n\nFigure 10: Qualitative visualizations on versatile controls. [NAME C16] supports a broad range of open-ended interactions, such as fine-grained hand-object manipulations (dexterous grasping and box opening), dynamic environmental transitions and anomaly events (weather shifts and explosion), and complex full-body interactions (getting in vehicles and riding animals).",
+      "text_sha256": "36093dbf064d34d9034a498bf90c0d02b710805e46aa4d13d6801fe11c5f9fdf"
+     },
+     {
+      "span_id": "A-page-0023",
+      "page": 23,
+      "location": "target PDF page 23",
+      "text": "1188\n1189\n1190\n1191\n1192\n1193\n1194\n1195\n1196\n1197\n1198\n1199\n1200\n1201\n1202\n1203\n1204\n1205\n1206\n1207\n1208\n1209\n1210\n1211\n1212\n1213\n1214\n1215\n1216\n1217\n1218\n1219\n1220\n1221\n1222\n1223\n1224\n1225\n1226\n1227\n1228\n1229\n1230\n1231\n1232\n1233\n1234\n1235\n1236\n1237\n1238\n1239\n1240\n1241\n\n![img-27.jpeg](img-27.jpeg)\n\n![img-28.jpeg](img-28.jpeg)\n\n![img-29.jpeg](img-29.jpeg)\n\nFigure 12: Qualitative visualizations on long-horizon consistency. Top: [NAME C16] maintains geometric consistency under compound navigation controls. Middle: It generates structurally plausible scene layouts and preserves spatial coherence over long horizons. Bottom: It preserves geometric consistency under 360° camera rotations.",
+      "text_sha256": "94f9ee5ea8896791738c9c290ed843356ae717dae236ee7872278ddf63c25b87"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-c73ebc5c1c549f",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": null,
+      "text_sha256": "aace076c864b5e6f2a39ea50a2eeaffcb241db628423e469b0e06f6bf250b12f",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-e556de5f70a5d1",
+      "page": 4,
+      "location": "B PDF page 4",
+      "text": null,
+      "text_sha256": "1acbad49202526bd65b4158ec6be63f4f565941f3c13a523e1a9171f4b1d40bb",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-07499fb883ef78",
+      "page": 7,
+      "location": "B PDF page 7",
+      "text": null,
+      "text_sha256": "637b2d55900bd0cb84e5f4cadc41e4f151b59e29fdf1a625239843dd1b3a224c",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-86354c4fc9bff1",
+      "page": 13,
+      "location": "B PDF page 13",
+      "text": null,
+      "text_sha256": "8ef6ff9bb6fad2fc6a9cf5ab992d1db6d32d904cfa1858b06a9d96304e6a5ec6",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-c697ed3a1451d1",
+      "page": 25,
+      "location": "B PDF page 25",
+      "text": null,
+      "text_sha256": "a3dcb85e4c99e88f22ce44c5d93bf391f610af6569f768616c373c30340a9035",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-09915109ee8181",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.03118v1#chars-14935-23707",
+      "text": null,
+      "text_sha256": "b11dc0deaab32075c5908d12816118513163076b668cd2bfbc380e00543099e1",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-2cccb200893e33",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.03118v1#chars-1786-8894",
+      "text": null,
+      "text_sha256": "742f5e3409f3d8acab543d6dfdb70658fc3392af2f6a56e13980001c219077c2",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-a2b2c30ff2943a",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.03118v1#chars-23707-29813",
+      "text": null,
+      "text_sha256": "d743da449d637b696c52650d9134dff9976ddc05d75ef8c5798c6712920a827c",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-c9d8ec7c427193",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.03118v1#chars-308-1768",
+      "text": null,
+      "text_sha256": "f8e5a09fd08eebbf6d7b725fedce0c502d4043b8a01f2b6a1e9d6a442ab9d662",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-b36a35a37f45e1",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.03118v1#chars-31816-35817",
+      "text": null,
+      "text_sha256": "0bcb150efc0b9897c8fa627886349299015f9bed0848014eddc7ee3a5a0f15be",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-4b545abe7114e3",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.03118v1#chars-45688-45703",
+      "text": null,
+      "text_sha256": "65b72d86eeeb214ab8ca5fd24cb7cd7773e58084e95b670040df03e21e8c6fa7",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-7c92524669483d",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.03118v1#chars-47368-48189",
+      "text": null,
+      "text_sha256": "a4cc82c7d7665ba363f5cc1bed0987a536f5235dd7be4378e7553376a04b6d66",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-6963604b7d56c1",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.03118v1#chars-50560-53734",
+      "text": null,
+      "text_sha256": "693a44481d9230d552e95fa5ce1818c0e4873f420ec340e07101bb2ebd263801",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-72889917bbf543",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.03118v1#chars-8894-11967",
+      "text": null,
+      "text_sha256": "ed3e19d5bc5dba390efc681a8c5750c829dbb310cd8873855baaf961f626d63b",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     }
+    ]
+   }
+  }
+ ],
+ "note": "Target spans are anonymized excerpts of the target text; page numbers refer to the original target PDF, which is not distributed."
+}

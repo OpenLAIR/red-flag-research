@@ -1,0 +1,434 @@
+{
+ "case_id": "C07",
+ "pairs": [
+  {
+   "pair_id": "C07-P1",
+   "source_key": "arxiv-2604.16079",
+   "source_distribution": "included",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "000\n001\n002\n003\n004\n005\n006\n007\n008\n009\n010\n011\n012\n013\n014\n015\n016\n017\n018\n019\n020\n021\n022\n023\n024\n025\n026\n027\n028\n029\n030\n031\n032\n033\n034\n035\n036\n037\n038\n039\n040\n041\n042\n043\n044\n045\n046\n047\n048\n049\n050\n051\n052\n053\n\n# [TITLE C07]\n\n## Anonymous authors\n\nPaper under double-blind review\n\nA person picks up a long box from the ground with both hands, and then rotates it back and forth while walking around.\n\n![img-0.jpeg](img-0.jpeg)\n\nA person holds a large box with both hands, and puts the large box on the ground.\n\nPull the clothesstand, and set it back down.\n\nFigure 1: Given a textual prompt and a requested duration, [NAME C07] jointly generates coherent human and object motions as a variable-length human–object interaction (HOI) sequence.\n\n## ABSTRACT\n\nText-conditioned 3D human-object interaction (HOI) generation remains challenging because individually plausible human and object motions do not necessarily form a coherent interaction. We argue that a key limitation lies in conventional skeleton-based representations, which compactly describe body kinematics while leaving surface-level interaction geometry largely implicit, often requiring additional contact-specific regularizers. We propose [NAME C07], a framework that explicitly m",
+      "text_sha256": "19d579467255ef423d6001b0bc169c01827ed413cb53076221bc083433262024"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\n# 1 INTRODUCTION\n\nText-conditioned 3D human–object interaction (HOI) generation aims to synthesize human motion and object dynamics from a language description and has attracted increasing attention (Li et al., 2024; Cha et al., 2024; Peng et al., 2025; Xu et al., 2024; Wang et al., 2026b). In particular, generating one interaction counterpart, as demonstrated by OMOMO (Li et al., 2023) and DAViD (Kim et al., 2025), has shown promising results. However, joint generation of plausible human and object motions remains challenging and relatively underexplored. Since individual plausibility does not ensure interaction coherence, simply combining the generated object and human motion trajectories may exhibit spatial misalignment or frequent interpenetration, which we define as a lack of coordination.\n\nOne straightforward way to improve generation coordination is to impose hand-crafted rules or kinematic constraints (Diller & Dai, 2024; Li et al., 2024; Peng et al., 2025). Although such regularization promotes physical consistency, such formulations often dep",
+      "text_sha256": "eb2fcffbc8769dada10553b71ed2108a0422694b67b6f831e0985876cd04ad2e"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\nExtensive experiments demonstrate that [NAME C07] consistently outperforms prior methods in overall generation quality and human-object coordination. These advantages remain evident in long-horizon generation, where [NAME C07] preserves coherent interactions as the requested duration extends beyond the fixed training window. Our contributions are as follows:\n\n- We propose [NAME C07], a unified latent framework for text-conditioned HOI generation at any requested duration. By explicitly modeling continuous human-object geometry, [NAME C07] learns coordinated dynamics directly from data without contact-specific regularization or heuristic interaction designs.\n- We introduce a Mixture-of-Transformers (MoT) autoencoder that jointly encodes human, object, and relation modalities via modality-specific transformations and relation-aware decoding.\n- We design a blockwise Flow Forcing scheme to align finite-window training with progressive rollout, enabling stable HOI generation beyond the training horizon.\n\n## 2 RELATED WORK\n\nGenerative modeling for HOI. Recent HOI genera",
+      "text_sha256": "d3797124b34f0e41d57804d5448defbe6431cd2e9bead3ce6dcf21299689a46b"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\n![img-1.jpeg](img-1.jpeg)\n\nFigure 2: Overview of [NAME C07]. Left: Unified latent modeling. The query-based MoT autoencoder jointly encodes and reconstructs human, object, and relation streams in a structured latent space. Right: Conditional generation. A conditional latent DiT uses independently sampled blockwise flow times and sliding-window inference to support generation at any requested duration.\n\nhuman–object relations in the latent space enables joint learning of individual dynamics and geometric coordination, which addresses interaction inconsistencies by using relational cues to guide the reconstruction of both trajectories.\n\nVariable-length generation. Prior work has explored variable-length synthesis in human motion (Barquero et al., 2024; Han et al., 2024; Xiao et al., 2025; Zhuo et al., 2025) and video generation (Song et al., 2025; Cai et al., 2026). Such flexibility is also important for HOI, since even the same interaction can be performed over different durations. However, extending an interaction requires human and object motion to remai",
+      "text_sha256": "a95eeebadd6281af48b6898a56e25a216cb3a714edb8abb0b9344cc6d0f82bd6"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\nSince instantaneous proximity alone cannot describe how an interaction evolves, we further characterize the first- and second-order temporal variations of the offset by $\\nabla\\delta_{t,j}$ and $\\nabla^{2}\\delta_{t,j}$, respectively. To retain information about where the interaction occurs on the object, we also express the corresponding nearest surface point in the canonical object frame as $\\bar{s}_{t,j}^{O}$. Together, these quantities define the local relation feature:\n\n$$\\boldsymbol{r}_{t,j} = \\left(\\boldsymbol{\\delta}_{t,j}, d_{t,j}, \\nabla\\boldsymbol{\\delta}_{t,j}, \\nabla^{2}\\boldsymbol{\\delta}_{t,j}, \\bar{\\boldsymbol{s}}_{t,j}^{O}\\right). \\tag{2}$$\n\nTo also capture the object's relation to the supporting surface, we apply the same construction to the object-ground pair. Here, $\\boldsymbol{q}_{t}^{\\mathrm{gnd}} = \\Pi_{\\mathrm{gnd}}(\\boldsymbol{p}_{t}^{O})$ denotes the projection of the object center onto the ground plane, while $\\boldsymbol{r}_{t}^{\\mathrm{gnd}}$ follows the relation definition in Eq. 2. Collecting the marker-object and object-g",
+      "text_sha256": "dd12747ee40ce9b7d6c50b410108e0ab2e9a25e12f55e2bf035a92c42dcb224b"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\nfield with a DiT (Peebles & Xie, 2023). As shown in the right part of Fig. 2, the model predicts the latent velocity as\n\n$$v_\\psi(Z_\\tau, \\tau \\mid c, G, p) = \\mathcal{F}_\\psi(Z_\\tau; c, G, \\tau, p), \\tag{5}$$\n\nwhere $\\tau$ specifies the flow-time assignment of each latent token. During long-horizon rollout, fixed-length training windows may correspond to different stages of the complete interaction, creating inconsistent temporal context between training and inference. Accordingly, we introduce a normalized sequence-progress condition $p \\in [0, 1]$ to specify the global position of the current window within the requested duration. By using the same progress definition during training and inference, the model retains consistent sequence-level temporal context throughout generation.\n\n**Training schedule.** To learn variable-length continuation from fixed-length training windows, we introduce a blockwise forcing schedule for Flow Matching. Unlike Diffusion Forcing (Chen et al., 2024), which assigns noise levels at the token level, our schedule assigns e",
+      "text_sha256": "ec6957e149be473a84d75095df322d1a4254885cffea3fc9c53c8349d845af2d"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\n(a) A person lifts a suitcase from the ground with their right hand, takes a few steps, sets the suitcase down to let it slide left and right, and then releases it.\n\n![img-2.jpeg](img-2.jpeg)\n\n(b) A person puts a large box on the ground with their left hand, moves the large box with their right foot, walks to the other side of the large box, and moves the large box with their right foot.\n\n![img-3.jpeg](img-3.jpeg)\n\nFigure 3: Qualitative comparison of variable-length generation with prior works. [NAME C07] preserves coherent interaction beyond fixed generation windows.\n\nTable 1: Quantitative comparison of generation quality on the InterAct dataset (Xu et al., 2025).\n\n[tbl-0.html](tbl-0.html)\n\n2021). We adopt this marker representation to construct the continuous human-object relations used throughout our model. We follow the official data split for training and evaluation and sample masked 128-frame windows from the interaction sequences during training.\n\nMetrics. Following standard practice in text-to-motion generation (Guo et al., 2022), we evaluate gene",
+      "text_sha256": "4bd490f7f5808af85d3e7b24747897b1cc4aaa15864d5f20d90f4713a00bcc8a"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "Table 2: Quantitative comparison of long-horizon generation on the InterAct dataset (Xu et al., 2025). The two column groups are computed over non-overlapping 128-frame subsequences and 64-frame windows centered at continuation boundaries, respectively.\n\n[tbl-1.html](tbl-1.html)\n\nTable 3: Quantitative comparison of motion stability on the InterAct dataset (Xu et al., 2025). Jerk is reported in cm/frame \\( ^{4} \\) .\n\n[tbl-2.html](tbl-2.html)\n\nTable 4: Quantitative comparison of physical plausibility on the InterAct dataset (Xu et al., 2025). Body-object penetration depths are reported in cm.\n\n[tbl-3.html](tbl-3.html)\n\nGeneration quality. We compare [NAME C07] against prior methods to evaluate the overall quality of generated interactions. Table 1 shows that [NAME C07] surpasses the baseline approaches across most metrics while retaining diversity close to real interactions, which suggests that our unified modeling jointly harvests motion realism, text–interaction alignment, and generative variation. Using the same model and protocol without subset-specific fine-tuning, results on BEHAVE (Bhatnagar et al., 2022) and OMOMO (Li et al., 2023) in Table B exhibit the same trend.\n\nPhysical coordination. We then evaluate in Table 3 physical coordination through motion stability, ",
+      "text_sha256": "c997b19b1c21c12a54aea54c5a66496b0dfc205fa6c70d10c491a8eca2ca3d81"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n## AI USE STATEMENT\n\nWe use ChatGPT and OpenAI Codex to assist with the refinement of some internal module designs, parts of the implementation, literature search and summarization, and language polishing. The core research idea, overall architecture, experimental design and evaluation protocols, result interpretation, dataset processing, qualitative analysis, and mathematical formulation are developed and conducted by the authors without generative AI assistance. All AI-assisted design suggestions, code, and literature references are independently reviewed and verified by the authors, who take full responsibility for the final content of the paper and associated artifacts.\n\n## ETHICS STATEMENT\n\nThis work uses existing HOI datasets and does not involve the collection of new human-subject data. The generated outputs are represented using abstract body-surface markers and rigid-object geometry rather than identifiable visual appearance or biometric information. Nevertheless, realistic HOI synthesis could potentially be used to produce misleading syntheti",
+      "text_sha256": "81036ec98198ab42f3bc45b4f27cc74831e951a8006a1b4751da2d89e3430ff7"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nDantong Niu, Zhuoyang Liu, Zekai Wang, Boning Shao, Zhao-Heng Yin, Anirudh Pai, Yuvan Sharma, Stefano Saravalle, Ruijie Zheng, Jing Wang, et al. T-rex: Tactile-reactive dexterous manipulation. arXiv preprint arXiv:2606.17055, 2026.\n\nWilliam Peebles and Saining Xie. Scalable diffusion models with transformers. In 2023 IEEE/CVF International Conference on Computer Vision (ICCV), pp. 4172–4182. IEEE, 2023.\n\nXiaogang Peng, Yiming Xie, Zizhao Wu, Varun Jampani, Deqing Sun, and Huaizu Jiang. Hoi-diff: Text-driven synthesis of 3d human-object interactions using diffusion models. In 2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPRW), pp. 2869–2879. IEEE, 2025.\n\nMathis Petrovich, Michael J. Black, and Gül Varol. Action-conditioned 3d human motion synthesis with transformer VAE. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pp. 10985–10995, 2021.\n\nMathis Petrovich, Michael J. Black, and Gül Varol. TEMOS: Generating diverse human motions from textual descriptions. In European Conference on Computer ",
+      "text_sha256": "50d31bcfba3e40d898e8c5511e659976f04fbc48d73ea0c09b3ffbb4fd5d182f"
+     },
+     {
+      "span_id": "A-page-0014",
+      "page": 14,
+      "location": "target PDF page 14",
+      "text": "702\n703\n704\n705\n706\n707\n708\n709\n710\n711\n712\n713\n714\n715\n716\n717\n718\n719\n720\n721\n722\n723\n724\n725\n726\n727\n728\n729\n730\n731\n732\n733\n734\n735\n736\n737\n738\n739\n740\n741\n742\n743\n744\n745\n746\n747\n748\n749\n750\n751\n752\n753\n754\n755\n\n# A SUPPLEMENTARY METHOD DETAILS\n\n## A.1 STRUCTURED AUTOENCODER\n\n**Token construction.** Considering that the marker-level human and relation fields are substantially denser than the rigid-object state, we first reduce them to comparable token sets without removing their spatial organization. At each frame, eight learned body-region queries aggregate the 77 surface markers, while separate root and foot tokens retain global translation and support information. This construction yields 11 human tokens per frame. Given the rigid structure of the object, we use one dynamic pose token per frame and four static geometry tokens obtained from its Basis Point Set (BPS) descriptor (Prokudin et al., 2019). To preserve the correspondence between motion and relation features, eight relation queries aggregate marker-level relations and two additional tokens retain the object–ground and root–object relations, yielding 10 relation tokens per frame. Finally, learned identity encodings distinguish marker regions, relation types, entities, and modalities, while marker-to",
+      "text_sha256": "a80d6385e65e1bfb71fcec108eaace14573dd63fdd8e9b22338d5a81aa32def5"
+     },
+     {
+      "span_id": "A-page-0017",
+      "page": 17,
+      "location": "target PDF page 17",
+      "text": "864\n865\n866\n867\n868\n869\n870\n871\n872\n873\n874\n875\n876\n877\n878\n879\n880\n881\n882\n883\n884\n885\n886\n887\n888\n889\n890\n891\n892\n893\n894\n895\n896\n897\n898\n899\n900\n901\n902\n903\n904\n905\n906\n907\n908\n909\n910\n911\n912\n913\n914\n915\n916\n917\n\ntransform with $\\epsilon = 10^{-6}$. The noise-robust decoder is then fine-tuned for an additional 30,000 steps, with 500 warm-up steps and cosine decay from $2 \\times 10^{-5}$ to $5 \\times 10^{-6}$. Both phases use a per-GPU batch size of 6 without gradient accumulation on three NVIDIA GeForce RTX 5080 GPUs, giving an effective batch size of 18. The ZCA transform and decoder fine-tuning are initialized from the final autoencoder checkpoint. We retain the decoder checkpoint with the lowest validation reconstruction drift under latent perturbations of $\\sigma = 0.125$.\n\nConditional-flow configuration. The conditional flow model uses width 384, 12 layers, and six attention heads. To learn the velocity field, we optimize it for 110,000 steps with AdamW $(\\beta_1, \\beta_2) = (0.9, 0.95)$, weight decay $10^{-2}$, and learning rate $10^{-4}$. The learning rate increases linearly during the first 2,000 steps, remains constant through step 100,000, and follows a cosine decay to $10^{-5}$ over the final 10,000 steps. We maintain an exponential moving average of",
+      "text_sha256": "0e50843ae63664acb930af768cc5ac1646d38c36440960deaae8d824773b8f04"
+     },
+     {
+      "span_id": "A-page-0019",
+      "page": 19,
+      "location": "target PDF page 19",
+      "text": "Table A: Quantitative comparison of inference efficiency across requested sequence lengths on the InterAct dataset (Xu et al., 2025). Runtime and peak memory are measured on one NVIDIA GeForce RTX 5080.\n\n[tbl-5.html](tbl-5.html)\n\nTable B: Quantitative comparison of generation quality on the BEHAVE (Bhatnagar et al., 2022) and OMOMO (Li et al., 2023) subsets of the InterAct dataset with prior works.\n\n[tbl-6.html](tbl-6.html)\n\nquality while remaining competitive in text–interaction alignment and diversity. Since both subsets use the same trained model and evaluator, the resulting pattern is not tied to the aggregate composition of the full benchmark.\n\n### C.2 ABLATION STUDIES\n\nReconstruction fidelity. To test whether relation modeling consumes capacity needed for human and object reconstruction, we compare autoencoders with nearly matched parameter counts in Table 5. The complete model retains marker and object errors comparable to the variant without the relation branch, indicating that explicit relation modeling does not materially compromise reconstruction. In contrast, replacing MoT with a flat Transformer substantially worsens both, despite a similar parameter budget.\n\nLatent utilization. Prior work indicates that latent organization and utilization, beyond reco",
+      "text_sha256": "cbcdeda15454cb57554532225eb140d96bd966f33291c0fcc59a9c96e8d83857"
+     },
+     {
+      "span_id": "A-page-0021",
+      "page": 21,
+      "location": "target PDF page 21",
+      "text": "1080\n1081\n1082\n1083\n1084\n1085\n1086\n1087\n1088\n1089\n1090\n1091\n1092\n1093\n1094\n1095\n1096\n1097\n1098\n1099\n1100\n1101\n1102\n1103\n1104\n1105\n1106\n1107\n1108\n1109\n1110\n1111\n1112\n1113\n1114\n1115\n1116\n1117\n1118\n1119\n1120\n1121\n1122\n1123\n1124\n1125\n1126\n1127\n1128\n1129\n1130\n1131\n1132\n1133\n\nTable F: Quantitative comparison of latent autoencoder variants on the BEHAVE (Bhatnagar et al., 2022) and OMOMO (Li et al., 2023) subsets of the InterAct dataset.\n\n[tbl-10.html](tbl-10.html)\n\nTable G: Quantitative comparison of physical coordination for the relation-pathway ablation on the InterAct dataset (Xu et al., 2025). Contact metrics use a 2-cm threshold, and unsupported travel is the fraction of object displacement occurring without body contact at either endpoint.\n\n[tbl-11.html](tbl-11.html)\n\nEffect of the relation pathway on physical coordination. To directly assess whether relation modeling improves coordination rather than only feature-space generation quality, we compare the complete model with the existing ablation that removes relation tokenization, relation reconstruction, and relation-coupled readout together. Table G uses 1,189 conditions shared by both variants for contact-based metrics and a fixed common subset of 125 sequences with valid object meshes for penetration. The compl",
+      "text_sha256": "498975f1e2fd661500e3e6b6c0f33911146f670c03b7f5ef5b8c3e6c7826dec4"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-d892398fb556a7",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": "arXiv:2604.16079v2 [cs.CV] 21 Apr 2026\n\n# The Amazing Stability of Flow Matching\n\nRania Briq \\( ^{1,2} \\)\n\nr.briq@fz-juelich.de\n\nMichael Kamp \\( ^{2,3,4} \\)\n\nOhad Fried \\( ^{5} \\)\n\nSarel Cohen \\( ^{5} \\)\n\nStefan Kesselheim \\( ^{1,6,7} \\)\n\n\\( ^{1} \\) Forschungszentrum Jülich\n\n\\( ^{2} \\) TU Dortmund\n\n\\( ^{3} \\) Lamarr Institute\n\n\\( ^{4} \\) Institute for AI in Medicine, UK Essen\n\n\\( ^{5} \\) Reichman University\n\n\\( ^{6} \\) Helmholtz AI\n\n\\( ^{7} \\) University of Cologne\n\n## Abstract\n\nThe success of deep generative models in generating high-quality and diverse samples is often attributed to particular architectures and large training datasets. In this paper, we investigate the impact of these factors on the quality and diversity of samples generated by flow-matching models. Surprisingly, in our experiments on CelebA-HQ dataset, flow matching remains stable even when pruning 50% of the dataset. That is, the quality and diversity of generated samples are preserved. Moreover, pruning impacts the latent representation only slightly, that is, samples generated by models trained on the full and pruned dataset map to visually similar outputs for a given seed. We observe similar stability when changing the architecture or training configuration, such that the latent representati",
+      "text_sha256": "4c83b5b3f5a260d964dd69c9c10749328030d3e0489c2d9133244fb6dbfc552c"
+     },
+     {
+      "span_id": "B-ocr-5a83dd38f6d79a",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": "not shown for FM models, nor was it shown how this invariance can be exploited to train diffusion models on less data. Furthermore, in diffusion models, the objective is related to entropic-transport optimization (Schrödinger bridge) [6], which is stable to data perturbations [11]. By contrast, the flow-matching objective fits a velocity field $u(x, t)$, whose ODE transports noisy latents towards a clean manifold. While diffusion's stability is theoretically grounded, the behavior of FM models under data and architectural perturbations remains largely underexplored.\n\nWe empirically analyze the behavior of FM models trained on subsets of data and with different architectures.\n\nWe summarize our contributions as follows:\n\n- We show that FM models are remarkably stable. The generated images are visually similar under a wide variety of perturbations, including training on disjoint subsets of the dataset, swapping of the entire dataset, as well as model architecture shrinkage. Each perturbation affects the generated data semantically only minimally.\n- Inspired by previous work in discriminative models, we introduce three informed data pruning methods to FM models and study their influence qualitatively and quantitatively.\n- Our proposed cluster-based resampling method th",
+      "text_sha256": "0dd5617aef486e325840c6bccd690d889fb84d9fd08076802dac1a7fb8487ede"
+     },
+     {
+      "span_id": "B-ocr-cc84c7f6f9a028",
+      "page": 3,
+      "location": "B PDF page 3",
+      "text": "nearest to its center or furthest. The nearest samples form a representative subset retaining the core characteristics of the distribution, while the furthest samples cover more difficult and scarce samples. We refer to these variants as  \\( Clust_{p/b}^{1/-1} \\) , indicating nearest/furthest and proportional/balanced. In our experiments, we choose k = 24 based on analysis of the clusters' inertia.\n\n## 3 Experiments\n\n![img-0.jpeg](img-0.jpeg)\n\n(a) Two disjoint random subsets\n\n![img-1.jpeg](img-1.jpeg)\n\n(b) DiT-XL/4 → DiT-S/2 → U-Net\n\n![img-2.jpeg](img-2.jpeg)\n\n(c) Both genders/Female/Male\n\n![img-3.jpeg](img-3.jpeg)\n\n(d) CelebHQ → FFHQ\n\nFigure 1: Stability of the generated images. (a) We train the model on two disjoint random subsets of the data, and obtain visually very similar images. (b) Model capacity change from DiT-XL to DiT-S retains high similarity, while switching to a U-Net architecture retains similarity to a lesser degree. (c) The data is split into two sets based on zero-shot binary classification of gender (male/female): Images we visually interpret as belonging to the retained partition are semantically preserved, while images of the complementary class swap the semantic interpretation. (d) Changing the training dataset from CelebHQ to FFHQ, while sti",
+      "text_sha256": "a74183f2aa5dd99c5aaf57c0119a7f8bd4ebe0edd98c0259ad27331c14638539"
+     },
+     {
+      "span_id": "B-ocr-fe0f5dce4a7f91",
+      "page": 4,
+      "location": "B PDF page 4",
+      "text": "ArcFace pairwise cosine similarity for faces [7], a standard embedding model for face identification. Unpruned refers to the model trained on the full dataset. N = 4096 denotes the number of generated samples. All experiments are carried out by training the respective models on the standard CelebHQ dataset [16], which is based on CelebA dataset [21]. We acknowledge the imbalance in the dataset, which can affect qualitative judgments and subgroups performance. We further emphasize that features and attributes of human faces are subjective. All reported images are chosen from the same sequence of random  \\( x_{0} \\sim \\mathcal{N}(0, I) \\) . The images were not hand-picked; we only selected a range inside a longer sequence.\n\n### Stability tests\n\nWe investigate FM stability using several stress tests, including substantial data perturbation through pruning and data swapping, and architectural changes either in the model capacity or architecture design.\n\nDisjoint subsets. In Fig. 1a, we train two FM model instances on two disjoint random subsets of the data. When integrating the velocity field starting from the same random points \\( x_0 \\), we observe that the outputs are nearly identical. We quantify this consistency using ArcFace pairwise similarity, and obtain \\( sim",
+      "text_sha256": "5c98b9fd0c7233bb7f955ee0541580ec818a06415f10ce34b40e701a2c9fae45"
+     },
+     {
+      "span_id": "B-ocr-2cd6ea2c781be3",
+      "page": 5,
+      "location": "B PDF page 5",
+      "text": "results in table 1a. Random's FID deteriorates slightly from Unpruned. Using Grad almost does not change the FID, while its inverse (selecting lowest-grad samples) deteriorates significantly, as expected when dropping samples most influencing the model's weights. Selecting the highest-loss samples (Loss) substantially worsens the FID, compared to discriminative models [24]. In FM, these samples' predicted velocity fields deviate from the target flow, which is typical of samples present in low-density regions. Increasing these samples' representation therefore would lead to adversely impacting the flow. This explains why \\( Loss^{-1} \\) has the opposite effect. \\( Clust_b \\) even improves the FID, thanks to its uniform coverage across clusters, indicating that performance does not only depend on the sheer amount of data, but also on how balanced the data is. Across pruned variants versus their inverse, we obtain ArcFace cosine similarity in the range \\( 0.72 - 0.74 \\pm 0.13 \\), compared to \\( 0.37 \\pm 0.11 \\) for randomly shuffled pairs, indicating that matched outputs remain much closer than unmatched ones even when the training subsets are disjoint.\n\nIn table 1b, we quantify the stability of FM by comparing each pruned variant with Unpruned. We compare N = 4096 pa",
+      "text_sha256": "e44ec876eac000bfe0f731b6cfed776b7d42fcbdfde479482c960d9d79853b69"
+     },
+     {
+      "span_id": "B-ocr-6be3a321c02e42",
+      "page": 6,
+      "location": "B PDF page 6",
+      "text": "## References\n\n[1] Omer Bar-Tal, Hila Chefer, Omer Tov, Charles Herrmann, Roni Paiss, Shiran Zada, Ariel Ephrat, Junhwa Hur, Guanghui Liu, Amit Raj, et al. Lumiere: A space-time diffusion model for video generation. In SIGGRAPH Asia 2024 Conference Papers, pages 1–11, 2024.\n\n[2] Quentin Bertrand, Anne Gagneux, Mathurin Massias, and Rémi Emonet. On the closed-form of flow matching: Generalization does not arise from target stochasticity. arXiv preprint arXiv:2506.03719, 2025.\n\n[3] Lucas Beyer, Andreas Steiner, André Susano Pinto, Alexander Kolesnikov, Xiao Wang, Daniel Salz, Maxim Neumann, Ibrahim Alabdulmohsin, Michael Tschannen, Emanuele Bugliarello, et al. Paligemma: A versatile 3b vlm for transfer. arXiv preprint arXiv:2407.07726, 2024.\n\n[4] Andreas Blattmann, Robin Rombach, Huan Ling, Tim Dockhorn, Seung Wook Kim, Sanja Fidler, and Karsten Kreis. Align your latents: High-resolution video synthesis with latent diffusion models. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pages 22563–22575, 2023.\n\n[5] Rania Briq, Jiangtao Wang, and Stefan Kesselheim. Data pruning in generative diffusion models. arXiv preprint arXiv:2411.12523, 2024.\n\n[6] Valentin De Bortoli, James Thornton, Jeremy Heng, and Arnaud Doucet. Diffusion schröd",
+      "text_sha256": "d6221d0de80a48a1f0feb8c7ac54daeadb184a20259ca1c2098bc2ab16dab930"
+     },
+     {
+      "span_id": "B-ocr-48e9f6e39f938c",
+      "page": 7,
+      "location": "B PDF page 7",
+      "text": "[18] Yaron Lipman, Ricky TQ Chen, Heli Ben-Hamu, Maximilian Nickel, and Matt Le. Flow matching for generative modeling. arXiv preprint arXiv:2210.02747, 2022.\n\n[19] Xingchao Liu, Chengyue Gong, and Qiang Liu. Flow straight and fast: Learning to generate and transfer data with rectified flow. arXiv preprint arXiv:2209.03003, 2022.\n\n[20] Yixin Liu, Kai Zhang, Yuan Li, Zhiling Yan, Chujie Gao, Ruoxi Chen, Zhengqing Yuan, Yue Huang, Hanchi Sun, Jianfeng Gao, et al. Sora: a review on background, technology, limitations, and opportunities of large vision models (2024). URL https://arxiv.org/abs/2402.17177.\n\n[21] Ziwei Liu, Ping Luo, Xiaogang Wang, and Xiaoou Tang. Deep learning face attributes in the wild. In Proceedings of the IEEE international conference on computer vision, pages 3730–3738, 2015.\n\n[22] Stuart Lloyd. Least squares quantization in pcm. IEEE Transactions on Information Theory, 28(2):129–137, 1982.\n\n[23] Bruno Mlodozeniec, Runa Eschenhagen, Juhan Bae, Alexander Immer, David Krueger, and Richard Turner. Influence functions for scalable data attribution in diffusion models. arXiv preprint arXiv:2410.13850, 2024.\n\n[24] Mansheej Paul, Surya Ganguli, and Gintare Karolina Dziugaite. Deep learning on a data diet: Finding important examples early in training. Adv",
+      "text_sha256": "2303a70bda9dfdf15d1f9304ea3bba49c1dc957044bf520eb69e80635ad5bb2b"
+     },
+     {
+      "span_id": "B-141db4240609f6",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.16079v2#chars-11443-17398",
+      "text": "### Stability tests\n\nWe investigate FM stability using several stress tests, including substantial data perturbation through pruning and data swapping, and architectural changes either in the model capacity or architecture design.\n\nDisjoint subsets.  In Fig. [1(a)](#S3.F1.sf1 \"In Figure 1 ‣ 3 Experiments ‣ The Amazing Stability of Flow Matching\"), we train two FM model instances on two disjoint random subsets of the data. When integrating the velocity field starting from the same random points x0x\\_{0}, we observe that the outputs are nearly identical. We quantify this consistency using ArcFace pairwise similarity, and obtain s​i​m=0.69±0.12sim=0.69\\pm 0.12 between N=4096N=4096 sample pairs generated by both models, where ±\\pm denotes the standard deviation over pairs. For comparison, unrelated pairs yield s​i​m=0.34±0.10sim=0.34\\pm 0.10.\n\nCluster removal. Fig. [1(c)](#S3.F1.sf3 \"In Figure 1 ‣ 3 Experiments ‣ The Amazing Stability of Flow Matching\") depicts another experiment that alters the training data substantially. The first FM model is trained on images classified as female by PaliGemma VLM [[3](#bib.bib24)], while the second on images classified as male, yielding ArcFace similarity 0.76±0.170.76\\pm 0.17 and 0.58±0.160.58\\pm 0.16 respectively. This experiment",
+      "text_sha256": "d7157e9b752a9e28f348181e630860724284c9a880c1c4ebe25de1581c5fb883"
+     },
+     {
+      "span_id": "B-14517c0f322cd1",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.16079v2#chars-1276-4370",
+      "text": "## 1 Introduction\n\nDiffusion models [[29](#bib.bib11), [30](#bib.bib10)] have driven tremendous advances in generative modeling over the past few years [[27](#bib.bib27), [13](#bib.bib13), [4](#bib.bib14), [20](#bib.bib9)]. Flow-matching (FM) methods, an alternative to diffusion models [[14](#bib.bib12)], promise several advantages in efficiency and simplicity while achieving competitive performance [[18](#bib.bib15), [19](#bib.bib16), [31](#bib.bib17), [1](#bib.bib8), [20](#bib.bib9)]. Yet, training these models remains demanding both in compute and data, therefore, tailoring a dataset to desired generative properties has the potential to significantly reduce the computational cost. In this paper, we study the stability of FM under data perturbation, and develop informed approaches to data pruning. Using standard metrics, we probe stability and find a surprising result: even under strong perturbation of data and model architecture, trajectories initialized with the same random noise evolve to visually similar samples.\n\nFor diffusion models, stability in generating high-dimensional realistic data has been observed in several works: [Kadkhodaie et al. [15]](#bib.bib1) observed that diffusion models produce similar outputs under the same seed when trained on two disj",
+      "text_sha256": "ba8c6b46d985abff4800b14a854e539669aef7a69bfc4a4c310c178101e6fc21"
+     },
+     {
+      "span_id": "B-997a130ba6c451",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.16079v2#chars-19655-20057",
+      "text": "## Acknowledgments\n\nThis work is funded by the German Federal Ministry\nfor Economic Affairs and Energy within the project “nxtAIM”. Additionally, the authors gratefully acknowledge the Gauss Centre for Supercomputing e.V. ([www.gauss-centre.eu](https://www.gauss-centre.eu)) for funding this project by providing computing time on the GCS Supercomputer JUWELS Booster at Jülich Supercomputing Centre.",
+      "text_sha256": "a0439bd878cc2eca8ed02b4bbb29dda6dbc7145fec94103695878ad86cf9ab92"
+     },
+     {
+      "span_id": "B-f79bb199538951",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.16079v2#chars-209-251",
+      "text": "# The Amazing Stability of Flow Matching",
+      "text_sha256": "5b8b6adb9d90b95a84562d24f26e791e1ed01b68eb5773be75e222d05aa5d676"
+     },
+     {
+      "span_id": "B-f05ef5c687bf25",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.16079v2#chars-251-1276",
+      "text": "###### Abstract\n\nThe success of deep generative models in generating high-quality and diverse samples is often attributed to particular architectures and large training datasets. In this paper, we investigate the impact of these factors on the quality and diversity of samples generated by *flow-matching* models. Surprisingly, in our experiments on CelebA-HQ dataset, flow matching remains stable even when pruning 50% of the dataset. That is, the quality and diversity of generated samples are preserved. Moreover, pruning impacts the latent representation only slightly, that is, samples generated by models trained on the full and pruned dataset map to visually similar outputs for a given seed. We observe similar stability when changing the architecture or training configuration, such that the latent representation is maintained under these changes as well.\nOur results quantify just how strong this stability can be in practice, and help explain the reliability of flow-matching models under various perturbations.",
+      "text_sha256": "84eb9cc0406ed2c8b7ce983acd4cc3a5fe19d2b712d25bb9c5120d0f65389a9c"
+     },
+     {
+      "span_id": "B-e3d9910eedfb40",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.16079v2#chars-5187-8037",
+      "text": "### Pruning methods\n\nGradient-based scoring (Grad) .\nUnder this strategy, we train a small surrogate model ≈7%\\approx 7\\% of the full training schedule, and use it to estimate the gradient magnitude for each sample using M=2M=2 fixed random noisy samples and T=8T=8 timesteps, creating shared noise paths for all the samples and decreasing the variance stemming from randomness. The gradient norms are then averaged over MM and TT using exponential moving average (EMA) estimate per t∈Tt\\in T to remove large scale bias of larger noise bands.\n\n|  |  |  |  |\n| --- | --- | --- | --- |\n|  | sigrad=1T​∑k=1T1M​∑m=1M‖∇θℓ​(xi,tk,x0(m))‖22μg​(tk),s\\_{i}^{\\mathrm{grad}}=\\frac{1}{T}\\sum\\_{k=1}^{T}\\frac{1}{M}\\sum\\_{m=1}^{M}\\frac{\\left\\|\\nabla\\_{\\theta}\\,\\ell\\!\\big(x\\_{i};\\,t\\_{k},x\\_{0}^{(m)}\\big)\\right\\|\\_{2}^{2}}{\\mu\\_{g}(t\\_{k})}\\,, |  | (1) |\n\nwhere μg​(tk)\\mu\\_{g}(t\\_{k}) is the EMA estimate at timestep tkt\\_{k} over samples and noise endpoints of the squared gradient norm ‖∇θℓ​(xi,tk,x0(m))‖22\\|\\nabla\\_{\\theta}\\ell(x\\_{i};t\\_{k},x\\_{0}^{(m)})\\|\\_{2}^{2} with respect to the model parameters θ\\theta, computed inside the loop, and x0(m)x\\_{0}^{(m)} are the shared noise endpoints.\nThe computation is easily parallelizable, however, this is an expensive method and we only apply it ",
+      "text_sha256": "9314d5df5a7047d01e6e12ef00e986eafd1073d3b8e8efe60cca0beb023ad8bc"
+     },
+     {
+      "span_id": "B-43b9f685bc1976",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.16079v2#chars-9523-11443",
+      "text": "### Experimental setup\n\nWe use the transformer-based architecture DiT [[25](#bib.bib25)], and replace diffusion with flow-matching transport [[9](#bib.bib18)] (we name it FM-DiT), training a velocity field uθ​(x,t)u\\_{\\theta}(x,t) along linear interpolants between Gaussian noise and the data. We also train a vector-quantized variational autoencoder (VQ-VAE) [[32](#bib.bib6)] using the same target dataset to encode the images, similar to Stable Diffusion [[27](#bib.bib27)]11\n1\nCode and experimental details are available at <https://github.com/briqr/fm_stability>..\nDiT is based on a ViT-style transformer [[8](#bib.bib32)], which operates on image patches with global self-attention. For the architectural change experiment, we additionally train a U-Net backbone [[28](#bib.bib30)], following multi-scale convolutional encoder–decoder with skip connections as done in diffusion models [[14](#bib.bib12), [27](#bib.bib27)].\n\nFor quantitative evaluation, we report FID [[12](#bib.bib31)], which measures the Fréchet distance between feature embeddings of the generated and training distributions. For quantifying FM stability, we measure ArcFace pairwise cosine similarity for faces [[7](#bib.bib26)], a standard embedding model for face identification. *Unpruned* refers to the mo",
+      "text_sha256": "a377e1878b1d4eaebd6a4699178edff4ead270e9e670516b2410d515100b9787"
+     }
+    ]
+   }
+  },
+  {
+   "pair_id": "C07-P2",
+   "source_key": "arxiv-2604.10056",
+   "source_distribution": "link_only",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "000\n001\n002\n003\n004\n005\n006\n007\n008\n009\n010\n011\n012\n013\n014\n015\n016\n017\n018\n019\n020\n021\n022\n023\n024\n025\n026\n027\n028\n029\n030\n031\n032\n033\n034\n035\n036\n037\n038\n039\n040\n041\n042\n043\n044\n045\n046\n047\n048\n049\n050\n051\n052\n053\n\n# [TITLE C07]\n\n## Anonymous authors\n\nPaper under double-blind review\n\nA person picks up a long box from the ground with both hands, and then rotates it back and forth while walking around.\n\n![img-0.jpeg](img-0.jpeg)\n\nA person holds a large box with both hands, and puts the large box on the ground.\n\nPull the clothesstand, and set it back down.\n\nFigure 1: Given a textual prompt and a requested duration, [NAME C07] jointly generates coherent human and object motions as a variable-length human–object interaction (HOI) sequence.\n\n## ABSTRACT\n\nText-conditioned 3D human-object interaction (HOI) generation remains challenging because individually plausible human and object motions do not necessarily form a coherent interaction. We argue that a key limitation lies in conventional skeleton-based representations, which compactly describe body kinematics while leaving surface-level interaction geometry largely implicit, often requiring additional contact-specific regularizers. We propose [NAME C07], a framework that explicitly m",
+      "text_sha256": "19d579467255ef423d6001b0bc169c01827ed413cb53076221bc083433262024"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\n# 1 INTRODUCTION\n\nText-conditioned 3D human–object interaction (HOI) generation aims to synthesize human motion and object dynamics from a language description and has attracted increasing attention (Li et al., 2024; Cha et al., 2024; Peng et al., 2025; Xu et al., 2024; Wang et al., 2026b). In particular, generating one interaction counterpart, as demonstrated by OMOMO (Li et al., 2023) and DAViD (Kim et al., 2025), has shown promising results. However, joint generation of plausible human and object motions remains challenging and relatively underexplored. Since individual plausibility does not ensure interaction coherence, simply combining the generated object and human motion trajectories may exhibit spatial misalignment or frequent interpenetration, which we define as a lack of coordination.\n\nOne straightforward way to improve generation coordination is to impose hand-crafted rules or kinematic constraints (Diller & Dai, 2024; Li et al., 2024; Peng et al., 2025). Although such regularization promotes physical consistency, such formulations often dep",
+      "text_sha256": "eb2fcffbc8769dada10553b71ed2108a0422694b67b6f831e0985876cd04ad2e"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\nExtensive experiments demonstrate that [NAME C07] consistently outperforms prior methods in overall generation quality and human-object coordination. These advantages remain evident in long-horizon generation, where [NAME C07] preserves coherent interactions as the requested duration extends beyond the fixed training window. Our contributions are as follows:\n\n- We propose [NAME C07], a unified latent framework for text-conditioned HOI generation at any requested duration. By explicitly modeling continuous human-object geometry, [NAME C07] learns coordinated dynamics directly from data without contact-specific regularization or heuristic interaction designs.\n- We introduce a Mixture-of-Transformers (MoT) autoencoder that jointly encodes human, object, and relation modalities via modality-specific transformations and relation-aware decoding.\n- We design a blockwise Flow Forcing scheme to align finite-window training with progressive rollout, enabling stable HOI generation beyond the training horizon.\n\n## 2 RELATED WORK\n\nGenerative modeling for HOI. Recent HOI genera",
+      "text_sha256": "d3797124b34f0e41d57804d5448defbe6431cd2e9bead3ce6dcf21299689a46b"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\n![img-1.jpeg](img-1.jpeg)\n\nFigure 2: Overview of [NAME C07]. Left: Unified latent modeling. The query-based MoT autoencoder jointly encodes and reconstructs human, object, and relation streams in a structured latent space. Right: Conditional generation. A conditional latent DiT uses independently sampled blockwise flow times and sliding-window inference to support generation at any requested duration.\n\nhuman–object relations in the latent space enables joint learning of individual dynamics and geometric coordination, which addresses interaction inconsistencies by using relational cues to guide the reconstruction of both trajectories.\n\nVariable-length generation. Prior work has explored variable-length synthesis in human motion (Barquero et al., 2024; Han et al., 2024; Xiao et al., 2025; Zhuo et al., 2025) and video generation (Song et al., 2025; Cai et al., 2026). Such flexibility is also important for HOI, since even the same interaction can be performed over different durations. However, extending an interaction requires human and object motion to remai",
+      "text_sha256": "a95eeebadd6281af48b6898a56e25a216cb3a714edb8abb0b9344cc6d0f82bd6"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\nSince instantaneous proximity alone cannot describe how an interaction evolves, we further characterize the first- and second-order temporal variations of the offset by $\\nabla\\delta_{t,j}$ and $\\nabla^{2}\\delta_{t,j}$, respectively. To retain information about where the interaction occurs on the object, we also express the corresponding nearest surface point in the canonical object frame as $\\bar{s}_{t,j}^{O}$. Together, these quantities define the local relation feature:\n\n$$\\boldsymbol{r}_{t,j} = \\left(\\boldsymbol{\\delta}_{t,j}, d_{t,j}, \\nabla\\boldsymbol{\\delta}_{t,j}, \\nabla^{2}\\boldsymbol{\\delta}_{t,j}, \\bar{\\boldsymbol{s}}_{t,j}^{O}\\right). \\tag{2}$$\n\nTo also capture the object's relation to the supporting surface, we apply the same construction to the object-ground pair. Here, $\\boldsymbol{q}_{t}^{\\mathrm{gnd}} = \\Pi_{\\mathrm{gnd}}(\\boldsymbol{p}_{t}^{O})$ denotes the projection of the object center onto the ground plane, while $\\boldsymbol{r}_{t}^{\\mathrm{gnd}}$ follows the relation definition in Eq. 2. Collecting the marker-object and object-g",
+      "text_sha256": "dd12747ee40ce9b7d6c50b410108e0ab2e9a25e12f55e2bf035a92c42dcb224b"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\nfield with a DiT (Peebles & Xie, 2023). As shown in the right part of Fig. 2, the model predicts the latent velocity as\n\n$$v_\\psi(Z_\\tau, \\tau \\mid c, G, p) = \\mathcal{F}_\\psi(Z_\\tau; c, G, \\tau, p), \\tag{5}$$\n\nwhere $\\tau$ specifies the flow-time assignment of each latent token. During long-horizon rollout, fixed-length training windows may correspond to different stages of the complete interaction, creating inconsistent temporal context between training and inference. Accordingly, we introduce a normalized sequence-progress condition $p \\in [0, 1]$ to specify the global position of the current window within the requested duration. By using the same progress definition during training and inference, the model retains consistent sequence-level temporal context throughout generation.\n\n**Training schedule.** To learn variable-length continuation from fixed-length training windows, we introduce a blockwise forcing schedule for Flow Matching. Unlike Diffusion Forcing (Chen et al., 2024), which assigns noise levels at the token level, our schedule assigns e",
+      "text_sha256": "ec6957e149be473a84d75095df322d1a4254885cffea3fc9c53c8349d845af2d"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\n(a) A person lifts a suitcase from the ground with their right hand, takes a few steps, sets the suitcase down to let it slide left and right, and then releases it.\n\n![img-2.jpeg](img-2.jpeg)\n\n(b) A person puts a large box on the ground with their left hand, moves the large box with their right foot, walks to the other side of the large box, and moves the large box with their right foot.\n\n![img-3.jpeg](img-3.jpeg)\n\nFigure 3: Qualitative comparison of variable-length generation with prior works. [NAME C07] preserves coherent interaction beyond fixed generation windows.\n\nTable 1: Quantitative comparison of generation quality on the InterAct dataset (Xu et al., 2025).\n\n[tbl-0.html](tbl-0.html)\n\n2021). We adopt this marker representation to construct the continuous human-object relations used throughout our model. We follow the official data split for training and evaluation and sample masked 128-frame windows from the interaction sequences during training.\n\nMetrics. Following standard practice in text-to-motion generation (Guo et al., 2022), we evaluate gene",
+      "text_sha256": "4bd490f7f5808af85d3e7b24747897b1cc4aaa15864d5f20d90f4713a00bcc8a"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "Table 2: Quantitative comparison of long-horizon generation on the InterAct dataset (Xu et al., 2025). The two column groups are computed over non-overlapping 128-frame subsequences and 64-frame windows centered at continuation boundaries, respectively.\n\n[tbl-1.html](tbl-1.html)\n\nTable 3: Quantitative comparison of motion stability on the InterAct dataset (Xu et al., 2025). Jerk is reported in cm/frame \\( ^{4} \\) .\n\n[tbl-2.html](tbl-2.html)\n\nTable 4: Quantitative comparison of physical plausibility on the InterAct dataset (Xu et al., 2025). Body-object penetration depths are reported in cm.\n\n[tbl-3.html](tbl-3.html)\n\nGeneration quality. We compare [NAME C07] against prior methods to evaluate the overall quality of generated interactions. Table 1 shows that [NAME C07] surpasses the baseline approaches across most metrics while retaining diversity close to real interactions, which suggests that our unified modeling jointly harvests motion realism, text–interaction alignment, and generative variation. Using the same model and protocol without subset-specific fine-tuning, results on BEHAVE (Bhatnagar et al., 2022) and OMOMO (Li et al., 2023) in Table B exhibit the same trend.\n\nPhysical coordination. We then evaluate in Table 3 physical coordination through motion stability, ",
+      "text_sha256": "c997b19b1c21c12a54aea54c5a66496b0dfc205fa6c70d10c491a8eca2ca3d81"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n## AI USE STATEMENT\n\nWe use ChatGPT and OpenAI Codex to assist with the refinement of some internal module designs, parts of the implementation, literature search and summarization, and language polishing. The core research idea, overall architecture, experimental design and evaluation protocols, result interpretation, dataset processing, qualitative analysis, and mathematical formulation are developed and conducted by the authors without generative AI assistance. All AI-assisted design suggestions, code, and literature references are independently reviewed and verified by the authors, who take full responsibility for the final content of the paper and associated artifacts.\n\n## ETHICS STATEMENT\n\nThis work uses existing HOI datasets and does not involve the collection of new human-subject data. The generated outputs are represented using abstract body-surface markers and rigid-object geometry rather than identifiable visual appearance or biometric information. Nevertheless, realistic HOI synthesis could potentially be used to produce misleading syntheti",
+      "text_sha256": "81036ec98198ab42f3bc45b4f27cc74831e951a8006a1b4751da2d89e3430ff7"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nDantong Niu, Zhuoyang Liu, Zekai Wang, Boning Shao, Zhao-Heng Yin, Anirudh Pai, Yuvan Sharma, Stefano Saravalle, Ruijie Zheng, Jing Wang, et al. T-rex: Tactile-reactive dexterous manipulation. arXiv preprint arXiv:2606.17055, 2026.\n\nWilliam Peebles and Saining Xie. Scalable diffusion models with transformers. In 2023 IEEE/CVF International Conference on Computer Vision (ICCV), pp. 4172–4182. IEEE, 2023.\n\nXiaogang Peng, Yiming Xie, Zizhao Wu, Varun Jampani, Deqing Sun, and Huaizu Jiang. Hoi-diff: Text-driven synthesis of 3d human-object interactions using diffusion models. In 2025 IEEE/CVF Conference on Computer Vision and Pattern Recognition Workshops (CVPRW), pp. 2869–2879. IEEE, 2025.\n\nMathis Petrovich, Michael J. Black, and Gül Varol. Action-conditioned 3d human motion synthesis with transformer VAE. In Proceedings of the IEEE/CVF International Conference on Computer Vision, pp. 10985–10995, 2021.\n\nMathis Petrovich, Michael J. Black, and Gül Varol. TEMOS: Generating diverse human motions from textual descriptions. In European Conference on Computer ",
+      "text_sha256": "50d31bcfba3e40d898e8c5511e659976f04fbc48d73ea0c09b3ffbb4fd5d182f"
+     },
+     {
+      "span_id": "A-page-0014",
+      "page": 14,
+      "location": "target PDF page 14",
+      "text": "702\n703\n704\n705\n706\n707\n708\n709\n710\n711\n712\n713\n714\n715\n716\n717\n718\n719\n720\n721\n722\n723\n724\n725\n726\n727\n728\n729\n730\n731\n732\n733\n734\n735\n736\n737\n738\n739\n740\n741\n742\n743\n744\n745\n746\n747\n748\n749\n750\n751\n752\n753\n754\n755\n\n# A SUPPLEMENTARY METHOD DETAILS\n\n## A.1 STRUCTURED AUTOENCODER\n\n**Token construction.** Considering that the marker-level human and relation fields are substantially denser than the rigid-object state, we first reduce them to comparable token sets without removing their spatial organization. At each frame, eight learned body-region queries aggregate the 77 surface markers, while separate root and foot tokens retain global translation and support information. This construction yields 11 human tokens per frame. Given the rigid structure of the object, we use one dynamic pose token per frame and four static geometry tokens obtained from its Basis Point Set (BPS) descriptor (Prokudin et al., 2019). To preserve the correspondence between motion and relation features, eight relation queries aggregate marker-level relations and two additional tokens retain the object–ground and root–object relations, yielding 10 relation tokens per frame. Finally, learned identity encodings distinguish marker regions, relation types, entities, and modalities, while marker-to",
+      "text_sha256": "a80d6385e65e1bfb71fcec108eaace14573dd63fdd8e9b22338d5a81aa32def5"
+     },
+     {
+      "span_id": "A-page-0017",
+      "page": 17,
+      "location": "target PDF page 17",
+      "text": "864\n865\n866\n867\n868\n869\n870\n871\n872\n873\n874\n875\n876\n877\n878\n879\n880\n881\n882\n883\n884\n885\n886\n887\n888\n889\n890\n891\n892\n893\n894\n895\n896\n897\n898\n899\n900\n901\n902\n903\n904\n905\n906\n907\n908\n909\n910\n911\n912\n913\n914\n915\n916\n917\n\ntransform with $\\epsilon = 10^{-6}$. The noise-robust decoder is then fine-tuned for an additional 30,000 steps, with 500 warm-up steps and cosine decay from $2 \\times 10^{-5}$ to $5 \\times 10^{-6}$. Both phases use a per-GPU batch size of 6 without gradient accumulation on three NVIDIA GeForce RTX 5080 GPUs, giving an effective batch size of 18. The ZCA transform and decoder fine-tuning are initialized from the final autoencoder checkpoint. We retain the decoder checkpoint with the lowest validation reconstruction drift under latent perturbations of $\\sigma = 0.125$.\n\nConditional-flow configuration. The conditional flow model uses width 384, 12 layers, and six attention heads. To learn the velocity field, we optimize it for 110,000 steps with AdamW $(\\beta_1, \\beta_2) = (0.9, 0.95)$, weight decay $10^{-2}$, and learning rate $10^{-4}$. The learning rate increases linearly during the first 2,000 steps, remains constant through step 100,000, and follows a cosine decay to $10^{-5}$ over the final 10,000 steps. We maintain an exponential moving average of",
+      "text_sha256": "0e50843ae63664acb930af768cc5ac1646d38c36440960deaae8d824773b8f04"
+     },
+     {
+      "span_id": "A-page-0019",
+      "page": 19,
+      "location": "target PDF page 19",
+      "text": "Table A: Quantitative comparison of inference efficiency across requested sequence lengths on the InterAct dataset (Xu et al., 2025). Runtime and peak memory are measured on one NVIDIA GeForce RTX 5080.\n\n[tbl-5.html](tbl-5.html)\n\nTable B: Quantitative comparison of generation quality on the BEHAVE (Bhatnagar et al., 2022) and OMOMO (Li et al., 2023) subsets of the InterAct dataset with prior works.\n\n[tbl-6.html](tbl-6.html)\n\nquality while remaining competitive in text–interaction alignment and diversity. Since both subsets use the same trained model and evaluator, the resulting pattern is not tied to the aggregate composition of the full benchmark.\n\n### C.2 ABLATION STUDIES\n\nReconstruction fidelity. To test whether relation modeling consumes capacity needed for human and object reconstruction, we compare autoencoders with nearly matched parameter counts in Table 5. The complete model retains marker and object errors comparable to the variant without the relation branch, indicating that explicit relation modeling does not materially compromise reconstruction. In contrast, replacing MoT with a flat Transformer substantially worsens both, despite a similar parameter budget.\n\nLatent utilization. Prior work indicates that latent organization and utilization, beyond reco",
+      "text_sha256": "cbcdeda15454cb57554532225eb140d96bd966f33291c0fcc59a9c96e8d83857"
+     },
+     {
+      "span_id": "A-page-0021",
+      "page": 21,
+      "location": "target PDF page 21",
+      "text": "1080\n1081\n1082\n1083\n1084\n1085\n1086\n1087\n1088\n1089\n1090\n1091\n1092\n1093\n1094\n1095\n1096\n1097\n1098\n1099\n1100\n1101\n1102\n1103\n1104\n1105\n1106\n1107\n1108\n1109\n1110\n1111\n1112\n1113\n1114\n1115\n1116\n1117\n1118\n1119\n1120\n1121\n1122\n1123\n1124\n1125\n1126\n1127\n1128\n1129\n1130\n1131\n1132\n1133\n\nTable F: Quantitative comparison of latent autoencoder variants on the BEHAVE (Bhatnagar et al., 2022) and OMOMO (Li et al., 2023) subsets of the InterAct dataset.\n\n[tbl-10.html](tbl-10.html)\n\nTable G: Quantitative comparison of physical coordination for the relation-pathway ablation on the InterAct dataset (Xu et al., 2025). Contact metrics use a 2-cm threshold, and unsupported travel is the fraction of object displacement occurring without body contact at either endpoint.\n\n[tbl-11.html](tbl-11.html)\n\nEffect of the relation pathway on physical coordination. To directly assess whether relation modeling improves coordination rather than only feature-space generation quality, we compare the complete model with the existing ablation that removes relation tokenization, relation reconstruction, and relation-coupled readout together. Table G uses 1,189 conditions shared by both variants for contact-based metrics and a fixed common subset of 125 sequences with valid object meshes for penetration. The compl",
+      "text_sha256": "498975f1e2fd661500e3e6b6c0f33911146f670c03b7f5ef5b8c3e6c7826dec4"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-71460074d59f84",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": null,
+      "text_sha256": "dad35259189ce2ff87edfb5e67772a17e61c53d696c41250fbe239fc58faf66d",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-f4c0ba49985fb8",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": null,
+      "text_sha256": "c4a83a10c1910765d912310ce54959700bd3d9cb725f0724a3e5fe5601aa5c57",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-4ce7dd3c3745cd",
+      "page": 3,
+      "location": "B PDF page 3",
+      "text": null,
+      "text_sha256": "8c19e84f7418e799c9720e2ff102052c051ff5c0253e2bf72a2ab6b461054ef5",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-2a5f77910234e2",
+      "page": 7,
+      "location": "B PDF page 7",
+      "text": null,
+      "text_sha256": "76a4faa4fb378feb427a33ca4ba079a9332da46c93b3c978ff3d96c9eac5e5c7",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-715e3df5c4f2ef",
+      "page": 12,
+      "location": "B PDF page 12",
+      "text": null,
+      "text_sha256": "427ef85f520ee0b06edae2f30163a635ced118eed35017a79aeadbe17d938564",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-bf25f0bbf67d48",
+      "page": 18,
+      "location": "B PDF page 18",
+      "text": null,
+      "text_sha256": "c80d1f2b38d54607fe439bdf4acd26dfbf306f80eab911e1b297cd117ea194ac",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-7e27b0447af192",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.10056v1#chars-1359-6213",
+      "text": null,
+      "text_sha256": "6ca9b8f936815da47b4ad41a566b30105810a594b05a45c785f7383bca6dcbac",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-99e9d80eec2941",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.10056v1#chars-26176-29471",
+      "text": null,
+      "text_sha256": "6e7fa3ea20d455bfdeb20258a58e099d5d5b21e7afbbd31ddbf5b3753fe6bbdb",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-faa60c0d516238",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.10056v1#chars-275-1359",
+      "text": null,
+      "text_sha256": "42976fd39469b576e558d0ca406d22883e3e8fc59f70aa358f4af3314bd4bfe7",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-7c34355266dcd7",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.10056v1#chars-33223-35513",
+      "text": null,
+      "text_sha256": "1d612d1b99feff3bc5f26afa148b72858f834624b950c7d622ab52684d820fd7",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-111ebcb1db5772",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.10056v1#chars-45259-45298",
+      "text": null,
+      "text_sha256": "bc111b08674617af3be6cac5a113e3e168b0f9cf472e6a3130343ccb384ef51f",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-2612383dd00975",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.10056v1#chars-50157-50704",
+      "text": null,
+      "text_sha256": "d6d4dd2371dd604c282e574aa872189f83ca009a9455f8741afa6f1fb7e13efc",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-0de1a50c634813",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.10056v1#chars-57542-58259",
+      "text": null,
+      "text_sha256": "44778a0ec451a69079f4c450f3a8847d13397aa80ff54d7cc4475bcb8cf572fa",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-3148a57c8d3620",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.10056v1#chars-9718-11689",
+      "text": null,
+      "text_sha256": "4a499d12323545c9b7d39524f78f4422b56d8c492fb2de9379b4480be116f544",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     }
+    ]
+   }
+  }
+ ],
+ "note": "Target spans are anonymized excerpts of the target text; page numbers refer to the original target PDF, which is not distributed."
+}

@@ -1,0 +1,434 @@
+{
+ "case_id": "C10",
+ "pairs": [
+  {
+   "pair_id": "C10-P1",
+   "source_key": "arxiv-2607.10172",
+   "source_distribution": "link_only",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C10]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nVision-language models (VLMs) suffer from visual hallucination, such as saying an object that is not present in an image. We ask a more fundamental question: whether a VLM is even aware of where it is looking before understanding the semantic meaning in the image. We formulate this question as a [NAME C10] task: identifying which parts of its visual input were available to the model. We construct the task in a self-supervised way without manually labeling the available region to the model. Our experiments show that existing VLMs fail to localize the visible region. We further show that fine-tuning VLMs on the proposed [NAME C10] task improves a model's awareness of visual input.\n\n# 1 INTRODUCTION\n\nVision-language models (VLMs) can describe images fluently while referring to objects that are not actually present. This failure mode, commonly termed visual hallucination, has been widely evidenced (Rohrbach et al., 2018; Li et al., 2023; Chen et al., 2024b) and persists even in frontier models. For example, Asadi et al. (2026) show that Gemini-3-Pro, Gemini-2.5-Pro, Claude-Opus-4.5, and GPT-5.1 can readily produce detailed image descriptions and elaborate re",
+      "text_sha256": "32a3d9fa8d7aaca850f026a7621244dca291577b33cfcfc8793377433a6a3feb"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\nscene are semantically correct. We instead ask a more fundamental question that precedes semantic interpretation: Is a VLM aware of where it is looking in the first place before reasoning about what the visual input means?\n\nTo this end, we argue that general visual grounding can be organized into a three-level hierarchy as shown in Fig. 1: Look identifies where the model is looking, Perceive determines what is present there, and Understand uses this evidence to answer a question or draw an inference. We hypothesize that visual hallucination may arise as early as the first level, Look, a capability that remains largely untested by existing benchmarks. A model should ground its claims in available visual input when asserting that it sees something and, more fundamentally, should be aware of whether visual input is available at all.\n\nWe therefore propose [NAME C10], a task designed to probe a VLM's awareness of the visual input available to it. Specifically, the model is given an image crop and must localize the visible region as a bounding box in the coordinat",
+      "text_sha256": "b6397cbc7cdf8a09eb079eff2dab00af5aee06949da7d0d2197d2c4cc7f5087c"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n![img-1.jpeg](img-1.jpeg)\n\n![img-2.jpeg](img-2.jpeg)\n\n![img-3.jpeg](img-3.jpeg)\n\nFigure 2: Where does a hallucination originate? In this example, we ask what animal is grazing in a photograph of a dog on grassland, a model answers “a sheep”. The same wrong answer can arise at two levels of the hierarchy. At the Perceive level, the model uses the image but misrecognizes the dog. At the Look level, the model does not rely on the image at all, and “sheep” follows from the textual context.\n\nwhere  \\( \\hat{z} \\)  denotes observations and q a question. Particularly, the ordering of the hierarchy expresses the dependence of evidence to conclude the final visual understanding: a claim about what the image contains  \\( (P) \\)  or implies  \\( (U) \\)  should presuppose some account of what input was available  \\( (L) \\) . Consider the limiting case where an input that carries no visual content at all. In this case, the correct output of L is that nothing is visible, and every positive claim of P is a hallucination without grounding (Asadi et al., 2026).\n\nSource o",
+      "text_sha256": "5936a769d6ee1ade70f856030829db65f11b03a0a22a79b3b0fa9029aba104d4"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\n![img-4.jpeg](img-4.jpeg)\n\nFigure 3: Constructing a [NAME C10] example. We select a merge-block-aligned viewport and encode only its pixels for the VLM. Importantly, we restore positional metadata from the full canvas without encoding the excluded image content. The crop's coordinates provide the target automatically. Changed blocks indicate places where token positions are added.\n\nwhich preserves absolute positional information for image patches and thus provides the spatial cues needed to identify the available region. Specifically, as illustrated in Fig. 3, we preserve the crop's original full-image positions at two points in the architecture: the vision encoder's absolute positional embeddings ① and the language model's multimodal rotary positional embeddings (MRoPE) ②. In this way, the geometric information required for localization is explicitly available, allowing the model to identify its available visual region without relying on semantic cues to infer its location. The [NAME C10] task therefore directly probes whether the model can recognize where its vi",
+      "text_sha256": "d2f4a4188950e52d50e05ca95c401ac53b87c5301c0b0749082595215153d76d"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\n![img-5.jpeg](img-5.jpeg)\n\n(i) Real image\n\n![img-6.jpeg](img-6.jpeg)\n\n(ii) No image\n\n![img-7.jpeg](img-7.jpeg)\n\n(iii) Wrong image\n\nFigure 4: Illustration of [NAME C10] construction. All conditions use the same prompt, “Does this image contain: dog? Answer with Yes or No.”, with the only difference being the visual input. The grounded answer is Yes in (i) and No in (ii) and (iii).\n\n(i) Real image. The expression is paired with its original image, which contains the referred object; the correct answer is therefore Yes.\n(ii) No image. We bypass the vision encoder while retaining the \\(<|\\text{image\\_pad}|>\\) placeholder embedding at each visual-token position. This preserves the sequence length, token positions, and attention mask of the corresponding real-image input while removing all visual content. The correct answer is therefore No.\n(iii) Wrong image. Each image is paired with the expression of a different item, for which the expected answer is No.\n\nWe use the same 10,752 items, the same set of images and referring expressions throughout for the three",
+      "text_sha256": "2688d05720f0139904da4d152782a2804110990e5125a96d1d3fffa2d5c664d5"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "Table 1: Compare different probe methods for visual awareness. We report IoU of the pretrained Qwen3-VL when asked for the visible region over 1,000 views. IoU counts answers without a valid box as zero. Methods operating on pixels or patch embeddings fail to probe visual awareness because the model can exploit semantic shortcuts, often predicting the bounding box of the dominant object rather than the available visual region.\n\n[tbl-0.html](tbl-0.html)\n\n(i) Full image\n\n![img-8.jpeg](img-8.jpeg)\n\nIoU 0.47\n\n(ii) Pixel greyed\n\n![img-9.jpeg](img-9.jpeg)\n\nIoU 0.64\n\n(iii) Embedding zeroed\n\n![img-10.jpeg](img-10.jpeg)\n\nIoU 0.57\n\n(iv) [NAME C10]\n\n![img-11.jpeg](img-11.jpeg)\n\nIoU 0.20\n\nFigure 5: Four ways to probe visual awareness. The green box shows the available visual region while the red dashed box shows the prediction. (i) We input the full image, but the model boxes the dominant person rather than the whole canvas. (ii, iii) When the context pixels are greyed out or its embeddings are zeroed, the model still locates the dominant person, likely using semantic shortcuts. (iv) In [NAME C10], the model answers with the whole canvas.\n\n## 5 EXPERIMENTS\n\nWe design experiments to answer four questions: (i) whether [NAME C10] measures visual awareness without semantic shortcuts, (ii) whether t",
+      "text_sha256": "4c67576247da2583fd7c7e52a9de6dddc2b9a555d154b838b89405efdec55a77"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\nTable 2: Performance on [NAME C10] task. Results are tested on the same 1,000 views of Table 1. Success@0.5 is the fraction of views with an IoU of at least 0.5.\n\n[tbl-1.html](tbl-1.html)\n\n![img-12.jpeg](img-12.jpeg)\n\nFigure 7: Permutation test. The grey bars mean IoU after re-pairing each prediction with the window of another image while the color lines show the IoU on the given image. The pretrained and SFT models show no positive dependence on the view.\n\nWe input the full image and ask the model about its visible region. (ii) Pixel operations. We paint the hidden region black or gray. (iii) Patch-embedding operations. We set the embeddings of the hidden patches to zero or to their mean. (iv) Crop based. We encode only the visible region, with either local or global positions used to compute the absolute positional embeddings in Qwen3-VL.\n\nWe evaluate each probe on the pretrained model using 1,000 views sampled from the RefCOCO validation images (Yu et al., 2016; Lin et al., 2014). As shown in Table 1, pixel- and patch-embedding-based probes achieve higher",
+      "text_sha256": "33f34933044cb77d35543227e47a611243659771f9ca7eb5c983dd074a18d616"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "378\n379\n380\n381\n382\n383\n384\n385\n386\n387\n388\n389\n390\n391\n392\n393\n394\n395\n396\n397\n398\n399\n400\n401\n402\n403\n404\n405\n406\n407\n408\n409\n410\n411\n412\n413\n414\n415\n416\n417\n418\n419\n420\n421\n422\n423\n424\n425\n426\n427\n428\n429\n430\n431\n\nTable 3: [NAME C10]. All 10,752 items, identical for every model. No image: features withheld, correct answer No. Real image: the expression's own image, correct answer Yes. Wrong image: the image of a different item, approximately No. For each condition we report the Yes rate in percent and the mean p(Yes). Gap is the real-image minus the no-image Yes rate. The bottom rows are other pretrained VLMs (Bai et al., 2025; Liu et al., 2024b; Gemma Team, 2026). †The image placeholder embedding of this model is untrained, so it answers neither Yes nor No without an image and the no-image results are not reported.\n\n[tbl-2.html](tbl-2.html)\n\nTable 4: [NAME C10] maintains general capabilities. We report accuracy (%) on MMStar, MMMU and MMMU-Pro and F1 score on POPE. We evaluate 500 items per benchmark.\n\n[tbl-3.html](tbl-3.html)\n\n### 5.4 DOES [NAME C10] FINE-TUNING IMPROVE [NAME C10]?\n\nWe next evaluate whether training on [NAME C10] improves visual awareness as measured by [NAME C10]. As shown in Table 3, [NAME C10] fine-tuning consistently improves performance. In particular, Ours (10:10)",
+      "text_sha256": "499b4ab1b5e281a9190971f6a30afffea469126e7de2346145a3f10f1b665dea"
+     },
+     {
+      "span_id": "A-page-0009",
+      "page": 9,
+      "location": "target PDF page 9",
+      "text": "432\n433\n434\n435\n436\n437\n438\n439\n440\n441\n442\n443\n444\n445\n446\n447\n448\n449\n450\n451\n452\n453\n454\n455\n456\n457\n458\n459\n460\n461\n462\n463\n464\n465\n466\n467\n468\n469\n470\n471\n472\n473\n474\n475\n476\n477\n478\n479\n480\n481\n482\n483\n484\n485\n\n## 6 RELATED WORK\n\nVisual hallucination. Existing benchmarks such as CHAIR (Rohrbach et al., 2018), POPE (Li et al., 2023), ROPE (Chen et al., 2024b), and HallusionBench (Guan et al., 2024) measure different forms of mismatch between visual evidence and generated claims, and methods address such errors through instruction data (Liu et al., 2024a), preference alignment (Sun et al., 2024), or decoding (Leng et al., 2024; Huang et al., 2024). Other studies expose limits of visual representations (Tong et al., 2024), elementary perception (Rahmanzadehgervi et al., 2024), and spatial relations (Kamath et al., 2023). Recently, Asadi et al. (2026) show the illusion even in frontier models where models describe images they were never given. [NAME C10] turns this observation into a quantitative measure, while [NAME C10] targets the underlying capability: knowing what visual input is available before reasoning about what it contains.\n\nSelf-supervised methods to mitigate hallucination. Context prediction (Doersch et al., 2015), jigsaw puzzles (Noroozi & Favaro, 2016), r",
+      "text_sha256": "2d33e43244787371353902f831a8490fd32f04a610cc02d7bae642181d6d53bb"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n## REPRODUCIBILITY STATEMENT\n\nSec. 3 specifies the [NAME C10] construction and the positional restoration, Sec. 4 the [NAME C10] construction and scoring, and Sec. 5.1 the training and evaluation protocol. App. A gives the instruction mixture and training recipe, App. E the prompts, and App. F the implementation checks. Accompanying scripts rebuild every table and figure from saved predictions without model inference and record hashes of their inputs.\n\n## ETHICS STATEMENT\n\nThe study uses existing research datasets and collects no new human-subject data. Images may depict identifiable people; any release must respect the source datasets' access and licensing terms. Improved awareness of visual input does not guarantee factual or safe outputs, and the models should not be described as having human-like awareness.\n\n## AI ASSISTANCE DISCLOSURE\n\nAI tools assisted with manuscript editing, analysis-code preparation, and figure layout.\n\n## REFERENCES\n\nMohammad Asadi, Jack W. O'Sullivan, Fang Cao, Tahoura Nedaee, Kamyar Rajabalifardi, Fei-Fei Li, Ehsan Adeli, and Euan",
+      "text_sha256": "54fd0da3e89ef383cd31b40cd4b9312c4a6fce4868a467cf4533dd265112c897"
+     },
+     {
+      "span_id": "A-page-0011",
+      "page": 11,
+      "location": "target PDF page 11",
+      "text": "540\n541\n542\n543\n544\n545\n546\n547\n548\n549\n550\n551\n552\n553\n554\n555\n556\n557\n558\n559\n560\n561\n562\n563\n564\n565\n566\n567\n568\n569\n570\n571\n572\n573\n574\n575\n576\n577\n578\n579\n580\n581\n582\n583\n584\n585\n586\n587\n588\n589\n590\n591\n592\n593\n\nKaiming He, Xinlei Chen, Saining Xie, Yanghao Li, Piotr Dollár, and Ross Girshick. Masked autoencoders are scalable vision learners. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 16000–16009, 2022.\n\nEdward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, and Weizhu Chen. LoRA: Low-rank adaptation of large language models. In International Conference on Learning Representations, 2022.\n\nQidong Huang, Xiaoyi Dong, Pan Zhang, Bin Wang, Conghui He, Jiaqi Wang, Dahua Lin, Weiming Zhang, and Nenghai Yu. OPERA: Alleviating hallucination in multi-modal large language models via over-trust penalty and retrospection-allocation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 13418–13427, 2024.\n\nAmita Kamath, Jack Hessel, and Kai-Wei Chang. What's \"up\" with vision-language models? investigating their struggle with spatial reasoning. In Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing, pp. 9161–9175, 2023.",
+      "text_sha256": "5008c39c480d785a5e1e86325c8ed5df06b03e628e636ab8961a81267ded42bc"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nDustin Schwenk, Apoorv Khandelwal, Christopher Clark, Kenneth Marino, and Roozbeh Mottaghi. A-OKVQA: A benchmark for visual question answering using world knowledge. In European Conference on Computer Vision, pp. 146–162, 2022.\n\nOleksii Sidorov, Ronghang Hu, Marcus Rohrbach, and Amanpreet Singh. TextCaps: A dataset for image captioning with reading comprehension. In European Conference on Computer Vision, pp. 742–758, 2020.\n\nAmanpreet Singh, Vivek Natarajan, Meet Shah, Yu Jiang, Xinlei Chen, Dhruv Batra, Devi Parikh, and Marcus Rohrbach. Towards VQA models that can read. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 8317–8326, 2019.\n\nJianlin Su, Murtadha Ahmed, Yu Lu, Shengfeng Pan, Wen Bo, and Yunfeng Liu. RoFormer: Enhanced transformer with rotary position embedding. Neurocomputing, 568:127063, 2024.\n\nZhiqing Sun, Sheng Shen, Shengcao Cao, Haotian Liu, Chunyuan Li, Yikang Shen, Chuang Gan, Liang-Yan Gui, Yu-Xiong Wang, Yiming Yang, Kurt Keutzer, and Trevor Darrell. Aligning large multimodal models with fact",
+      "text_sha256": "aac8f9439888fb496b312c6278ca986aab2f9a941c1b403a439d798a660b1e6c"
+     },
+     {
+      "span_id": "A-page-0013",
+      "page": 13,
+      "location": "target PDF page 13",
+      "text": "# A TRAINING DATA AND IMPLEMENTATION DETAILS\n\nTable A1: The instruction mixture replay datasets. [NAME C10] examples reuse its image pool.\n\n[tbl-4.html](tbl-4.html)\n\nWe train in bfloat16 using scaled dot-product attention and apply LoRA to all linear layers with rank 16 and α = 32, while keeping the vision encoder and projector frozen. We use a per-device batch size of 1 with 8 gradient-accumulation steps across four GPUs, giving an effective batch size of 32. Training runs for two epochs with a learning rate of 10⁻⁴, a warmup ratio of 0.05, a maximum sequence length of 4096, and a maximum image area of 1,003,520 pixels. We reserve 1% of the combined training examples for validation.\n\n# B IMPLEMENTATION OF THE [NAME C10] TASK\n\nSampling the window. The processor resizes image I to a canonical canvas of R_w × R_h pixels. For patch size p and spatial merge factor m, each visual token corresponds to a merge block of side c = pm, so the canvas contains B_w = R_w/c by B_h = R_h/c blocks. We sample a rectangle w = (b_x₀, b_y₀, b_x₁, b_y₁) on this block grid, with sides between 15% and 80% of the canvas, and serialize the target in the integer coordinate convention of Qwen3-VL:\n\n$$y(w) = 1000 \\left( \\frac{b_{x_0}}{B_w}, \\frac{b_{y_0}}{B_h}, \\frac{b_{x_1}}{B_w}, \\frac{b_{y_1}}{B_h} \\ri",
+      "text_sha256": "63641bfcdfc00d543e03bf23dc06dfd6a2c94908dff60527d14fe8859afe3cd1"
+     },
+     {
+      "span_id": "A-page-0015",
+      "page": 15,
+      "location": "target PDF page 15",
+      "text": "756\n757\n758\n759\n760\n761\n762\n763\n764\n765\n766\n767\n768\n769\n770\n771\n772\n773\n774\n775\n776\n777\n778\n779\n780\n781\n782\n783\n784\n785\n786\n787\n788\n789\n790\n791\n792\n793\n794\n795\n796\n797\n798\n799\n800\n801\n802\n803\n804\n805\n806\n807\n808\n809\n\n[tbl-6.html](tbl-6.html)\n\n## F VERIFYING THE POSITIONAL RESTORATION\n\nWe validate positional restoration independently of downstream performance. Translating the crop patch indices by the grid offset must exactly reproduce the corresponding rows of the full-image position indices. The same row mapping is used to select the absolute interpolation entries, so any indexing error affects both pathways and is detected by this check. We additionally use a painted-patch test to verify the processor's merge-block-major flattening order. After canonical resizing, cropping must leave the retained patch inputs unchanged, and the loader must not upsample the crop. During training, crop offsets must also survive the full dataset-loading pipeline. We therefore log the first active positional-override calls to detect any silent loss of these offsets.\n\nThe output parser supports both plain-text bounding boxes and the model's special-token box format. For all model comparisons, we verify that images, prompts, and target windows are identical, recompute IoU directly from",
+      "text_sha256": "16bfd0ab7ecd48c739f5472b735be546c477bbec012367e5cbec121cd949abc3"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-4766dff0d7f322",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": null,
+      "text_sha256": "7623e51520d8451b0816cf0b4345dd17b76931052764055844a9e94846ac8b14",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-1034a4133721b2",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": null,
+      "text_sha256": "9fe7811badbaabd21466f35dc9f29ad1a3a7e57c47562a8770332d2c9c547d12",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-ffd81344097d52",
+      "page": 3,
+      "location": "B PDF page 3",
+      "text": null,
+      "text_sha256": "693466c25292188c040def747a5eede6ec92ffbaf7e786b710e5d6e0c690b61e",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-6f80d3cffe134c",
+      "page": 6,
+      "location": "B PDF page 6",
+      "text": null,
+      "text_sha256": "a7dc6b5391e9607eda2492ae66583b36a0df5dce55aac917d3a51b33b5079e76",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-826c2a8b1f9826",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.10172v1#chars-0-209",
+      "text": null,
+      "text_sha256": "b6ce4002cecd703897826701071e49a7aec6e718e8c2dc79f33e578dacc45bb3",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-1622c25ce5c59b",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.10172v1#chars-15007-16019",
+      "text": null,
+      "text_sha256": "ca4eb5e5eb70bc9275aed4531ae78ce91f409970f233ea7a66d2cbe671a9c599",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-c8f65584c13644",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.10172v1#chars-1529-5416",
+      "text": null,
+      "text_sha256": "5b5d5a13dec99e03e892f28f5848437c2af6a8188f8cdbd3267069bc05420667",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-2a0661af0b0660",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.10172v1#chars-16201-18458",
+      "text": null,
+      "text_sha256": "c87e3337eeff50a6525f5e9043132d01c379091fea952a2619ade02440039ab6",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-e0e62515c06a4b",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.10172v1#chars-21953-23022",
+      "text": null,
+      "text_sha256": "3a6f52187bbe2b8218d24bb2d97a7f01f2ebae215d00594619c38a063ed0cad3",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ad5adf4548367e",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.10172v1#chars-27507-28445",
+      "text": null,
+      "text_sha256": "a6d84c075e551e2a3d286b18d786f38ddd0da02faf1a74acffd34b040f46e432",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-05efb910bfec08",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.10172v1#chars-31212-31337",
+      "text": null,
+      "text_sha256": "f05bb91b76ce6cab61a64bf0e6e7d5b5a710733a2f800be77c2f58949c0f11e0",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-b0c5c49e11adab",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.10172v1#chars-319-1511",
+      "text": null,
+      "text_sha256": "db31f75b404076bf8e0bf4d3f6dc430191ad361fd1aaa13c7338a113aca46d46",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-7501bf0c7335e9",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.10172v1#chars-5435-7469",
+      "text": null,
+      "text_sha256": "31f683fe8ea47671180fb768cc36142588addbc0a23a5e978a2d35619033fcd0",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-c19020395ee377",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.10172v1#chars-9712-11252",
+      "text": null,
+      "text_sha256": "68800d2b2b6534f4b4f37c1f723dbb445a2547150e0e90a030b7bd0dfc487eef",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     }
+    ]
+   }
+  },
+  {
+   "pair_id": "C10-P2",
+   "source_key": "arxiv-2604.21911",
+   "source_distribution": "included",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C10]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nVision-language models (VLMs) suffer from visual hallucination, such as saying an object that is not present in an image. We ask a more fundamental question: whether a VLM is even aware of where it is looking before understanding the semantic meaning in the image. We formulate this question as a [NAME C10] task: identifying which parts of its visual input were available to the model. We construct the task in a self-supervised way without manually labeling the available region to the model. Our experiments show that existing VLMs fail to localize the visible region. We further show that fine-tuning VLMs on the proposed [NAME C10] task improves a model's awareness of visual input.\n\n# 1 INTRODUCTION\n\nVision-language models (VLMs) can describe images fluently while referring to objects that are not actually present. This failure mode, commonly termed visual hallucination, has been widely evidenced (Rohrbach et al., 2018; Li et al., 2023; Chen et al., 2024b) and persists even in frontier models. For example, Asadi et al. (2026) show that Gemini-3-Pro, Gemini-2.5-Pro, Claude-Opus-4.5, and GPT-5.1 can readily produce detailed image descriptions and elaborate re",
+      "text_sha256": "32a3d9fa8d7aaca850f026a7621244dca291577b33cfcfc8793377433a6a3feb"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\nscene are semantically correct. We instead ask a more fundamental question that precedes semantic interpretation: Is a VLM aware of where it is looking in the first place before reasoning about what the visual input means?\n\nTo this end, we argue that general visual grounding can be organized into a three-level hierarchy as shown in Fig. 1: Look identifies where the model is looking, Perceive determines what is present there, and Understand uses this evidence to answer a question or draw an inference. We hypothesize that visual hallucination may arise as early as the first level, Look, a capability that remains largely untested by existing benchmarks. A model should ground its claims in available visual input when asserting that it sees something and, more fundamentally, should be aware of whether visual input is available at all.\n\nWe therefore propose [NAME C10], a task designed to probe a VLM's awareness of the visual input available to it. Specifically, the model is given an image crop and must localize the visible region as a bounding box in the coordinat",
+      "text_sha256": "b6397cbc7cdf8a09eb079eff2dab00af5aee06949da7d0d2197d2c4cc7f5087c"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n![img-1.jpeg](img-1.jpeg)\n\n![img-2.jpeg](img-2.jpeg)\n\n![img-3.jpeg](img-3.jpeg)\n\nFigure 2: Where does a hallucination originate? In this example, we ask what animal is grazing in a photograph of a dog on grassland, a model answers “a sheep”. The same wrong answer can arise at two levels of the hierarchy. At the Perceive level, the model uses the image but misrecognizes the dog. At the Look level, the model does not rely on the image at all, and “sheep” follows from the textual context.\n\nwhere  \\( \\hat{z} \\)  denotes observations and q a question. Particularly, the ordering of the hierarchy expresses the dependence of evidence to conclude the final visual understanding: a claim about what the image contains  \\( (P) \\)  or implies  \\( (U) \\)  should presuppose some account of what input was available  \\( (L) \\) . Consider the limiting case where an input that carries no visual content at all. In this case, the correct output of L is that nothing is visible, and every positive claim of P is a hallucination without grounding (Asadi et al., 2026).\n\nSource o",
+      "text_sha256": "5936a769d6ee1ade70f856030829db65f11b03a0a22a79b3b0fa9029aba104d4"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\n![img-4.jpeg](img-4.jpeg)\n\nFigure 3: Constructing a [NAME C10] example. We select a merge-block-aligned viewport and encode only its pixels for the VLM. Importantly, we restore positional metadata from the full canvas without encoding the excluded image content. The crop's coordinates provide the target automatically. Changed blocks indicate places where token positions are added.\n\nwhich preserves absolute positional information for image patches and thus provides the spatial cues needed to identify the available region. Specifically, as illustrated in Fig. 3, we preserve the crop's original full-image positions at two points in the architecture: the vision encoder's absolute positional embeddings ① and the language model's multimodal rotary positional embeddings (MRoPE) ②. In this way, the geometric information required for localization is explicitly available, allowing the model to identify its available visual region without relying on semantic cues to infer its location. The [NAME C10] task therefore directly probes whether the model can recognize where its vi",
+      "text_sha256": "d2f4a4188950e52d50e05ca95c401ac53b87c5301c0b0749082595215153d76d"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\n![img-5.jpeg](img-5.jpeg)\n\n(i) Real image\n\n![img-6.jpeg](img-6.jpeg)\n\n(ii) No image\n\n![img-7.jpeg](img-7.jpeg)\n\n(iii) Wrong image\n\nFigure 4: Illustration of [NAME C10] construction. All conditions use the same prompt, “Does this image contain: dog? Answer with Yes or No.”, with the only difference being the visual input. The grounded answer is Yes in (i) and No in (ii) and (iii).\n\n(i) Real image. The expression is paired with its original image, which contains the referred object; the correct answer is therefore Yes.\n(ii) No image. We bypass the vision encoder while retaining the \\(<|\\text{image\\_pad}|>\\) placeholder embedding at each visual-token position. This preserves the sequence length, token positions, and attention mask of the corresponding real-image input while removing all visual content. The correct answer is therefore No.\n(iii) Wrong image. Each image is paired with the expression of a different item, for which the expected answer is No.\n\nWe use the same 10,752 items, the same set of images and referring expressions throughout for the three",
+      "text_sha256": "2688d05720f0139904da4d152782a2804110990e5125a96d1d3fffa2d5c664d5"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "Table 1: Compare different probe methods for visual awareness. We report IoU of the pretrained Qwen3-VL when asked for the visible region over 1,000 views. IoU counts answers without a valid box as zero. Methods operating on pixels or patch embeddings fail to probe visual awareness because the model can exploit semantic shortcuts, often predicting the bounding box of the dominant object rather than the available visual region.\n\n[tbl-0.html](tbl-0.html)\n\n(i) Full image\n\n![img-8.jpeg](img-8.jpeg)\n\nIoU 0.47\n\n(ii) Pixel greyed\n\n![img-9.jpeg](img-9.jpeg)\n\nIoU 0.64\n\n(iii) Embedding zeroed\n\n![img-10.jpeg](img-10.jpeg)\n\nIoU 0.57\n\n(iv) [NAME C10]\n\n![img-11.jpeg](img-11.jpeg)\n\nIoU 0.20\n\nFigure 5: Four ways to probe visual awareness. The green box shows the available visual region while the red dashed box shows the prediction. (i) We input the full image, but the model boxes the dominant person rather than the whole canvas. (ii, iii) When the context pixels are greyed out or its embeddings are zeroed, the model still locates the dominant person, likely using semantic shortcuts. (iv) In [NAME C10], the model answers with the whole canvas.\n\n## 5 EXPERIMENTS\n\nWe design experiments to answer four questions: (i) whether [NAME C10] measures visual awareness without semantic shortcuts, (ii) whether t",
+      "text_sha256": "4c67576247da2583fd7c7e52a9de6dddc2b9a555d154b838b89405efdec55a77"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\nTable 2: Performance on [NAME C10] task. Results are tested on the same 1,000 views of Table 1. Success@0.5 is the fraction of views with an IoU of at least 0.5.\n\n[tbl-1.html](tbl-1.html)\n\n![img-12.jpeg](img-12.jpeg)\n\nFigure 7: Permutation test. The grey bars mean IoU after re-pairing each prediction with the window of another image while the color lines show the IoU on the given image. The pretrained and SFT models show no positive dependence on the view.\n\nWe input the full image and ask the model about its visible region. (ii) Pixel operations. We paint the hidden region black or gray. (iii) Patch-embedding operations. We set the embeddings of the hidden patches to zero or to their mean. (iv) Crop based. We encode only the visible region, with either local or global positions used to compute the absolute positional embeddings in Qwen3-VL.\n\nWe evaluate each probe on the pretrained model using 1,000 views sampled from the RefCOCO validation images (Yu et al., 2016; Lin et al., 2014). As shown in Table 1, pixel- and patch-embedding-based probes achieve higher",
+      "text_sha256": "33f34933044cb77d35543227e47a611243659771f9ca7eb5c983dd074a18d616"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "378\n379\n380\n381\n382\n383\n384\n385\n386\n387\n388\n389\n390\n391\n392\n393\n394\n395\n396\n397\n398\n399\n400\n401\n402\n403\n404\n405\n406\n407\n408\n409\n410\n411\n412\n413\n414\n415\n416\n417\n418\n419\n420\n421\n422\n423\n424\n425\n426\n427\n428\n429\n430\n431\n\nTable 3: [NAME C10]. All 10,752 items, identical for every model. No image: features withheld, correct answer No. Real image: the expression's own image, correct answer Yes. Wrong image: the image of a different item, approximately No. For each condition we report the Yes rate in percent and the mean p(Yes). Gap is the real-image minus the no-image Yes rate. The bottom rows are other pretrained VLMs (Bai et al., 2025; Liu et al., 2024b; Gemma Team, 2026). †The image placeholder embedding of this model is untrained, so it answers neither Yes nor No without an image and the no-image results are not reported.\n\n[tbl-2.html](tbl-2.html)\n\nTable 4: [NAME C10] maintains general capabilities. We report accuracy (%) on MMStar, MMMU and MMMU-Pro and F1 score on POPE. We evaluate 500 items per benchmark.\n\n[tbl-3.html](tbl-3.html)\n\n### 5.4 DOES [NAME C10] FINE-TUNING IMPROVE [NAME C10]?\n\nWe next evaluate whether training on [NAME C10] improves visual awareness as measured by [NAME C10]. As shown in Table 3, [NAME C10] fine-tuning consistently improves performance. In particular, Ours (10:10)",
+      "text_sha256": "499b4ab1b5e281a9190971f6a30afffea469126e7de2346145a3f10f1b665dea"
+     },
+     {
+      "span_id": "A-page-0009",
+      "page": 9,
+      "location": "target PDF page 9",
+      "text": "432\n433\n434\n435\n436\n437\n438\n439\n440\n441\n442\n443\n444\n445\n446\n447\n448\n449\n450\n451\n452\n453\n454\n455\n456\n457\n458\n459\n460\n461\n462\n463\n464\n465\n466\n467\n468\n469\n470\n471\n472\n473\n474\n475\n476\n477\n478\n479\n480\n481\n482\n483\n484\n485\n\n## 6 RELATED WORK\n\nVisual hallucination. Existing benchmarks such as CHAIR (Rohrbach et al., 2018), POPE (Li et al., 2023), ROPE (Chen et al., 2024b), and HallusionBench (Guan et al., 2024) measure different forms of mismatch between visual evidence and generated claims, and methods address such errors through instruction data (Liu et al., 2024a), preference alignment (Sun et al., 2024), or decoding (Leng et al., 2024; Huang et al., 2024). Other studies expose limits of visual representations (Tong et al., 2024), elementary perception (Rahmanzadehgervi et al., 2024), and spatial relations (Kamath et al., 2023). Recently, Asadi et al. (2026) show the illusion even in frontier models where models describe images they were never given. [NAME C10] turns this observation into a quantitative measure, while [NAME C10] targets the underlying capability: knowing what visual input is available before reasoning about what it contains.\n\nSelf-supervised methods to mitigate hallucination. Context prediction (Doersch et al., 2015), jigsaw puzzles (Noroozi & Favaro, 2016), r",
+      "text_sha256": "2d33e43244787371353902f831a8490fd32f04a610cc02d7bae642181d6d53bb"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n## REPRODUCIBILITY STATEMENT\n\nSec. 3 specifies the [NAME C10] construction and the positional restoration, Sec. 4 the [NAME C10] construction and scoring, and Sec. 5.1 the training and evaluation protocol. App. A gives the instruction mixture and training recipe, App. E the prompts, and App. F the implementation checks. Accompanying scripts rebuild every table and figure from saved predictions without model inference and record hashes of their inputs.\n\n## ETHICS STATEMENT\n\nThe study uses existing research datasets and collects no new human-subject data. Images may depict identifiable people; any release must respect the source datasets' access and licensing terms. Improved awareness of visual input does not guarantee factual or safe outputs, and the models should not be described as having human-like awareness.\n\n## AI ASSISTANCE DISCLOSURE\n\nAI tools assisted with manuscript editing, analysis-code preparation, and figure layout.\n\n## REFERENCES\n\nMohammad Asadi, Jack W. O'Sullivan, Fang Cao, Tahoura Nedaee, Kamyar Rajabalifardi, Fei-Fei Li, Ehsan Adeli, and Euan",
+      "text_sha256": "54fd0da3e89ef383cd31b40cd4b9312c4a6fce4868a467cf4533dd265112c897"
+     },
+     {
+      "span_id": "A-page-0011",
+      "page": 11,
+      "location": "target PDF page 11",
+      "text": "540\n541\n542\n543\n544\n545\n546\n547\n548\n549\n550\n551\n552\n553\n554\n555\n556\n557\n558\n559\n560\n561\n562\n563\n564\n565\n566\n567\n568\n569\n570\n571\n572\n573\n574\n575\n576\n577\n578\n579\n580\n581\n582\n583\n584\n585\n586\n587\n588\n589\n590\n591\n592\n593\n\nKaiming He, Xinlei Chen, Saining Xie, Yanghao Li, Piotr Dollár, and Ross Girshick. Masked autoencoders are scalable vision learners. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 16000–16009, 2022.\n\nEdward J. Hu, Yelong Shen, Phillip Wallis, Zeyuan Allen-Zhu, Yuanzhi Li, Shean Wang, Lu Wang, and Weizhu Chen. LoRA: Low-rank adaptation of large language models. In International Conference on Learning Representations, 2022.\n\nQidong Huang, Xiaoyi Dong, Pan Zhang, Bin Wang, Conghui He, Jiaqi Wang, Dahua Lin, Weiming Zhang, and Nenghai Yu. OPERA: Alleviating hallucination in multi-modal large language models via over-trust penalty and retrospection-allocation. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 13418–13427, 2024.\n\nAmita Kamath, Jack Hessel, and Kai-Wei Chang. What's \"up\" with vision-language models? investigating their struggle with spatial reasoning. In Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing, pp. 9161–9175, 2023.",
+      "text_sha256": "5008c39c480d785a5e1e86325c8ed5df06b03e628e636ab8961a81267ded42bc"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nDustin Schwenk, Apoorv Khandelwal, Christopher Clark, Kenneth Marino, and Roozbeh Mottaghi. A-OKVQA: A benchmark for visual question answering using world knowledge. In European Conference on Computer Vision, pp. 146–162, 2022.\n\nOleksii Sidorov, Ronghang Hu, Marcus Rohrbach, and Amanpreet Singh. TextCaps: A dataset for image captioning with reading comprehension. In European Conference on Computer Vision, pp. 742–758, 2020.\n\nAmanpreet Singh, Vivek Natarajan, Meet Shah, Yu Jiang, Xinlei Chen, Dhruv Batra, Devi Parikh, and Marcus Rohrbach. Towards VQA models that can read. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 8317–8326, 2019.\n\nJianlin Su, Murtadha Ahmed, Yu Lu, Shengfeng Pan, Wen Bo, and Yunfeng Liu. RoFormer: Enhanced transformer with rotary position embedding. Neurocomputing, 568:127063, 2024.\n\nZhiqing Sun, Sheng Shen, Shengcao Cao, Haotian Liu, Chunyuan Li, Yikang Shen, Chuang Gan, Liang-Yan Gui, Yu-Xiong Wang, Yiming Yang, Kurt Keutzer, and Trevor Darrell. Aligning large multimodal models with fact",
+      "text_sha256": "aac8f9439888fb496b312c6278ca986aab2f9a941c1b403a439d798a660b1e6c"
+     },
+     {
+      "span_id": "A-page-0013",
+      "page": 13,
+      "location": "target PDF page 13",
+      "text": "# A TRAINING DATA AND IMPLEMENTATION DETAILS\n\nTable A1: The instruction mixture replay datasets. [NAME C10] examples reuse its image pool.\n\n[tbl-4.html](tbl-4.html)\n\nWe train in bfloat16 using scaled dot-product attention and apply LoRA to all linear layers with rank 16 and α = 32, while keeping the vision encoder and projector frozen. We use a per-device batch size of 1 with 8 gradient-accumulation steps across four GPUs, giving an effective batch size of 32. Training runs for two epochs with a learning rate of 10⁻⁴, a warmup ratio of 0.05, a maximum sequence length of 4096, and a maximum image area of 1,003,520 pixels. We reserve 1% of the combined training examples for validation.\n\n# B IMPLEMENTATION OF THE [NAME C10] TASK\n\nSampling the window. The processor resizes image I to a canonical canvas of R_w × R_h pixels. For patch size p and spatial merge factor m, each visual token corresponds to a merge block of side c = pm, so the canvas contains B_w = R_w/c by B_h = R_h/c blocks. We sample a rectangle w = (b_x₀, b_y₀, b_x₁, b_y₁) on this block grid, with sides between 15% and 80% of the canvas, and serialize the target in the integer coordinate convention of Qwen3-VL:\n\n$$y(w) = 1000 \\left( \\frac{b_{x_0}}{B_w}, \\frac{b_{y_0}}{B_h}, \\frac{b_{x_1}}{B_w}, \\frac{b_{y_1}}{B_h} \\ri",
+      "text_sha256": "63641bfcdfc00d543e03bf23dc06dfd6a2c94908dff60527d14fe8859afe3cd1"
+     },
+     {
+      "span_id": "A-page-0015",
+      "page": 15,
+      "location": "target PDF page 15",
+      "text": "756\n757\n758\n759\n760\n761\n762\n763\n764\n765\n766\n767\n768\n769\n770\n771\n772\n773\n774\n775\n776\n777\n778\n779\n780\n781\n782\n783\n784\n785\n786\n787\n788\n789\n790\n791\n792\n793\n794\n795\n796\n797\n798\n799\n800\n801\n802\n803\n804\n805\n806\n807\n808\n809\n\n[tbl-6.html](tbl-6.html)\n\n## F VERIFYING THE POSITIONAL RESTORATION\n\nWe validate positional restoration independently of downstream performance. Translating the crop patch indices by the grid offset must exactly reproduce the corresponding rows of the full-image position indices. The same row mapping is used to select the absolute interpolation entries, so any indexing error affects both pathways and is detected by this check. We additionally use a painted-patch test to verify the processor's merge-block-major flattening order. After canonical resizing, cropping must leave the retained patch inputs unchanged, and the loader must not upsample the crop. During training, crop offsets must also survive the full dataset-loading pipeline. We therefore log the first active positional-override calls to detect any silent loss of these offsets.\n\nThe output parser supports both plain-text bounding boxes and the model's special-token box format. For all model comparisons, we verify that images, prompts, and target windows are identical, recompute IoU directly from",
+      "text_sha256": "16bfd0ab7ecd48c739f5472b735be546c477bbec012367e5cbec121cd949abc3"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-3d5dcca5d75326",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": "arXiv:2604.21911v1 [cs.CV] 23 Apr 2026\n\n# When Prompts Override Vision: Prompt-Induced Hallucinations in LVLMs\n\nPegah Khayatan \\( ^{1} \\)  Jayneel Parekh \\( ^{1} \\)  Arnaud Dapogny \\( ^{1} \\)  Mustafa Shukor \\( ^{1} \\)\n\nAlasdair Newson \\( ^{1} \\)  Matthieu Cord \\( ^{1,2} \\)\n\n\\( ^{1} \\) ISIR, Sorbonne Université, Paris, France  \\( ^{2} \\) Valeo.ai, Paris, France\n\n{pegah.khayatan}@sorbonne-universite.fr\n\n## Abstract\n\nDespite impressive progress in capabilities of large vision-language models (LVLMs), these systems remain vulnerable to hallucinations, i.e., outputs that are not grounded in the visual input. Prior work has attributed hallucinations in LVLMs to factors such as limitations of the vision backbone or the dominance of the language component, yet the relative importance of these factors remains unclear. To resolve this ambiguity, We propose HalluScope, a benchmark to better understand the extent to which different factors induce hallucinations. Our analysis indicates that hallucinations largely stem from excessive reliance on textual priors and background knowledge, especially information introduced through textual instructions. To mitigate hallucinations induced by textual instruction priors, we propose HalluVL-DPO, a framework for fine-tuning off-the-shelf",
+      "text_sha256": "aa32f502ac420ea0e90e80c6b3e4723cbf27af93378b87ccc5656122e0b2bb57"
+     },
+     {
+      "span_id": "B-ocr-faadbf870c63c5",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": "CHAIR [34], SHR [51], and MMHAL-Bench [38] do not distinguish between hallucinations originating from perception failures, learned object co-occurrence priors, or presuppositions introduced by the instruction itself. As a result, the relative contribution of these factors remains poorly understood, limiting both diagnosis and mitigation.\n\n![img-0.jpeg](img-0.jpeg)\n\n![img-1.jpeg](img-1.jpeg)\n\nFigure 1: Vision-language hallucination failure modes and mitigation. The model reliably recognizes present objects or the absence of random objects, but tends to hallucinate plausible yet absent (i.e., adversarial) objects, especially when the instruction presupposes their presence. Our HalluVL-DPO framework substantially mitigates this failure mode.\n\nTo address this limitation, we introduce HalluScope, a diagnostic benchmark to isolate distinct causes of hallucination in LVLMs. Rather than treating hallucination as a single phenomenon, HalluScope separates errors arising from (i) visual perception limitations, (ii) reliance on learned semantic priors, and (iii) reliance on presuppositions introduced by the instruction. Using this benchmark, we demonstrate that hallucinations in modern LVLMs are predominantly driven by textual instructions, even when visual perception remains ",
+      "text_sha256": "33e85f2bbf38a973c1859ffdbcd56f6f61b3aa146a09b14379ec800632abf34e"
+     },
+     {
+      "span_id": "B-ocr-59e38ee3ff9b12",
+      "page": 9,
+      "location": "B PDF page 9",
+      "text": "![img-4.jpeg](img-4.jpeg)\n\nFigure 4: Sample instances from the HalluVL-DPO training dataset. Visually grounded content is highlighted in green, while hallucinated content is shown in red. The chosen responses are more grounded than the rejected ones.\n\nkeeps the distribution of training dataset responses close to the model being optimized, which is crucial for an efficient DPO [49]. See Section C.2 for further details on the pipeline. Example samples from the dataset are illustrated in Figure 4.\n\nA limitation with standard unilateral hint augmentation strategy is that it can introduce reward hacking through length bias  \\( [37, 4] \\)  for description queries, i.e. biasing the model to generate very concise or verbose descriptions (examples in Section D). We propose two strategies, Contrastive Hint Augmentation and Post-Hoc Hallucination Injection to address this issue. Additionally, to improve the diversity of hallucinated content in the generated preference pairs we introduce Model-Assisted Answer Inversion.\n\n1. Contrastive Hint Augmentation: Unlike unilateral prompting, correct or incorrect hints are added to both the chosen and rejected instructions. This ensures length consistency between responses while maintaining a sharp preference signal.\n2. Post-Hoc Halluci",
+      "text_sha256": "36c5d868924827ea730fa37a124cb4204788875528869391144caef98079f8e0"
+     },
+     {
+      "span_id": "B-ocr-dc2327c3ca9e62",
+      "page": 18,
+      "location": "B PDF page 18",
+      "text": "# Overview\n\nSection A, describes the construction and the evaluation protocol for HalluScope benchmark\nSection B contains various implementation and evaluation details regarding hallucination mitigation experiments (preference optimization details, evaluation benchmarks, baselines).\n\nIn Section C, we provide additional details on the HalluVL-DPO framework, including sample-specific weighting based on semantic gap (Section C.1), the construction of the preference training dataset (Section C.2), and further qualitative results on HalluScope benchmark (Section C.3).\n\nIn Section D, we report additional experimental analysis, including examination of preference pair generation strategies (Section D.1) and the transferability of model-generated training data across architectures (Section D.2).\n\nFinally, Section E discusses limitations and the broader impact of our work.\n\n# A HalluScope\n\n## A.1 Benchmark Construction\n\n### Diverse Sample Pool.\n\nLet $\\mathcal{D} = \\{x_1, \\ldots, x_N\\}$ denote the set of all captions, and $f$ be a fixed sentence-embedding function (all-MiniLM-L6-v2 Sentence-BERT model [33] for us). To select a diverse subset $\\mathcal{S} \\subset \\mathcal{D}$ of size $K$, we apply the K-Center Greedy algorithm. It initializes $\\mathcal{S}$ with a random sampl",
+      "text_sha256": "bf3981970ff4a016343f8cd4da309ad8c296b4c718cd424e2eb7c13bb7cea159"
+     },
+     {
+      "span_id": "B-ocr-4ccd640e08e4a1",
+      "page": 26,
+      "location": "B PDF page 26",
+      "text": "![img-11.jpeg](img-11.jpeg)\n\nWhat color is the spoon visible in the picnic scene?\n\nThe spoon visible in the picnic scene is silver.\n\nThere is no existence of a spoon in the image.\n\n![img-12.jpeg](img-12.jpeg)\n\nWhat type of door does the microwave feature?\n\nThe microwave in the image features a door with a handle.\n\nThere is no microwave in the image.\n\n![img-13.jpeg](img-13.jpeg)\n\nWhat noticeable features does the backpack have in the crowd?\n\nThe backpack in the crowd is noticeable due to its bright color, which stands out against the background of the fireworks display.\n\nThere is no existence of a backpack in the image description.\n\n![img-14.jpeg](img-14.jpeg)\n\nWhat style of toilet is visible in the scene?\n\nThe image shows a modern style toilet, which is a white porcelain toilet with a sleek design.\n\nThere is no toilet visible in the scene.\n\n![img-15.jpeg](img-15.jpeg)\n\nWhat shape is the toaster shown in the kitchen scene?\n\nThe toaster in the kitchen scene is square-shaped.\n\nThere is no toaster shown in the kitchen scene.\n\n![img-16.jpeg](img-16.jpeg)\n\nWhat color is the truck parked along the street?\n\nThe truck parked along the street is white.\n\nI am not sure what color the truck parked along the street is. It can be seen as white, blue, or black.\n\nFigure 8: Adversar",
+      "text_sha256": "ad0105df356ffabb7ac058746f2b9e66e3c99bf871eb129f9603d233d28faab6"
+     },
+     {
+      "span_id": "B-84c552b2ec3f88",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21911v1#chars-1912-6565",
+      "text": "## 1 Introduction\n\nLarge Vision–Language Models (LVLMs) have recently achieved remarkable progress across multimodal tasks such as image captioning, visual reasoning, and instruction following [[20](#bib.bib20), [41](#bib.bib41), [14](#bib.bib14), [42](#bib.bib42), [46](#bib.bib46)]. Despite these advances, they are still prone to visual hallucinations [[38](#bib.bib38), [36](#bib.bib36), [2](#bib.bib2), [12](#bib.bib12)], i.e., generating outputs that are not grounded in the input visual information. Such failures limit the deployment of LVLMs in safety-critical applications such as autonomous systems and medical diagnosis.\nWhile even standalone\nvisual encoders can exhibit object hallucinations [[24](#bib.bib24), [16](#bib.bib16)],\nemerging evidence suggests a different failure mode: even when visual recognition is accurate, modern LVLMs frequently generate incorrect responses, reflecting the dominance of the text modality over the visual modality [[45](#bib.bib45), [15](#bib.bib15), [3](#bib.bib3)]. In such cases, the model’s output is more influenced by the learned object co-occurence priors or the text instruction rather than by the image itself, highlighting the stronger role of language priors in shaping response.\n\nThese observations point to a shift in failu",
+      "text_sha256": "c9593d1f04f76e9bf8d958ea829f1314525f3d6459351ce91bc5ff9d39e70507"
+     },
+     {
+      "span_id": "B-a5af270d12e7ef",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21911v1#chars-22756-24081",
+      "text": "## 4 HalluVL-DPO Framework\n\nIn this section, we introduce HalluVL-DPO, a framework for mitigating hallucination failures in LVLMs, particularly those caused by over-reliance on textual instruction presuppositions. Our approach fine-tunes LVLMs using a sample-informativeness based variant of Direct Preference Optimization (DPO) [[32](#bib.bib32)], post-training the model to prefer visually grounded responses over hallucinated ones ([Section 4.1](#S4.SS1 \"4.1 Weighted Preference Optimization ‣ 4 HalluVL-DPO Framework ‣ When Prompts Override Vision: Prompt-Induced Hallucinations in LVLMs\")).\nTo enable this fine-tuning, we construct a training dataset where each sample is paired with a preferred response and a rejected, hallucinated one. These response pairs provide explicit supervision for learning to favor more grounded outputs. We discuss the construction of this dataset and explore different strategies for constructing these response pairs in ([Section 4.2](#S4.SS2 \"4.2 Preference Dataset Construction ‣ 4 HalluVL-DPO Framework ‣ When Prompts Override Vision: Prompt-Induced Hallucinations in LVLMs\")), and further provide a detailed comparison in the ablation experiments ([Section 5.3](#S5.SS3 \"5.3 Further Analysis ‣ 5 Experiments ‣ When Prompts Override Vision: Prom",
+      "text_sha256": "ef777658c702e21f19fe986899838220af3cb6dcfb937c2acd7143a4dccdb0b6"
+     },
+     {
+      "span_id": "B-81256d0949c67c",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21911v1#chars-365-1912",
+      "text": "###### Abstract\n\nDespite impressive progress in capabilities of large vision-language models (LVLMs), these systems remain vulnerable to hallucinations, i.e., outputs that are not grounded in the visual input. Prior work has attributed hallucinations in LVLMs to factors such as limitations of the vision backbone or the dominance of the language component, yet the relative importance of these factors remains unclear. To resolve this ambiguity, We propose HalluScope, a benchmark to better understand the extent to which different factors induce hallucinations.\nOur analysis indicates that hallucinations largely stem from excessive reliance on textual priors and background knowledge, especially information introduced through textual instructions.\nTo mitigate hallucinations induced by textual instruction priors, we propose HalluVL-DPO, a framework for fine-tuning off-the-shelf LVLMs towards more visually grounded responses. HalluVL-DPO leverages preference optimization using a curated training dataset that we construct, guiding the model to prefer grounded responses over hallucinated ones.\nWe demonstrate that our optimized model effectively mitigates the targeted hallucination failure mode, while preserving or improving performance on other hallucination benchmarks and v",
+      "text_sha256": "35198e8315b23e63310d23271b798dff1e0a66670ba1a002ce25bde93e75939c"
+     },
+     {
+      "span_id": "B-4281d0d7c36353",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21911v1#chars-37898-41254",
+      "text": "### 5.3 Further Analysis\n\n![Refer to caption](2604.21911v1/Figures/Mitigating_Hallucinations/llava_hallucination_data_type.png)\n![Refer to caption](2604.21911v1/Figures/Mitigating_Hallucinations/llava_scaling_halllucination_metrics_new.png)\n\nEffect of query types on performance. Different types of preference pairs in the training data implicitly optimize for different objectives. To assess the contribution of task queries (other than description), we perform an ablation study: the overall training data composition remains identical, but one type of preference pair is removed at a time, keeping the total number of training samples constant.\nThe resulting performance drop on each evaluation benchmark provides an estimate of the importance of the ablated type of preference data for that benchmark. We illustrate this ablation in the left part of [Figure 5](#S5.F5 \"In 5.3 Further Analysis ‣ 5 Experiments ‣ When Prompts Override Vision: Prompt-Induced Hallucinations in LVLMs\"), which shows that ablating a preference types primarily affects evaluation benchmarks with similar question structures, whereas removing the proposed attribute pairs, generated using model-assisted answer inversion, consistently degrades performance across all benchmarks, indicating a more uniform ",
+      "text_sha256": "fa8342f5b6ecc3f986b809de7a4a5e815ffac4fd46cc54b2af583c31edd9bdcb"
+     },
+     {
+      "span_id": "B-6250bf164be327",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21911v1#chars-42669-44971",
+      "text": "## Overview\n\n[Appendix A](#A1 \"Appendix A HalluScope ‣ When Prompts Override Vision: Prompt-Induced Hallucinations in LVLMs\"), describes the construction and the evaluation protocol for HalluScope benchmark\n\n[Appendix B](#A2 \"Appendix B Implementation and Evaluation Details ‣ When Prompts Override Vision: Prompt-Induced Hallucinations in LVLMs\") contains various implementation and evaluation details regarding hallucination mitigation experiments (preference optimization details, evaluation benchmarks, baselines).\n\nIn [Appendix C](#A3 \"Appendix C HalluVL-DPO Framework ‣ When Prompts Override Vision: Prompt-Induced Hallucinations in LVLMs\"), we provide additional details on the HalluVL-DPO framework, including sample-specific weighting based on semantic gap ([Section C.1](#A3.SS1 \"C.1 Weighted Preference Optimization ‣ Appendix C HalluVL-DPO Framework ‣ When Prompts Override Vision: Prompt-Induced Hallucinations in LVLMs\")), the construction of the preference training dataset ([Section C.2](#A3.SS2 \"C.2 Preference Dataset Construction ‣ Appendix C HalluVL-DPO Framework ‣ When Prompts Override Vision: Prompt-Induced Hallucinations in LVLMs\")), and further qualitative results on HalluScope benchmark ([Section C.3](#A3.SS3 \"C.3 Qualitative Results ‣ Appendix C HalluVL-D",
+      "text_sha256": "53b39cd701c195e5aa5905981e37d40efd2d7d5dd4e3e34ac9ca500323e8b488"
+     },
+     {
+      "span_id": "B-fc0163923e8032",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21911v1#chars-51711-52453",
+      "text": "### B.1 Implementation Setup\n\nWe performed a grid search over LoRA rank ({64,128}\\{64,128\\}), α\\alpha (OPEN{128,256})\\{128,256\\}), and batch size ({16,32,64}\\{16,32,64\\}) for LLaVA-1.5-7B and Qwen2-VL-7B. Following standard practice, α\\alpha is set to twice the LoRA rank.\nThe optimal hyperparameters for LLaVA are (128,256,16)(128,256,16), which are identical for its weighted variant.\nFor Qwen, the best values are (128,256,64)(128,256,64) for the standard model and (64,128,16)(64,128,16) for the weighted variant.\nHyperparameters are selected to maximize gains on hallucination benchmarks while avoiding degradation on other tasks.\nRegardless of hyperparameter settings, training each model is completed in 6 hours on a single A100 GPU.",
+      "text_sha256": "4d4ca98ae86d450fa208d7b7a79edd86abafe0359b8186c73ed3bbe4a9a57b1f"
+     },
+     {
+      "span_id": "B-6e75c545fba2e9",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21911v1#chars-56623-56968",
+      "text": "##### MM-Vet [[50](#bib.bib50)].\n\nMM‑Vet evaluates a model’s ability to engage in visual conversations across diverse tasks, assessing both the correctness and helpfulness of responses using GPT‑4.\nThe benchmark contains 200 images and 218 questions, each paired with a ground-truth answer.\nTo reduce evaluation cost, we instead use GPT5-mini.",
+      "text_sha256": "ceb56f20dd0af408c27166acd89ab8e653201fdc3ac937a1f055547942bb01e1"
+     },
+     {
+      "span_id": "B-447640926b08c8",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21911v1#chars-62311-63732",
+      "text": "#### C.2.5 Preference Pair Construction.\n\nAs described in the main paper, for each sample we construct a preference pair consisting of a chosen and a rejected response.\nTo generate this contrastive pair, unilateral hint augmentation adds a hint about the presence or absence of objects to the task query. The hint itself may be correct or incorrect: a correct hint encourages a correct response to generate a chosen answer (e.g., confirming the absence of an absent object for CPQ queries), while an incorrect hint encourages an erroneous response to generate a rejected answer (e.g., suggesting the absence of a present object for TPQ and POPE queries). In the case of contrastive hint augmentaion, two contrastive hints are provided to induce different responses.\nFor Post-Hoc Hallucination Injection, we show the hallucination-inducing prefixes below. For Model-Assisted Answer Inversion, we show the prompt below, applied with GPT5-mini for TPQ task queries.\n\nThe Sentence-BERT (SBERT) embeddings of candidate chosen and rejected responses are compared, and if the cosine distance between them exceeds a predefined threshold, the sample is retained (with cosine distance serving as a proxy for detecting meaningfully different responses). We set the distance threshold to 0.90.9 fo",
+      "text_sha256": "fcb663aef50529d591298b8dc9e99042d59044b3df680f4f8912f77909d06de6"
+     },
+     {
+      "span_id": "B-02383142340256",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21911v1#chars-9917-10074",
+      "text": "## 3 HalluScope[Uncaptioned image]: Diagnosing Hallucinations in LVLMs\n\n![[Uncaptioned image]](2604.21911v1/Figures/Mitigating_Hallucinations/hallilu2.png)",
+      "text_sha256": "37a8c8aff8af830a6fbe5b107ffa7c8486bcb861b69a223ef68a0b40cde8f914"
+     }
+    ]
+   }
+  }
+ ],
+ "note": "Target spans are anonymized excerpts of the target text; page numbers refer to the original target PDF, which is not distributed."
+}

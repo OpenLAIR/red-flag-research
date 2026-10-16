@@ -1,0 +1,1184 @@
+{
+ "schema": "benchmark-source-licenses.v1",
+ "release_version": "0.3.0",
+ "checked_on": "2026-10-15",
+ "policy": {
+  "included": "Redistributed with attribution because the license is CC BY 4.0.",
+  "link_only": "Not redistributed. Use tools/fetch_sources.py to download the exact version and check its SHA-256.",
+  "withheld": "A candidate source whose saved title metadata matches the target title (title_match_status = MATCH) is the same work as the anonymized target; disclosing its identifier, title, URL or hash would identify the target, so it is withheld regardless of license."
+ },
+ "sources": [
+  {
+   "source_key": "arxiv-2509.00373",
+   "platform": "arxiv",
+   "identifier": "2509.00373",
+   "version": "v1",
+   "title": "Activation Steering Meets Preference Optimization: Defense Against Jailbreaks in Vision Language Models",
+   "authors": [
+    "Wu, Sihao",
+    "Jin, Gaojie",
+    "Huang, Wei",
+    "Wang, Jianhong",
+    "Huang, Xiaowei"
+   ],
+   "url": "https://arxiv.org/abs/2509.00373v1",
+   "download_url": "https://arxiv.org/pdf/2509.00373v1",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2509.00373 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "byte-identical to the PDF saved by the pipeline",
+   "versions_seen_in_pipeline_text": [
+    "v1"
+   ],
+   "sha256": "d7377def20bc1e80ceee912d9e1f63e0762542acd5db9c6a7fc971c90fb9eec1",
+   "bytes": 3227758,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2509.00373/paper.pdf",
+    "text": "sources/arxiv-2509.00373/text.md",
+    "attribution": "sources/arxiv-2509.00373/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C03-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2510.13003",
+   "platform": "arxiv",
+   "identifier": "2510.13003",
+   "version": "v1",
+   "title": "OPLoRA: Orthogonal Projection LoRA Prevents Catastrophic Forgetting during Parameter-Efficient Fine-Tuning",
+   "authors": [
+    "Xiong, Yifeng",
+    "Xie, Xiaohui"
+   ],
+   "url": "https://arxiv.org/abs/2510.13003v1",
+   "download_url": "https://arxiv.org/pdf/2510.13003v1",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2510.13003 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "byte-identical to the PDF saved by the pipeline",
+   "versions_seen_in_pipeline_text": [
+    "v1",
+    "v2"
+   ],
+   "sha256": "9bbeb840ef254b734ba7009ca18e7cadaf6d579f5f8cb3041cf465a9f2a636cd",
+   "bytes": 457581,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2510.13003/paper.pdf",
+    "text": "sources/arxiv-2510.13003/text.md",
+    "attribution": "sources/arxiv-2510.13003/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C04-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2510.21590",
+   "platform": "arxiv",
+   "identifier": "2510.21590",
+   "version": "v3",
+   "title": "Restore Text First, Enhance Image Later: Two-Stage Scene Text Image Super-Resolution with Glyph Structure Guidance",
+   "authors": [
+    "Luo, Minxing",
+    "Fan, Linlong",
+    "Qiushi, Wang",
+    "Wu, Ge",
+    "Luo, Yiyan",
+    "Yu, Yuhang",
+    "Chen, Jinwei",
+    "Wang, Yaxing",
+    "Fan, Qingnan",
+    "Yang, Jian"
+   ],
+   "url": "https://arxiv.org/abs/2510.21590v3",
+   "download_url": "https://arxiv.org/pdf/2510.21590v3",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2510.21590 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "unversioned",
+    "v3"
+   ],
+   "sha256": "7a2efbca8dcb93ad89626c91f3f68a3ebf4e733a64c23f155d27e3493cdb6bf9",
+   "bytes": 29166431,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2510.21590/paper.pdf",
+    "text": "sources/arxiv-2510.21590/text.md",
+    "attribution": "sources/arxiv-2510.21590/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C17-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2511.06424",
+   "platform": "arxiv",
+   "identifier": "2511.06424",
+   "version": "v2",
+   "title": "Turbo-DDCM: Fast and Flexible Zero-Shot Diffusion-Based Image Compression",
+   "authors": [
+    "Vaisman, Amit",
+    "Ohayon, Guy",
+    "Manor, Hila",
+    "Elad, Michael",
+    "Michaeli, Tomer"
+   ],
+   "url": "https://arxiv.org/abs/2511.06424v2",
+   "download_url": "https://arxiv.org/pdf/2511.06424v2",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2511.06424 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v2"
+   ],
+   "sha256": "df0aba60cf50b2971f6ca941fc1dbb46381addb1ea67581f1c0b573d15c11ddf",
+   "bytes": 14182530,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2511.06424/paper.pdf",
+    "text": "sources/arxiv-2511.06424/text.md",
+    "attribution": "sources/arxiv-2511.06424/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C01-P2"
+   ]
+  },
+  {
+   "source_key": "arxiv-2511.16301",
+   "platform": "arxiv",
+   "identifier": "2511.16301",
+   "version": "v2",
+   "title": "Upsample Anything: A Simple and Hard to Beat Baseline for Feature Upsampling",
+   "authors": [
+    "Seo, Minseok",
+    "Hamilton, Mark",
+    "Kim, Changick"
+   ],
+   "url": "https://arxiv.org/abs/2511.16301v2",
+   "download_url": "https://arxiv.org/pdf/2511.16301v2",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2511.16301 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v1",
+    "v2"
+   ],
+   "sha256": "2ec25af58bffc0df2ac8942c0fbbc3642448dcfeb2848152b257a5b57afaf2c6",
+   "bytes": 3295198,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2511.16301/paper.pdf",
+    "text": "sources/arxiv-2511.16301/text.md",
+    "attribution": "sources/arxiv-2511.16301/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C06-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2601.09361",
+   "platform": "arxiv",
+   "identifier": "2601.09361",
+   "version": "v2",
+   "title": "GeoRA: Geometry-Aware Low-Rank Adaptation for RLVR",
+   "authors": [
+    "Zhang, Jiaying",
+    "Shi, Lei",
+    "Li, Jiguo",
+    "Xu, Jun",
+    "Gao, Jiuchong",
+    "Hao, Jinghua",
+    "He, Renqing"
+   ],
+   "url": "https://arxiv.org/abs/2601.09361v2",
+   "download_url": "https://arxiv.org/pdf/2601.09361v2",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2601.09361 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "byte-identical to the PDF saved by the pipeline",
+   "versions_seen_in_pipeline_text": [
+    "v2",
+    "v4"
+   ],
+   "sha256": "bd23cc46374616f17a8a730ab39c94f9b48e87c92460c2395772cdfce6e86da2",
+   "bytes": 818773,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2601.09361/paper.pdf",
+    "text": "sources/arxiv-2601.09361/text.md",
+    "attribution": "sources/arxiv-2601.09361/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C04-P2"
+   ]
+  },
+  {
+   "source_key": "arxiv-2601.17898",
+   "platform": "arxiv",
+   "identifier": "2601.17898",
+   "version": "v3",
+   "title": "Assessment of Generative Named Entity Recognition in the Era of Large Language Models",
+   "authors": [
+    "Zhan, Qi",
+    "Wang, Yile",
+    "Huang, Hui"
+   ],
+   "url": "https://arxiv.org/abs/2601.17898v3",
+   "download_url": "https://arxiv.org/pdf/2601.17898v3",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2601.17898 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v1",
+    "v3"
+   ],
+   "sha256": "838b5e681b80cea6a9903cb53517177f7e0dc09e69b0e394bb55108fe473f92b",
+   "bytes": 807137,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2601.17898/paper.pdf",
+    "text": "sources/arxiv-2601.17898/text.md",
+    "attribution": "sources/arxiv-2601.17898/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C20-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2602.12670",
+   "platform": "arxiv",
+   "identifier": "2602.12670",
+   "version": "v4",
+   "title": "SkillsBench: Benchmarking How Well Agent Skills Work Across Diverse Tasks",
+   "authors": [
+    "Li, Xiangyi",
+    "Liu, Yimin",
+    "Chen, Wenbo",
+    "You, Bingran",
+    "Di, Zonglin",
+    "He, Yifeng",
+    "Zheng, Shenghan",
+    "Choe, Kyoung Whan",
+    "Sun, Jiankai",
+    "Wang, Shuyi",
+    "Tao, Chujun",
+    "Li, Binxu",
+    "Zhao, Xuandong",
+    "Geng, Hejia",
+    "Wu, Xiaojun",
+    "Zhou, Junwei",
+    "Chen, Xiaokun",
+    "Xing, Hanwen",
+    "Li, Yubo",
+    "Zeng, Qunhong",
+    "Wang, Di",
+    "Wang, Yuanli",
+    "Chaim, Roey Ben",
+    "Jiang, Penghao",
+    "Shen, Haotian",
+    "Kong, Luyang",
+    "Liu, Xinyi",
+    "Wang, Runhui",
+    "Liu, Xuanqing",
+    "Li, Jiachen",
+    "Lan, Xin",
+    "Lin, Yueqian",
+    "Ye, Wengao",
+    "He, Junwei",
+    "Li, Songlin",
+    "Zhang, Yue",
+    "Gao, Yipeng",
+    "Li, Yijiang",
+    "Ma, Ze",
+    "Jing, Liqiang",
+    "Wang, Tianyu",
+    "Li, Kaixin",
+    "Xue, Yiqi",
+    "Lyu, Haoran",
+    "He, Yizhuo",
+    "Tian, Yuchen",
+    "Wu, Shutong",
+    "Wang, Bowei",
+    "Gao, Yixuan",
+    "Chen, Bo",
+    "Liu, Litong",
+    "Cheng, Sikai",
+    "Bao, Jiajun",
+    "Tong, Shuaicheng",
+    "Xu, Shuwen",
+    "Zhuo, Terry Yue",
+    "Ye, Tinghan",
+    "Qi, Qi",
+    "Li, Miao",
+    "Liao, Longtai",
+    "Tan, Zelin",
+    "Shi, Chang",
+    "Tang, Xilin",
+    "Tankasala, Srinath",
+    "Yuan, Boqin",
+    "Qian, Yaoyao",
+    "Tu, Jianhong",
+    "Wang, Chenguang",
+    "Sun, Yizhou",
+    "Wang, Wei",
+    "Taylor, Aaron",
+    "Yang, Ziyue",
+    "Guan, Changkun",
+    "Dong, Zhikang",
+    "Zhang, Xinyu",
+    "Dillmann, Steven",
+    "Lee, Han-chung",
+    "Song, Dawn"
+   ],
+   "url": "https://arxiv.org/abs/2602.12670v4",
+   "download_url": "https://arxiv.org/pdf/2602.12670v4",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2602.12670 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v4"
+   ],
+   "sha256": "e987ebc3f0084a1ffc8acbca58259e33120b95fcef3876abfad060e169cf210b",
+   "bytes": 1769852,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2602.12670/paper.pdf",
+    "text": "sources/arxiv-2602.12670/text.md",
+    "attribution": "sources/arxiv-2602.12670/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C14-P2"
+   ]
+  },
+  {
+   "source_key": "arxiv-2604.01375",
+   "platform": "arxiv",
+   "identifier": "2604.01375",
+   "version": "v2",
+   "title": "The Hitchhikers Guide to Rubric Quality Understanding and Enrichment",
+   "authors": [
+    "Aich, Ankit",
+    "Qi, Zhengyang",
+    "Dickens, Charles",
+    "Pham, Derek",
+    "Sharma, Esha",
+    "Viktorov, Josh",
+    "Dsouza, Amanda",
+    "Parchami, Armin",
+    "Sala, Frederic",
+    "Varma, Paroma"
+   ],
+   "url": "https://arxiv.org/abs/2604.01375v2",
+   "download_url": "https://arxiv.org/pdf/2604.01375v2",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2604.01375 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "version of the arXiv HTML text used by the pipeline",
+   "versions_seen_in_pipeline_text": [
+    "v2"
+   ],
+   "sha256": "4dbabe277b9f643948d8d878ea1f54e8db005feca6fe16a4472fc072ecacc4a2",
+   "bytes": 309032,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2604.01375/paper.pdf",
+    "text": "sources/arxiv-2604.01375/text.md",
+    "attribution": "sources/arxiv-2604.01375/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C14-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2604.16079",
+   "platform": "arxiv",
+   "identifier": "2604.16079",
+   "version": "v2",
+   "title": "The Amazing Stability of Flow Matching",
+   "authors": [
+    "Briq, Rania",
+    "Kamp, Michael",
+    "Fried, Ohad",
+    "Cohen, Sarel",
+    "Kesselheim, Stefan"
+   ],
+   "url": "https://arxiv.org/abs/2604.16079v2",
+   "download_url": "https://arxiv.org/pdf/2604.16079v2",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2604.16079 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v2"
+   ],
+   "sha256": "fbbb06db77d07c186194ceee8e99f72c053ada7f6520d9186493538c7b703a73",
+   "bytes": 9259946,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2604.16079/paper.pdf",
+    "text": "sources/arxiv-2604.16079/text.md",
+    "attribution": "sources/arxiv-2604.16079/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C07-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2604.21911",
+   "platform": "arxiv",
+   "identifier": "2604.21911",
+   "version": "v1",
+   "title": "When Prompts Override Vision: Prompt-Induced Hallucinations in LVLMs",
+   "authors": [
+    "Khayatan, Pegah",
+    "Parekh, Jayneel",
+    "Dapogny, Arnaud",
+    "Shukor, Mustafa",
+    "Newson, Alasdair",
+    "Cord, Matthieu"
+   ],
+   "url": "https://arxiv.org/abs/2604.21911v1",
+   "download_url": "https://arxiv.org/pdf/2604.21911v1",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2604.21911 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v1"
+   ],
+   "sha256": "6acd34290893ea7911fd33119146e486cef61acfe241bf7c5ba8bc35af3ecc7d",
+   "bytes": 16091344,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2604.21911/paper.pdf",
+    "text": "sources/arxiv-2604.21911/text.md",
+    "attribution": "sources/arxiv-2604.21911/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C10-P2"
+   ]
+  },
+  {
+   "source_key": "arxiv-2605.10816",
+   "platform": "arxiv",
+   "identifier": "2605.10816",
+   "version": "v1",
+   "title": "Policy Gradient Methods for Non-Markovian Reinforcement Learning",
+   "authors": [
+    "Kar, Avik",
+    "Chandak, Siddharth",
+    "Singh, Rahul",
+    "Sinhahajari, Soumitra",
+    "Moulines, Eric",
+    "Bhatnagar, Shalabh",
+    "Bambos, Nicholas"
+   ],
+   "url": "https://arxiv.org/abs/2605.10816v1",
+   "download_url": "https://arxiv.org/pdf/2605.10816v1",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2605.10816 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v1"
+   ],
+   "sha256": "37ddf8dcd9bfed29a0dc4f13d64d7d8c34752e168359e3d241b291911f15b492",
+   "bytes": 874080,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2605.10816/paper.pdf",
+    "text": "sources/arxiv-2605.10816/text.md",
+    "attribution": "sources/arxiv-2605.10816/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C19-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2606.13108",
+   "platform": "arxiv",
+   "identifier": "2606.13108",
+   "version": "v1",
+   "title": "PP-OCRv6: From 1.5M to 34.5M Parameters, Surpassing Billion-Scale VLMs on OCR Tasks",
+   "authors": [
+    "Zhang, Yubo",
+    "Wang, Xueqing",
+    "Lin, Manhui",
+    "Zhang, Yue",
+    "Deng, Penglongyi",
+    "Sun, Ting",
+    "Gao, Tingquan",
+    "Zhang, Zelun",
+    "Liu, Jiaxuan",
+    "Zhou, Changda",
+    "Liu, Hongen",
+    "Liang, Suyin",
+    "Cui, Cheng",
+    "Liu, Yi",
+    "Yu, Dianhai",
+    "Ma, Yanjun"
+   ],
+   "url": "https://arxiv.org/abs/2606.13108v1",
+   "download_url": "https://arxiv.org/pdf/2606.13108v1",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2606.13108 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v1"
+   ],
+   "sha256": "9e751424f9bcf30ea04e4bd2654a11cc4455dd4e218e743a31db1468e9d6e89a",
+   "bytes": 12509635,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2606.13108/paper.pdf",
+    "text": "sources/arxiv-2606.13108/text.md",
+    "attribution": "sources/arxiv-2606.13108/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C17-P2"
+   ]
+  },
+  {
+   "source_key": "arxiv-2607.14661",
+   "platform": "arxiv",
+   "identifier": "2607.14661",
+   "version": "v2",
+   "title": "SmartRAG: Native Graph-Based RAG for Mobile Device",
+   "authors": [
+    "Jiang, Zhihan",
+    "Li, Meng",
+    "Liu, Shenghao",
+    "Li, Keran",
+    "Zhou, Ruiben",
+    "Wang, Wei",
+    "Deng, Xianjun",
+    "Wang, Shuai",
+    "Dai, Haipeng"
+   ],
+   "url": "https://arxiv.org/abs/2607.14661v2",
+   "download_url": "https://arxiv.org/pdf/2607.14661v2",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2607.14661 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v2"
+   ],
+   "sha256": "3e6b78fb5295b146e3fc21cca5a0ac50a298f7b904709620147830e59e4c4bec",
+   "bytes": 554723,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/arxiv-2607.14661/paper.pdf",
+    "text": "sources/arxiv-2607.14661/text.md",
+    "attribution": "sources/arxiv-2607.14661/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: unmodified copy of the file at download_url. text.md: excerpts extracted by the project pipeline from the arXiv HTML and/or PDF (versions in versions_seen_in_pipeline_text), converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C20-P2"
+   ]
+  },
+  {
+   "source_key": "openreview-43sdvmeqPe",
+   "platform": "openreview",
+   "identifier": "43sdvmeqPe",
+   "version": null,
+   "title": "CogOmniControl: Reasoning-Driven Controllable Video Generation via Creative Intent Cognition",
+   "authors": "Anonymous authors (ICLR 2027 submission under double-blind review)",
+   "venue_note": "ICLR 2027 submission #20171 on OpenReview",
+   "url": "https://openreview.net/forum?id=43sdvmeqPe",
+   "download_url": "https://openreview.net/pdf?id=43sdvmeqPe",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "OpenReview note field `license` in the local ICLR 2027 explorer metadata snapshot (submissions.raw.jsonl, collected 2026-10-08); the public API required an interactive challenge on 2026-10-15 and was not queried",
+   "version_basis": "PDF saved by the pipeline from OpenReview",
+   "sha256": "61512a632db7e459e93bc2617865dafe143b060b90ae2a18350b8e4d55efca1d",
+   "bytes": 33945934,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/openreview-43sdvmeqPe/paper.pdf",
+    "text": "sources/openreview-43sdvmeqPe/text.md",
+    "attribution": "sources/openreview-43sdvmeqPe/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: copy of the PDF the pipeline downloaded from OpenReview. text.md: excerpts extracted by the project pipeline, converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C12-P2"
+   ]
+  },
+  {
+   "source_key": "openreview-6EN1A4ESWH",
+   "platform": "openreview",
+   "identifier": "6EN1A4ESWH",
+   "version": null,
+   "title": "CtrlMol: Controllable Molecular Generation for Drug Design via Flexible Condition-Adaptive Diffusion",
+   "authors": "Anonymous authors (ICLR 2027 submission under double-blind review)",
+   "venue_note": "ICLR 2027 submission #24725 on OpenReview",
+   "url": "https://openreview.net/forum?id=6EN1A4ESWH",
+   "download_url": "https://openreview.net/pdf?id=6EN1A4ESWH",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "OpenReview note field `license` in the local ICLR 2027 explorer metadata snapshot (submissions.raw.jsonl, collected 2026-10-08); the public API required an interactive challenge on 2026-10-15 and was not queried",
+   "version_basis": "PDF saved by the pipeline from OpenReview",
+   "sha256": "a3aa6e3ad372ed60d5b41f36998e372d9a6fbc753f52836dbc270e955b15c4b9",
+   "bytes": 1325129,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/openreview-6EN1A4ESWH/paper.pdf",
+    "text": "sources/openreview-6EN1A4ESWH/text.md",
+    "attribution": "sources/openreview-6EN1A4ESWH/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: copy of the PDF the pipeline downloaded from OpenReview. text.md: excerpts extracted by the project pipeline, converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C12-P1"
+   ]
+  },
+  {
+   "source_key": "openreview-8OOMlVFxb0",
+   "platform": "openreview",
+   "identifier": "8OOMlVFxb0",
+   "version": null,
+   "title": "What Algorithm Can Transformers Learn in Closed-Loop Interaction?",
+   "authors": "Anonymous authors (ICLR 2027 submission under double-blind review)",
+   "venue_note": "ICLR 2027 submission #14865 on OpenReview",
+   "url": "https://openreview.net/forum?id=8OOMlVFxb0",
+   "download_url": "https://openreview.net/pdf?id=8OOMlVFxb0",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "OpenReview note field `license` in the local ICLR 2027 explorer metadata snapshot (submissions.raw.jsonl, collected 2026-10-08); the public API required an interactive challenge on 2026-10-15 and was not queried",
+   "version_basis": "PDF saved by the pipeline from OpenReview",
+   "sha256": "5c6f5725708ae560f88887012bc8d306851b5af7fb28dfca656df73660b0077c",
+   "bytes": 1023862,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/openreview-8OOMlVFxb0/paper.pdf",
+    "text": "sources/openreview-8OOMlVFxb0/text.md",
+    "attribution": "sources/openreview-8OOMlVFxb0/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: copy of the PDF the pipeline downloaded from OpenReview. text.md: excerpts extracted by the project pipeline, converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C09-P1"
+   ]
+  },
+  {
+   "source_key": "openreview-PAKyCRDWkv",
+   "platform": "openreview",
+   "identifier": "PAKyCRDWkv",
+   "version": null,
+   "title": "V-ICAL Bench: Evaluating Video In-Context Learning for Multimodal Agents in Interactive Environments",
+   "authors": "Anonymous authors (ICLR 2027 submission under double-blind review)",
+   "venue_note": "ICLR 2027 submission #6074 on OpenReview",
+   "url": "https://openreview.net/forum?id=PAKyCRDWkv",
+   "download_url": "https://openreview.net/pdf?id=PAKyCRDWkv",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "OpenReview note field `license` in the local ICLR 2027 explorer metadata snapshot (submissions.raw.jsonl, collected 2026-10-08); the public API required an interactive challenge on 2026-10-15 and was not queried",
+   "version_basis": "PDF saved by the pipeline from OpenReview",
+   "sha256": "43434e7500b0bf0bdfeca76f2d69006db486d78133986a0bf30a7d1b629508ec",
+   "bytes": 8710925,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/openreview-PAKyCRDWkv/paper.pdf",
+    "text": "sources/openreview-PAKyCRDWkv/text.md",
+    "attribution": "sources/openreview-PAKyCRDWkv/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: copy of the PDF the pipeline downloaded from OpenReview. text.md: excerpts extracted by the project pipeline, converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C05-P1"
+   ]
+  },
+  {
+   "source_key": "openreview-yHxCX7wnSJ",
+   "platform": "openreview",
+   "identifier": "yHxCX7wnSJ",
+   "version": null,
+   "title": "Muon on the Quotient: Gauge-Equivariant Descent for Homogeneous Networks",
+   "authors": "Anonymous authors (ICLR 2027 submission under double-blind review)",
+   "venue_note": "ICLR 2027 submission #8377 on OpenReview",
+   "url": "https://openreview.net/forum?id=yHxCX7wnSJ",
+   "download_url": "https://openreview.net/pdf?id=yHxCX7wnSJ",
+   "license": "CC BY 4.0",
+   "license_url": "https://creativecommons.org/licenses/by/4.0/",
+   "license_evidence": "OpenReview note field `license` in the local ICLR 2027 explorer metadata snapshot (submissions.raw.jsonl, collected 2026-10-08); the public API required an interactive challenge on 2026-10-15 and was not queried",
+   "version_basis": "PDF saved by the pipeline from OpenReview",
+   "sha256": "f83eb888a912f68f069db4247e4faf559b3c917e4744c2675dc2cddc781b83aa",
+   "bytes": 1874825,
+   "distribution": "included",
+   "files": {
+    "pdf": "sources/openreview-yHxCX7wnSJ/paper.pdf",
+    "text": "sources/openreview-yHxCX7wnSJ/text.md",
+    "attribution": "sources/openreview-yHxCX7wnSJ/ATTRIBUTION.md"
+   },
+   "changes": "paper.pdf: copy of the PDF the pipeline downloaded from OpenReview. text.md: excerpts extracted by the project pipeline, converted to Markdown, with section locators added; not the complete paper; extraction errors possible.",
+   "used_by_pairs": [
+    "C11-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2509.22047",
+   "platform": "arxiv",
+   "identifier": "2509.22047",
+   "version": "v3",
+   "title": "MO-GRPO: Mitigating Reward Hacking of Group Relative Policy Optimization on Multi-Objective Problems",
+   "authors": [
+    "Ichihara, Yuki",
+    "Jinnai, Yuu",
+    "Morimura, Tetsuro",
+    "Sakamoto, Mitsuki",
+    "Mitsuhashi, Ryota",
+    "Uchibe, Eiji"
+   ],
+   "url": "https://arxiv.org/abs/2509.22047v3",
+   "download_url": "https://arxiv.org/pdf/2509.22047v3",
+   "license": "arXiv non-exclusive distribution license 1.0",
+   "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2509.22047 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v3"
+   ],
+   "sha256": "8a556959ea26ae2f17a214e7550046d601f8e86807076a80e2709d446f7ad391",
+   "bytes": 1729289,
+   "distribution": "link_only",
+   "files": null,
+   "changes": null,
+   "used_by_pairs": [
+    "C15-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2510.10262",
+   "platform": "arxiv",
+   "identifier": "2510.10262",
+   "version": "v2",
+   "title": "Enhancing the Cross-Size Generalization for Solving Vehicle Routing Problems via Continual Learning",
+   "authors": [
+    "Li, Jingwen",
+    "Cao, Zhiguang",
+    "Wu, Yaoxin",
+    "Liu, Tang"
+   ],
+   "url": "https://arxiv.org/abs/2510.10262v2",
+   "download_url": "https://arxiv.org/pdf/2510.10262v2",
+   "license": "CC BY-NC-SA 4.0",
+   "license_url": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2510.10262 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v1",
+    "v2"
+   ],
+   "sha256": "8707a5b78022779a0de66faf9e9ea6f14544905a56dcfd72cbcf6e1437865620",
+   "bytes": 703601,
+   "distribution": "link_only",
+   "files": null,
+   "changes": null,
+   "used_by_pairs": [
+    "C02-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2510.25941",
+   "platform": "arxiv",
+   "identifier": "2510.25941",
+   "version": "v3",
+   "title": "RECAP: Reproducing Copyrighted Data from LLMs Training with an Agentic Pipeline",
+   "authors": [
+    "Duarte, André V.",
+    "li, Xuying",
+    "Zeng, Bin",
+    "Oliveira, Arlindo L.",
+    "Li, Lei",
+    "Li, Zhuo"
+   ],
+   "url": "https://arxiv.org/abs/2510.25941v3",
+   "download_url": "https://arxiv.org/pdf/2510.25941v3",
+   "license": "arXiv non-exclusive distribution license 1.0",
+   "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2510.25941 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v1",
+    "v3"
+   ],
+   "sha256": "99ff6d34ceed151e1c7b237efd93fd3e42d7e68c448979ed35c9dd889defaa0d",
+   "bytes": 1736755,
+   "distribution": "link_only",
+   "files": null,
+   "changes": null,
+   "used_by_pairs": [
+    "C08-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2603.06009",
+   "platform": "arxiv",
+   "identifier": "2603.06009",
+   "version": "v2",
+   "title": "Preventing Learning Stagnation in PPO by Scaling to 1 Million Parallel Environments",
+   "authors": [
+    "Beukman, Michael",
+    "Khetarpal, Khimya",
+    "Zheng, Zeyu",
+    "Dabney, Will",
+    "Foerster, Jakob",
+    "Dennis, Michael",
+    "Lyle, Clare"
+   ],
+   "url": "https://arxiv.org/abs/2603.06009v2",
+   "download_url": "https://arxiv.org/pdf/2603.06009v2",
+   "license": "arXiv non-exclusive distribution license 1.0",
+   "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2603.06009 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v1",
+    "v2"
+   ],
+   "sha256": "5433bebf3b43afd3c63d31154726600543c3c71492d74fa611088c6b3f5f42d5",
+   "bytes": 3665686,
+   "distribution": "link_only",
+   "files": null,
+   "changes": null,
+   "used_by_pairs": [
+    "C02-P2"
+   ]
+  },
+  {
+   "source_key": "arxiv-2603.25730",
+   "platform": "arxiv",
+   "identifier": "2603.25730",
+   "version": "v1",
+   "title": "PackForcing: Short Video Training Suffices for Long Video Sampling and Long Context Inference",
+   "authors": [
+    "Mao, Xiaofeng",
+    "Rui, Shaohao",
+    "Ying, Kaining",
+    "Zheng, Bo",
+    "Li, Chuanhao",
+    "Chi, Mingmin",
+    "Zhang, Kaipeng"
+   ],
+   "url": "https://arxiv.org/abs/2603.25730v1",
+   "download_url": "https://arxiv.org/pdf/2603.25730v1",
+   "license": "arXiv non-exclusive distribution license 1.0",
+   "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2603.25730 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "unversioned",
+    "v1"
+   ],
+   "sha256": "303cdcdb3ec43c0269f7f174e864ca1f1a5d5c9f7d9160355e5e4e257f80bd98",
+   "bytes": 6612172,
+   "distribution": "link_only",
+   "files": null,
+   "changes": null,
+   "used_by_pairs": [
+    "C16-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2604.03118",
+   "platform": "arxiv",
+   "identifier": "2604.03118",
+   "version": "v2",
+   "title": "Salt: Self-Consistent Distribution Matching with Cache-Aware Training for Fast Video Generation",
+   "authors": [
+    "Ge, Xingtong",
+    "Zhang, Yi",
+    "Huang, Yushi",
+    "He, Dailan",
+    "Wang, Xiahong",
+    "Ma, Bingqi",
+    "Song, Guanglu",
+    "Liu, Yu",
+    "Zhang, Jun"
+   ],
+   "url": "https://arxiv.org/abs/2604.03118v2",
+   "download_url": "https://arxiv.org/pdf/2604.03118v2",
+   "license": "arXiv non-exclusive distribution license 1.0",
+   "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2604.03118 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v1",
+    "v2"
+   ],
+   "sha256": "ae2ef77bf6cf69d6fa778e771a626a9f658bd9c3a0f58b92cab583a26f790c0f",
+   "bytes": 33976034,
+   "distribution": "link_only",
+   "files": null,
+   "changes": null,
+   "used_by_pairs": [
+    "C16-P2"
+   ]
+  },
+  {
+   "source_key": "arxiv-2604.05743",
+   "platform": "arxiv",
+   "identifier": "2604.05743",
+   "version": "v1",
+   "title": "On the Robustness of Diffusion-Based Image Compression to Bit-Flip Errors",
+   "authors": [
+    "Vaisman, Amit",
+    "Pomerants, Gal",
+    "Lapid, Raz"
+   ],
+   "url": "https://arxiv.org/abs/2604.05743v1",
+   "download_url": "https://arxiv.org/pdf/2604.05743v1",
+   "license": "arXiv non-exclusive distribution license 1.0",
+   "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2604.05743 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "byte-identical to the PDF saved by the pipeline",
+   "versions_seen_in_pipeline_text": [
+    "v1"
+   ],
+   "sha256": "a65131a42477e55aca9b05d13a9c37d7ba3fb1e6f22ee1c1d06a504217c27f7d",
+   "bytes": 32687170,
+   "distribution": "link_only",
+   "files": null,
+   "changes": null,
+   "used_by_pairs": [
+    "C01-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2604.10056",
+   "platform": "arxiv",
+   "identifier": "2604.10056",
+   "version": "v1",
+   "title": "U$^{2}$Flow: Uncertainty-Aware Unsupervised Optical Flow Estimation",
+   "authors": [
+    "Sun, Xunpei",
+    "Lin, Wenwei",
+    "Chang, Yi",
+    "Chen, Gang"
+   ],
+   "url": "https://arxiv.org/abs/2604.10056v1",
+   "download_url": "https://arxiv.org/pdf/2604.10056v1",
+   "license": "arXiv non-exclusive distribution license 1.0",
+   "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2604.10056 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v1"
+   ],
+   "sha256": "526f0d510feaf1e0758b9177136438d1a2efda8666a80f3650ccc04a9f864a5a",
+   "bytes": 18110235,
+   "distribution": "link_only",
+   "files": null,
+   "changes": null,
+   "used_by_pairs": [
+    "C07-P2"
+   ]
+  },
+  {
+   "source_key": "arxiv-2604.21700",
+   "platform": "arxiv",
+   "identifier": "2604.21700",
+   "version": "v1",
+   "title": "Stealthy Backdoor Attacks against LLMs Based on Natural Style Triggers",
+   "authors": [
+    "Wei, Jiali",
+    "Fan, Ming",
+    "Sun, Guoheng",
+    "Zhang, Xicheng",
+    "Wang, Haijun",
+    "Liu, Ting"
+   ],
+   "url": "https://arxiv.org/abs/2604.21700v1",
+   "download_url": "https://arxiv.org/pdf/2604.21700v1",
+   "license": "arXiv non-exclusive distribution license 1.0",
+   "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2604.21700 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v1"
+   ],
+   "sha256": "1e467e1d47bd8e22407689d32208b1a8104df0635b4f67dc99286ae5b4d55d3d",
+   "bytes": 692083,
+   "distribution": "link_only",
+   "files": null,
+   "changes": null,
+   "used_by_pairs": [
+    "C15-P2"
+   ]
+  },
+  {
+   "source_key": "arxiv-2606.01207",
+   "platform": "arxiv",
+   "identifier": "2606.01207",
+   "version": "v1",
+   "title": "Feature Alignment Determines Fusion Strategy: A Comparative Study of Cross-Attention and Concatenation in Multimodal Learning",
+   "authors": [
+    "Zhou, Zhiqiang",
+    "Xie, Xuezhen"
+   ],
+   "url": "https://arxiv.org/abs/2606.01207v1",
+   "download_url": "https://arxiv.org/pdf/2606.01207v1",
+   "license": "arXiv non-exclusive distribution license 1.0",
+   "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2606.01207 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v1"
+   ],
+   "sha256": "dad4635b0387aa921d6ad63fe2b735b933dd8684fb86697bd019347db6065308",
+   "bytes": 1415110,
+   "distribution": "link_only",
+   "files": null,
+   "changes": null,
+   "used_by_pairs": [
+    "C06-P2"
+   ]
+  },
+  {
+   "source_key": "arxiv-2607.10172",
+   "platform": "arxiv",
+   "identifier": "2607.10172",
+   "version": "v1",
+   "title": "On the Efficiency of LoRA Fine-Tuning for Vision-Language-Action Models in Industrial Robotic Manipulation",
+   "authors": [
+    "Ferchau, Finn",
+    "Pommer, Daniel",
+    "Axenie, Cristian"
+   ],
+   "url": "https://arxiv.org/abs/2607.10172v1",
+   "download_url": "https://arxiv.org/pdf/2607.10172v1",
+   "license": "arXiv non-exclusive distribution license 1.0",
+   "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2607.10172 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "arXiv version stamp in the text the pipeline extracted from the PDF",
+   "versions_seen_in_pipeline_text": [
+    "v1"
+   ],
+   "sha256": "34beeb6882ae97a411295084d49d948b7c577fd517d8482e1bfa33428e20416c",
+   "bytes": 19965680,
+   "distribution": "link_only",
+   "files": null,
+   "changes": null,
+   "used_by_pairs": [
+    "C10-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2609.04148",
+   "platform": "arxiv",
+   "identifier": "2609.04148",
+   "version": "v1",
+   "title": "Terminal-Universe: Turning Agent Trajectories into Scalable Terminal Environments",
+   "authors": [
+    "Wu, Jie",
+    "Zhang, Zhenru",
+    "Zhang, Beichen",
+    "Wang, Xuwu",
+    "Su, Yuhui",
+    "Chen, Mouxiang",
+    "Wang, Peng",
+    "Wang, Zhihai",
+    "Shen, Que",
+    "Zhou, Hao",
+    "Yang, An",
+    "Huang, Fei",
+    "Yang, Yujiu",
+    "Liu, Dayiheng"
+   ],
+   "url": "https://arxiv.org/abs/2609.04148v1",
+   "download_url": "https://arxiv.org/pdf/2609.04148v1",
+   "license": "arXiv non-exclusive distribution license 1.0",
+   "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2609.04148 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "version of the arXiv HTML text used by the pipeline",
+   "versions_seen_in_pipeline_text": [
+    "v1"
+   ],
+   "sha256": "681041b9963b4fc0d0d633046ee5a26a4d3177050d51f697a232ab7458cd36dc",
+   "bytes": 922889,
+   "distribution": "link_only",
+   "files": null,
+   "changes": null,
+   "used_by_pairs": [
+    "C13-P1"
+   ]
+  },
+  {
+   "source_key": "arxiv-2609.35291",
+   "platform": "arxiv",
+   "identifier": "2609.35291",
+   "version": "v1",
+   "title": "Narrow Multimodal Fine-Tuning Can Induce Emergent Misalignment",
+   "authors": [
+    "Liu, Shunchang",
+    "Fluri, Lukas",
+    "Chen, Xin",
+    "Croce, Francesco"
+   ],
+   "url": "https://arxiv.org/abs/2609.35291v1",
+   "download_url": "https://arxiv.org/pdf/2609.35291v1",
+   "license": "arXiv non-exclusive distribution license 1.0",
+   "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+   "license_evidence": "license link on https://arxiv.org/abs/2609.35291 (checked 2026-10-15); matches the project decision of 2026-10-15",
+   "version_basis": "byte-identical to the PDF saved by the pipeline",
+   "versions_seen_in_pipeline_text": [
+    "v1"
+   ],
+   "sha256": "30cbafe62aee0429d41117bdddc2e00fdd211d0e661c1a1e06b301485765d6ce",
+   "bytes": 5662550,
+   "distribution": "link_only",
+   "files": null,
+   "changes": null,
+   "used_by_pairs": [
+    "C03-P2"
+   ]
+  },
+  {
+   "source_key": "withheld-1",
+   "distribution": "withheld",
+   "platform": null,
+   "identifier": null,
+   "version": null,
+   "title": null,
+   "authors": null,
+   "license": null,
+   "reason": "Same work as the anonymized target (matching title). Disclosing this source would identify the target.",
+   "used_by_pairs": [
+    "C08-P2"
+   ]
+  },
+  {
+   "source_key": "withheld-2",
+   "distribution": "withheld",
+   "platform": null,
+   "identifier": null,
+   "version": null,
+   "title": null,
+   "authors": null,
+   "license": null,
+   "reason": "Same work as the anonymized target (matching title). Disclosing this source would identify the target.",
+   "used_by_pairs": [
+    "C18-P1"
+   ]
+  }
+ ]
+}

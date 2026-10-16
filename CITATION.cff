@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this benchmark or code, please cite it as below."
+type: dataset
+title: "Red-flag Research: live, open-source screening for automated-research attacks on peer review"
+abstract: >-
+  Benchmark release of a research project that screens conference submissions
+  for passages, numbers or tables that closely match an earlier public paper
+  without clear attribution: an anonymized diagnostic set of ICLR 2027 target
+  papers with candidate sources, evidence locations, human labels, saved
+  baseline outputs and evaluation tools.
+authors:
+  # TODO: replace with the author list before release.
+  - name: "OpenLAIR"
+repository-code: "https://github.com/OpenLAIR/red-flag-research"
+license:
+  - Apache-2.0
+  - CC-BY-4.0
+keywords:
+  - source attribution
+  - research integrity
+  - scientific papers
+  - benchmark
+  - language models

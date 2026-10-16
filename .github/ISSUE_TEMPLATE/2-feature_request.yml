@@ -1,0 +1,32 @@
+name: Feature request
+description: Suggest a new feature or an improvement to the benchmark, its format or its tools.
+labels: ["type: feature", "status: needs triage"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do, and what gets in the way today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: What should change? For evaluation or metric changes, say how you would measure the effect on the saved baselines.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: contribute
+    attributes:
+      label: Would you like to implement it?
+      options:
+        - "Yes, I can open a pull request"
+        - "Maybe, with guidance"
+        - "No"
+    validations:
+      required: true

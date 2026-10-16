@@ -1,0 +1,281 @@
+{
+ "jev_paper_final": {
+  "n_cases": 20,
+  "gold_counts": {
+   "no_source_finding": 16,
+   "same_work_preprint": 2,
+   "source_review_recommended": 2,
+   "inconclusive": 0
+  },
+  "n_predicted": 19,
+  "n_missing": 1,
+  "n_inconclusive_predictions": 13,
+  "primary_source_review_recommended": {
+   "tp": 1,
+   "fp": 4,
+   "fn": 1,
+   "tn": 14,
+   "precision": 0.2,
+   "precision_wilson95": [
+    0.0362,
+    0.6245
+   ],
+   "recall": 0.5,
+   "recall_wilson95": [
+    0.0945,
+    0.9055
+   ],
+   "f1": 0.2857,
+   "false_positive_rate": 0.2222,
+   "false_positive_rate_wilson95": [
+    0.09,
+    0.4521
+   ]
+  },
+  "secondary_any_source_relation": {
+   "tp": 3,
+   "fp": 2,
+   "fn": 1,
+   "tn": 14,
+   "precision": 0.6,
+   "precision_wilson95": [
+    0.2307,
+    0.8824
+   ],
+   "recall": 0.75,
+   "recall_wilson95": [
+    0.3006,
+    0.9544
+   ],
+   "f1": 0.6667,
+   "false_positive_rate": 0.125,
+   "false_positive_rate_wilson95": [
+    0.035,
+    0.3602
+   ]
+  },
+  "exact_label_accuracy": 0.1,
+  "exact_label_correct": 2,
+  "confusion_gold_by_pred": {
+   "no_source_finding": {
+    "no_source_finding": 1,
+    "same_work_preprint": 0,
+    "source_review_recommended": 2,
+    "inconclusive": 13,
+    "missing": 0
+   },
+   "same_work_preprint": {
+    "no_source_finding": 0,
+    "same_work_preprint": 0,
+    "source_review_recommended": 2,
+    "inconclusive": 0,
+    "missing": 0
+   },
+   "source_review_recommended": {
+    "no_source_finding": 0,
+    "same_work_preprint": 0,
+    "source_review_recommended": 1,
+    "inconclusive": 0,
+    "missing": 1
+   },
+   "inconclusive": {
+    "no_source_finding": 0,
+    "same_work_preprint": 0,
+    "source_review_recommended": 0,
+    "inconclusive": 0,
+    "missing": 0
+   }
+  },
+  "ranking_source_review_recommended": {
+   "auroc": 0.9444,
+   "n_pos_scored": 1,
+   "n_neg_scored": 18
+  }
+ },
+ "qwen_paper_final": {
+  "n_cases": 20,
+  "gold_counts": {
+   "no_source_finding": 16,
+   "same_work_preprint": 2,
+   "source_review_recommended": 2,
+   "inconclusive": 0
+  },
+  "n_predicted": 19,
+  "n_missing": 1,
+  "n_inconclusive_predictions": 14,
+  "primary_source_review_recommended": {
+   "tp": 1,
+   "fp": 4,
+   "fn": 1,
+   "tn": 14,
+   "precision": 0.2,
+   "precision_wilson95": [
+    0.0362,
+    0.6245
+   ],
+   "recall": 0.5,
+   "recall_wilson95": [
+    0.0945,
+    0.9055
+   ],
+   "f1": 0.2857,
+   "false_positive_rate": 0.2222,
+   "false_positive_rate_wilson95": [
+    0.09,
+    0.4521
+   ]
+  },
+  "secondary_any_source_relation": {
+   "tp": 3,
+   "fp": 2,
+   "fn": 1,
+   "tn": 14,
+   "precision": 0.6,
+   "precision_wilson95": [
+    0.2307,
+    0.8824
+   ],
+   "recall": 0.75,
+   "recall_wilson95": [
+    0.3006,
+    0.9544
+   ],
+   "f1": 0.6667,
+   "false_positive_rate": 0.125,
+   "false_positive_rate_wilson95": [
+    0.035,
+    0.3602
+   ]
+  },
+  "exact_label_accuracy": 0.05,
+  "exact_label_correct": 1,
+  "confusion_gold_by_pred": {
+   "no_source_finding": {
+    "no_source_finding": 0,
+    "same_work_preprint": 0,
+    "source_review_recommended": 2,
+    "inconclusive": 14,
+    "missing": 0
+   },
+   "same_work_preprint": {
+    "no_source_finding": 0,
+    "same_work_preprint": 0,
+    "source_review_recommended": 2,
+    "inconclusive": 0,
+    "missing": 0
+   },
+   "source_review_recommended": {
+    "no_source_finding": 0,
+    "same_work_preprint": 0,
+    "source_review_recommended": 1,
+    "inconclusive": 0,
+    "missing": 1
+   },
+   "inconclusive": {
+    "no_source_finding": 0,
+    "same_work_preprint": 0,
+    "source_review_recommended": 0,
+    "inconclusive": 0,
+    "missing": 0
+   }
+  },
+  "ranking_source_review_recommended": {
+   "auroc": null,
+   "n_pos_scored": 0,
+   "n_neg_scored": 0
+  }
+ },
+ "qwen_b_pair_aggregate": {
+  "n_cases": 20,
+  "gold_counts": {
+   "no_source_finding": 16,
+   "same_work_preprint": 2,
+   "source_review_recommended": 2,
+   "inconclusive": 0
+  },
+  "n_predicted": 20,
+  "n_missing": 0,
+  "n_inconclusive_predictions": 4,
+  "primary_source_review_recommended": {
+   "tp": 2,
+   "fp": 2,
+   "fn": 0,
+   "tn": 16,
+   "precision": 0.5,
+   "precision_wilson95": [
+    0.15,
+    0.85
+   ],
+   "recall": 1.0,
+   "recall_wilson95": [
+    0.3424,
+    1.0
+   ],
+   "f1": 0.6667,
+   "false_positive_rate": 0.1111,
+   "false_positive_rate_wilson95": [
+    0.031,
+    0.328
+   ]
+  },
+  "secondary_any_source_relation": {
+   "tp": 3,
+   "fp": 1,
+   "fn": 1,
+   "tn": 15,
+   "precision": 0.75,
+   "precision_wilson95": [
+    0.3006,
+    0.9544
+   ],
+   "recall": 0.75,
+   "recall_wilson95": [
+    0.3006,
+    0.9544
+   ],
+   "f1": 0.75,
+   "false_positive_rate": 0.0625,
+   "false_positive_rate_wilson95": [
+    0.0111,
+    0.2833
+   ]
+  },
+  "exact_label_accuracy": 0.7,
+  "exact_label_correct": 14,
+  "confusion_gold_by_pred": {
+   "no_source_finding": {
+    "no_source_finding": 12,
+    "same_work_preprint": 0,
+    "source_review_recommended": 1,
+    "inconclusive": 3,
+    "missing": 0
+   },
+   "same_work_preprint": {
+    "no_source_finding": 0,
+    "same_work_preprint": 0,
+    "source_review_recommended": 1,
+    "inconclusive": 1,
+    "missing": 0
+   },
+   "source_review_recommended": {
+    "no_source_finding": 0,
+    "same_work_preprint": 0,
+    "source_review_recommended": 2,
+    "inconclusive": 0,
+    "missing": 0
+   },
+   "inconclusive": {
+    "no_source_finding": 0,
+    "same_work_preprint": 0,
+    "source_review_recommended": 0,
+    "inconclusive": 0,
+    "missing": 0
+   }
+  },
+  "ranking_source_review_recommended": {
+   "auroc": null,
+   "n_pos_scored": 0,
+   "n_neg_scored": 0
+  }
+ }
+}

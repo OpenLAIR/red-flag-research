@@ -1,0 +1,420 @@
+{
+ "case_id": "C20",
+ "pairs": [
+  {
+   "pair_id": "C20-P1",
+   "source_key": "arxiv-2601.17898",
+   "source_distribution": "included",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C20]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nGraph-based RAG organizes fragmented text into explicit knowledge structures for retrieval through entities, relations, and article summaries. However, directly bringing graph-based RAG to smartphones creates a mismatch between cloud-oriented graph methods and mobile constraints: compact on-device models are more likely to miss entities, predict incorrect relations, or merge distinct entity mentions, while multi-level graph summaries require frequent, large-context LLM invocations. We build [NAME C20], to the best of our knowledge, the first graph-based RAG framework end-to-end deployed on commercial smartphones. [NAME C20] combines MRGraph, a two-layer mobile graph that preserves entities, relations, and source paragraphs; EvoNER, which incrementally learns unseen entity types and locally updates the graph; and ATPlanner, which uses one LLM call to guide hybrid retrieval under a fixed budget. On real smartphones, [NAME C20] outperforms prior mobile RAG baselines by up to 22.4 points in correctness, constructs knowledge graphs 13.77× faster, and consumes only 1.36% of the energy compared with the latest lightweight methods. Code & Demo:",
+      "text_sha256": "e98e68b22db38f3cd921212aea9537d2d7c37237fb162ce9d5e0384d69d3332c"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\ngraphs (Guo et al., 2025; Li et al., 2024; Sun et al., 2024). Each higher-level node summarizes connected lower-level nodes to locate a semantic region, but on-device LLMs have limited usable context and weaker abstraction capabilities. Repeated summarization can introduce descriptions unsupported by source documents while incurring prohibitive latency and energy overhead due to frequent invocations. A natural question is whether reducing the number of LLM invocations by limiting GraphRAG to two hierarchy levels can support mobile deployment. Our experiments on a subset of MultiHopQA show that this two-level GraphRAG variant only achieves an F1-score of 6.79% and requires about 37 182 s for on-device graph construction. This is substantially lower than original GraphRAG with an F1-score of 25.26%. Thus, reducing the number of levels alone can not address either inaccurate on-device knowledge extraction or LLM-based summary costs. Third, everyday smartphone use continuously generates new personal information. Therefore, graph structures need to be updat",
+      "text_sha256": "b579a0fa96c592ea99efd996987a294e9b210ff521d0ecf98fbb0ef0413865ce"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n## 2.2 PREVIOUS RAG METHODS\n\n**Vector-based RAG** encodes document chunks into dense embeddings and retrieves the top-$k$ most similar chunks for each query (Karpukhin et al., 2020). This design scales well, but each chunk is retrieved independently which has no explicit mechanism to chain evidence across documents.\n\n**Graph-based RAG** addresses this by extracting entities and relations from documents and organizing them into entity-relation graphs that make cross-document connections explicit (Edge et al., 2024; Peng et al., 2025). The core intuition is that a graph exposes the *topology* of knowledge, who is connected to whom through what relationship, enabling retrieval to follow structured paths rather than relying solely on semantic similarity.\n\nGraphRAG first splits documents into chunks and invokes an LLM on each chunk to extract entities and relations. Extracted elements are assembled into a graph $\\mathcal{G} = (\\mathcal{E}, \\mathcal{R})$. A defining characteristic is the subsequent construction of a multi-level community hierarchy via Leiden",
+      "text_sha256": "9ce235c6dd23c3aaefa06f8716b8e81957d2c3e7a139fdad77892daf047f70cb"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\nBase EP graph. The EP graph is a heterogeneous graph with two node types and two edge types:\n\n$$\\mathcal{G}_{\\mathrm{EP}} = (\\mathcal{E}, \\mathcal{P}, \\mathcal{L}, \\mathcal{R}), \\tag{1}$$\n\nwhere $\\mathcal{E}$ is the set of entity nodes, $\\mathcal{P}$ is the set of paragraph nodes, $\\mathcal{L} \\subseteq \\mathcal{E} \\times \\mathcal{P}$ is the set of entity-paragraph inclusion links, and $\\mathcal{R} \\subseteq \\mathcal{E} \\times \\mathcal{T} \\times \\mathcal{E}$ is the set of directed relation edges with labels from taxonomy $\\mathcal{T}$. An inclusion link $(e, p) \\in \\mathcal{L}$ records that entity $e$ is mentioned in paragraph $p$; a relation edge $(e_i, \\tau, e_j) \\in \\mathcal{R}$ records a typed connection $\\tau$ from $e_i$ to $e_j$.\n\nNode and edge structures. Each entity node is a tuple\n\n$$e = \\big( n, H(n), \\text{ type} \\in \\mathcal{C}, \\mathbf{ve}_e \\in \\mathbb{R}^d, \\text{ cluster}, \\mathcal{P}_e \\subseteq \\mathcal{P} \\big), \\tag{2}$$\n\nwhere $n$ is the canonical name of entity; $H(n)$ is hash of $n$, which enables $O(1)$ deduplication; type const",
+      "text_sha256": "4485076ca294be450965e08a45f9a7e2f4d47f1f676d7cccb6ab2d2d42f2b274"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\nand energy consumption on smartphones. A lightweight named entity recognizer is cheaper, but is restricted to a fixed label space and cannot reliably process newly emerging entity types (Zhang et al., 2024). Consequently, new documents may be only partially written into the graph, leaving their entities and relations unavailable to subsequent retrieval.\n\nEvoNER processes known types, discovers unseen types through amortized LLM supervision, backfills deferred facts, and adapts the recognizer. It has four steps (Figure 2): entity extraction, known-type graph updating, unknown-type discovery, and incremental model training.\n\nEntity extraction: For chunk $x$, EvoNER scores candidate spans up to width $W$ over deployed types $\\mathcal{C}$ and UNKNOWN, producing $\\mathcal{M}_x = \\{(s_i, e_i, \\ell_i, t_i, c_i)\\}$ with boundaries, surface form, predicted type, and confidence. Mentions with confident boundaries and types enter the known-type branch; those with confident boundaries but uncertain types enter an unknown-entity buffer, preventing graph contaminati",
+      "text_sha256": "eff3ad642d3632321a15c5c0b8e864b953ef88f5793d0bc939e80d393c6be21a"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\nconstraints. Repeated LLM navigation is expensive, while compact on-device models are less reliable at making a sequence of dependent search decisions. Because MRGraph uses a shallow routing index, unguided traversal can follow connected but irrelevant nodes, propagating seed-selection or relation-matching errors.\n\n![img-3.jpeg](img-3.jpeg)\n\nFigure 3: Workflow of plan-guided question answering.\n\nBased on these problems, we proposed ATPlanner. As shown in Figure 3, ATPlanner invokes a compact planner once to predict a multi-hop retrieval structure; lightweight retrieval modules then execute the resulting plan under a fixed budget. The planner shares the answerer's backbone and adds only planner-specific LoRA parameters. After the plan is produced, graph traversal, text retrieval, fallback, and evidence assembly proceed without further LLM navigation. The training details of ATPlanner are provided in Section B.\n\nPlan generation: Given a query q, ATPlanner generates a retrieval plan  \\( \\mathcal{P} = (\\mathcal{E}_{P}, \\mathcal{R}_{P}, H, B) \\) , where  \\(",
+      "text_sha256": "50c7e6e02ea81298bf3037a4f9b517e333222698473f251a032276793be22fe1"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "text evidence. The answering model receives the original query together with this compact evidence set. The generated output records the supporting passage identifiers and whether retrieval contributed to the answer.\n\n## 4 EXPERIMENTS\n\n### 4.1 SETUP\n\nWe use compact LLM backbones from the Qwen3 (Qwen Team, 2025) and Ministral3 (Liu et al., 2026a) families, and compare against two groups of baselines: (1) LLM-only models without retrieval, and (2) RAG methods including Naïve RAG (Lewis et al., 2020), GraphRAG (Edge et al., 2024), InstructRAG (Wei et al., 2025), StableRAG (Zhang et al., 2026), TruthfulRAG (Liu et al., 2026b), xRAG (Cheng et al., 2024), and MiniRAG (Fan et al., 2025), for fair comparison.\n\n[NAME C20] and NaïveRAG are executed entirely on real smartphones. Due to unacceptable graph construction time cost by LLM invocations other RAG methods are simulated in a cloud environment with same experiment settings. To demonstrate the on-device feasibility of [NAME C20], we compared it with MiniRAG's graph construction process on smartphones. Details are provided in Appendix A.\n\nWe test [NAME C20] on two smartphones and two LLM scales, and the specific results are shown in Appendix E. Unless otherwise specified, OnePlus 15 and Qwen3-1.7B (S0) are used in subsequent experiments",
+      "text_sha256": "f599c903df1bdfdb69e8af858e3670c24b5146e515f012e25c00768edf1b8c65"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "Table 1: Correctness (Cr, %) and F1 (%) on four QA benchmarks. Within each base-model block, the best result in each column is shown in bold and the second-best in underlined.\n\n[tbl-0.html](tbl-0.html)\n\nTable 2: Mobile graph construction comparison on S0 using the same articles. Runtime breakdown reports the percentage of total runtime.\n\n[tbl-1.html](tbl-1.html)\n\naccount for only 6%. Although graph construction is not the dominant percentage of total runtime, the graph structure is responsible for the retrieval-quality gains observed in Table 1 and Figure 5.\n\nRuntime answering: We next examine how [NAME C20]'s query-time behavior changes across device and model size. In general, the measurements reveal a clear usability boundary. While both backbones can be executed on smartphones, they occupy very different latency regimes once the full retrieval pipeline is taken into account. Median QA prefill latency is 11.3 s for S0 and 14.3 s for S1, but rises to 27.8 s for S2 and 36.4 s for S3. The 1.7B model therefore remains the more deployable option under current mobile budgets. More broadly, the measured power remains relatively low because we prioritize stable long-term execution, allowing [NAME C20] to run as a persistent on-device system.\n\nFigure 4 reveals a clear separation b",
+      "text_sha256": "6b6aa42fac0797f3b6bd22d285c468699656fe6b4ee8a559876e221305889c2a"
+     },
+     {
+      "span_id": "A-page-0009",
+      "page": 9,
+      "location": "target PDF page 9",
+      "text": "432\n433\n434\n435\n436\n437\n438\n439\n440\n441\n442\n443\n444\n445\n446\n447\n448\n449\n450\n451\n452\n453\n454\n455\n456\n457\n458\n459\n460\n461\n462\n463\n464\n465\n466\n467\n468\n469\n470\n471\n472\n473\n474\n475\n476\n477\n478\n479\n480\n481\n482\n483\n484\n485\n\n![img-4.jpeg](img-4.jpeg)\n\n![img-5.jpeg](img-5.jpeg)\n\n(a) Prefill stage across S0–S3.\n\n![img-6.jpeg](img-6.jpeg)\n\n(b) Decode stage across S0–S3.\n\nFigure 4: Latency and throughput for [NAME C20] under configurations S0–S3. (a) Prefill latency and throughput. (b) Decode latency and throughput.\n\n![img-7.jpeg](img-7.jpeg)\n\n(a) Impact of retrieval branches.\n\n![img-8.jpeg](img-8.jpeg)\n\n(b) Impact of planner design.\n\n![img-9.jpeg](img-9.jpeg)\n\n(c) Impact of MRGraph components.\n\nFigure 5: Ablation results.\n\nFurther analysis of configuration combinations involving various smartphones and LLM backbones, please refer to Appendix E.\n\n### 4.4 ABLATION STUDY\n\nTo isolate the contribution of each [NAME C20] component, we investigate the following research questions on MultiHopQA. We ablate the retrieval strategy, ATPlanner, MRGraph components, and EvoNER on MultiHopQA with Ministral3-3B (Figure 5).\n\nAs shown in Figure 5a, replacing hybrid retrieval with either branch reduces F1 from 0.4337 to 0.2776 (text only) or 0.2924 (graph only), showing their complementarity. Text retriev",
+      "text_sha256": "fd5022d2e8e60bc083b2b521c9a0df7ca9656614e65cee06d79aa7e129a7d9e6"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n# AI USE STATEMENT\n\nIn this work, we used generative AI tools to assist with code implementation, generate supervision for retrieval-planner training, and assess the correctness of answers produced by the evaluated RAG systems. Specifically, Claude Opus 4.6 generated planner-training supervision, which underwent rule-based filtering and manual verification, and Claude Haiku 4.5 served as an LLM judge under the protocol described in Appendix C. We did not use generative AI tools to conduct the preliminary literature review, formulate the proposed methodology, or design the experiments. These activities, together with the execution of experimental tests, were carried out by the human authors. Additionally, we used generative AI tools to edit the manuscript for language and readability. The authors reviewed the AI-assisted manuscript edits and code, tested the implementation, and manually checked a sample of the LLM-generated judgments. We take responsibility for the final content of this work, including the text, code, and evaluation results produced wit",
+      "text_sha256": "80aad80c53d4e3b9d552aa5e5c957440c9dd870bd9bf11abd4e0ebe33013c490"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nKorakit Seemakhupt, Sihang Liu, and Samira Khan. EdgeRAG: Online-indexed RAG for edge devices, 2024.\n\nHaiyang Shen, Hang Yan, Zhongshi Xing, Mugeng Liu, Yue Li, Zhiyang Chen, Yuxiang Wang, Jiuzheng Wang, and Yun Ma. DRAGON: Domain-specific robust automatic data generation for RAG optimization. In Findings of the Association for Computational Linguistics: EACL 2026, pp. 1065–1078. Association for Computational Linguistics, 2026. doi: 10.18653/v1/2026.findings-eacl.56. URL https://aclanthology.org/2026.findings-eacl.56/.\n\nJiashuo Sun, Chengjin Xu, Lumingyuan Tang, et al. Think-on-graph: Deep and responsible reasoning of large language model on knowledge graph. In Proceedings of the International Conference on Learning Representations, 2024.\n\nHarsh Trivedi, Niranjan Balasubramanian, Tushar Khot, et al. Interleaving retrieval with chain-of-thought reasoning for knowledge-intensive multi-step questions. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics, pp. 10014–10037, 2023.\n\nZijie J. Wang and Duen Horng Chau. MeMem",
+      "text_sha256": "bff1a30654e7b54ba35d47226a40cbe00b7c206b727135a38b8ae20a5a1d0759"
+     },
+     {
+      "span_id": "A-page-0013",
+      "page": 13,
+      "location": "target PDF page 13",
+      "text": "Table 3: Execution settings for baseline comparisons.\n\n[tbl-2.html](tbl-2.html)\n\nBaseline scope. Naïve RAG is the direct dense-retrieval baseline. GraphRAG and MiniRAG represent graph-based RAG pipelines; MiniRAG is the closest graph baseline to mobile deployment, so we additionally profile its memory construction on a phone. InstructRAG adds instruction-guided denoising, StableRAG studies retrieval-order stability, TruthfulRAG adds KG-based conflict handling, and xRAG compresses retrieved context. These systems target different operating points, so we interpret the comparison narrowly: it measures how each strategy behaves with compact backbones and matched benchmark inputs, not the maximum performance of the original full-scale systems.\n\n## B EXPERIMENTAL DETAILS\n\nBackbone models and quantization. Unless otherwise specified, all on-device models are quantized to Q6_K format using llama.cpp (Gerganov, 2023). We consider Qwen3-1.7B and Ministral3-3B as default compact backbones, with Qwen3-4B as a larger variant that still fits on device. For capacity reference, we additionally report results using Qwen3-32B and Ministral3-14B on server-grade hardware.\n\nOffline preparation. All one-time offline steps are performed on a cloud server with two NVIDIA RTX A6000 GPUs, i",
+      "text_sha256": "0986acc8930bb4ed2e2a8245f3b008235ddc3a33c00909a777acac9ca07b48d0"
+     },
+     {
+      "span_id": "A-page-0015",
+      "page": 15,
+      "location": "target PDF page 15",
+      "text": "the EvoNER can gradually learn previously unseen entity categories and translate this learning into downstream question-answering improvements.\n\nTable 4: Continual entity learning performance across four domains.\n\n[tbl-3.html](tbl-3.html)\n\nWe initialize EvoNER in a nearly category-agnostic state: it has no predefined domain-specific entity types and can only make surface-level judgments about whether a span is likely to be an entity. During simulated ingestion, unknown entities are buffered and clustered; when a cluster becomes sufficiently coherent, the LLM assigns a type label and then EvoNER starts its continuous learning process. To verify the effectiveness of incremental learning, we evaluate the framework at three checkpoints corresponding to 0%, 50%, and 100% of the training corpus. At each checkpoint, training is paused, the current model state is frozen, and evaluation is conducted on 100 QA questions selected from MultiHopQA.\n\nTable 4 reports the performance across four representative domains. NER \\( _{surf} \\) is the overlap rate between entities identified by NER at the current stage and gold entities; F1-score measures token-level overlap between golden answer and generated answer during QA. Overall, [NAME C20] demonstrates a consistent ability to absorb ne",
+      "text_sha256": "503fabbd3bbc2251e8960571bf06747ccf98341d67f45ade4461e098b6ddd3b7"
+     },
+     {
+      "span_id": "A-page-0017",
+      "page": 17,
+      "location": "target PDF page 17",
+      "text": "864\n865\n866\n867\n868\n869\n870\n871\n872\n873\n874\n875\n876\n877\n878\n879\n880\n881\n882\n883\n884\n885\n886\n887\n888\n889\n890\n891\n892\n893\n894\n895\n896\n897\n898\n899\n900\n901\n902\n903\n904\n905\n906\n907\n908\n909\n910\n911\n912\n913\n914\n915\n916\n917\n\nclustered by contextual embeddings, sparsely labeled by the LLM at the cluster level, and then incorporated through confidence-gated distillation.\n\n**Graph-based RAG systems.** Graph-based RAG systems organize text into graph structures for multi-hop evidence composition (Edge et al., 2024; Han et al., 2025). Representative systems use community summaries, lightweight graph construction, or iterative graph navigation (Guo et al., 2025; Sun et al., 2024; Li et al., 2024; Fan et al., 2025). These designs are effective in server-side settings, but their deep LLM-generated semantic levels are difficult to construct, update, and traverse on smartphones. [NAME C20] therefore uses a shallow graph memory that keeps the abstraction needed for search and the provenance needed for grounded reasoning.",
+      "text_sha256": "a62827ee97121992f8bbd5b656a15c490f12b29f7945685a253b626e75adef1d"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-9a02907be76488",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": "arXiv:2601.17898v3 [cs.CL] 9 Oct 2026\n\n# Assessment of Generative Named Entity Recognition in the Era of Large Language Models\n\nQi Zhan, Yile Wang \\( ^{*} \\) , Hui Huang\n\nGuangdong Provincial Key Laboratory of Visual Media and Multidimensional Intelligence\nCSSE, Shenzhen University\n\nqzhan65@gmail.com, wangyile@szu.edu.cn, hhzhiyan@gmail.com\n\n## Abstract\n\nNamed entity recognition (NER) is evolving from a sequence labeling task into a generative paradigm with the rise of large language models (LLMs). We conduct a systematic evaluation of open-source LLMs on both flat and nested NER tasks. We investigate several research questions including the performance gap between generative NER and traditional NER models, the impact of output formats, whether LLMs rely on memorization, and the preservation of general capabilities after fine-tuning. Through experiments across eight LLMs of varying scales and four standard NER datasets, we find that: (1) With parameter-efficient fine-tuning and structured formats like inline bracketed or XML, open-source LLMs achieve performance competitive with traditional encoder-based models and surpass decoder-based LLMs with in-context learning techniques; (2) The NER capability of LLMs stems from instruction-following and generative power, no",
+      "text_sha256": "934a36e065dba21648f67d719bd56235e096f3aa2af0b9b8277ad09da892053a"
+     },
+     {
+      "span_id": "B-ocr-498c8f95b7bee0",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": "the aforementioned studies test the performance of closed-source models like ChatGPT (OpenAI, 2022) for zero-shot NER, and there is currently a lack of systematic investigation into the effectiveness of fine-tuned open-source LLMs, such as advanced LLaMA (Grattafiori et al., 2024), Qwen (Yang et al., 2025), Granite (IBM Research, 2025) and Gemma (Gemma Team, 2025) models. Specifically, we seek to examine whether generative LLMs represent a reliable approach and whether there is a performance gap compared to traditional pre-trained model methods on both flat and nested NER tasks.\n\nHow do different output formats affect the performance of LLMs in generative NER? The performance of LLMs is highly sensitive to the specific instructions given by users. While recent studies have touched upon format designs (Kim et al., 2024; Lv et al., 2025), we systematically explore a more diverse set of output templates as a supplement to the aforementioned work and investigate their specific impact on NER performance. Specifically, we design five distinct output formats (Inline Bracketed, Inline XML, Category-grouped JSON, Occurrence-based JSON, and Offset-based JSON) to compare their impact and investigate whether the performance of different models remains consistent across these v",
+      "text_sha256": "845ba068c75080bc47f00764ecedabe51b70f4885e4c6617c2ca62813fb54d14"
+     },
+     {
+      "span_id": "B-ocr-3e26157ed012e2",
+      "page": 3,
+      "location": "B PDF page 3",
+      "text": "[tbl-0.html](tbl-0.html)\n\nTable 1: Five types of output formats and examples for both flat and nested named entities.\n\nally becoming solid backbone models and reaching state-of-the-art levels (Li et al., 2020a, 2022; Lu et al., 2022; Yan et al., 2023). Overall, these methods treat NER as a token-level sequence labeling task, utilizing auto-encoding models for text modeling. Cui et al. (2021) and Ma et al. (2022) explore the use of generative BART (Lewis et al., 2020) model for NER, gradually transforming NER from sequence labeling into a sequence-to-sequence generation task, and shifting NER models from auto-encoding representation models to auto-regressive generative models. As a result, the generative NER approach has also demonstrated promising results, while offering good flexibility and generalization.\n\nGenerative NER with Large Language Models. Recent studies employ advanced LLMs for generative NER. Xie et al. (2023) and Wei et al. (2023) preliminarily explore the performance of ChatGPT on zero-shot NER. Kim et al. (2024) test the performance of ChatGPT and LLaMA on nested NER by designing fixed templates. Zhou et al. (2024) distill knowledge from ChatGPT for NER and Wang et al. (2025a) investigate the effectiveness of GPT-3 in NER through in-context learning",
+      "text_sha256": "c5a5a1705826b0b911fe1f6e44d75fe2907364d3ef6dd420de6fe889f93c0f1e"
+     },
+     {
+      "span_id": "B-ocr-6a9010fe0a897a",
+      "page": 5,
+      "location": "B PDF page 5",
+      "text": "### 3.2 Results\n\nThe results for flat and nested NER are shown in Table 3 and Table 4, respectively. We report single-run Micro-F1 scores in the main text and provide the complete Precision, Recall, and F1 results in Appendix H. The main findings are as follows:\n\nThe output format has a decisive impact on the performance of generative NER. Among the five output formats, the Inline Bracketed and Inline XML formats achieve the best average performance across all LLMs, with average F1 scores of 91.91/82.85 and 91.71/82.67 on flat and nested NER. Both inline formats consistently outperform the JSON-based formats (90.78/81.69, 91.17/80.07 and 53.91/34.53). These results indicate that clear, structured, natural-language-like inline outputs are more conducive to helping LLMs understand and generate accurate entity information, whereas formats requiring concluding the whole information all at once and precise character-offset calculations are poorly suited to the text-generation nature of LLMs, leading to a sharp decline in performance.\n\nWell-designed output formats enable LLMs to match or surpass some traditional fine-tuning methods and closed-source models. With the Inline Bracketed and XML format, LLaMA3.1-8B achieves 93.85 and 93.83 on CoNLL2003, surpassing all pre-tra",
+      "text_sha256": "2976d1be70c67bc6b8f28b131474239edd50bdc26b1edb51357ef10991913914"
+     },
+     {
+      "span_id": "B-ocr-e55614ac21454d",
+      "page": 10,
+      "location": "B PDF page 10",
+      "text": "deep bidirectional transformers for language understanding. In Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers), pages 4171–4186, Minneapolis, Minnesota. Association for Computational Linguistics.\n\nYihong Dong, Xue Jiang, Huanyu Liu, Zhi Jin, Bin Gu, Mengfei Yang, and Ge Li. 2024. Generalization or memorization: Data contamination and trustworthy evaluation for large language models. In Findings of the Association for Computational Linguistics: ACL 2024, pages 12039–12050, Bangkok, Thailand. Association for Computational Linguistics.\n\nDheeru Dua, Yizhong Wang, Pradeep Dasigi, Gabriel Stanovsky, Sameer Singh, and Matt Gardner. 2019. DROP: A reading comprehension benchmark requiring discrete reasoning over paragraphs. In Proceedings of the 2019 Conference of the North American Chapter of the Association for Computational Linguistics: Human Language Technologies, Volume 1 (Long and Short Papers), pages 2368–2378, Minneapolis, Minnesota. Association for Computational Linguistics.\n\nLeo Gao, Jonathan Tow, Baber Abbasi, Stella Biderman, Sid Black, Anthony DiPofi, Charles Foster, Laurence Golding, Jeffrey Hsu, Alain Le Noac'h, Haonan Li, Kyle McDo",
+      "text_sha256": "d637df70e46d4458afe21a094be10f9698b805ee7a2766df3070094038e32e96"
+     },
+     {
+      "span_id": "B-ocr-9a738363dfdac6",
+      "page": 14,
+      "location": "B PDF page 14",
+      "text": "[tbl-12.html](tbl-12.html)\n\nTable 11: Comparison between LoRA fine-tuning and full fine-tuning on CoNLL2003 and GENIA. Numbers in parentheses denote the difference compared with LoRA fine-tuning.\n\nas a machine reading comprehension task, achieving SOTA performance on the GENIA dataset. BINDER (Zhang et al., 2023) aligns spans and types in a shared space via a bi-encoder and contrastive learning, distinguishing entities with dynamic thresholding. W2NER (Li et al., 2022) unifies flat, nested, and discontinuous NER by modeling word-word relations on a 2D grid to capture token interactions. Biaffine+CNN (Yan et al., 2023) treats the span feature grid generated by a biaffine decoder as an image, utilizing CNNs to model spatial correlations between neighboring spans for nested entity recognition.\n\n## D Comparison between LoRA and Full Fine-Tuning\n\nWe compare LoRA with full fine-tuning to determine which strategy is more effective for generative NER. The two well-performing models, LLaMA3.1-8B and Qwen2.5-7B, are fine-tuned on the flat NER dataset (CoNLL2003) and the nested NER dataset (GENIA). Both fine-tuning methods use the same training configuration. The F1 results are shown in Table 11.\n\nAcross all settings, LoRA fine-tuning obtains slightly higher F1 scores than fu",
+      "text_sha256": "434d17c654756d6253a0bcaade4bde191f67d3a0fafefb68ce5cbfe00cdf43a2"
+     },
+     {
+      "span_id": "B-ocr-f312b0cabf7e2f",
+      "page": 19,
+      "location": "B PDF page 19",
+      "text": "[tbl-19.html](tbl-19.html)\n\nTable 18: Complete Precision, Recall, and F1 results of pre-trained models, GPT-3, and open-source LLMs on flat and nested NER datasets.\n\n[OCR table id=tbl-19.html; page=19]\n<table><tr><td rowspan=\"2\">Models</td><td colspan=\"3\">CoNLL2003</td><td colspan=\"3\">OntoNotes5.0</td><td rowspan=\"2\">\\( Avg_{F1}^{The} \\)</td><td colspan=\"3\">ACE2005</td><td colspan=\"3\">GENIA</td><td rowspan=\"2\">\\( Avg_{F1}^{Named} \\)</td></tr><tr><td>P</td><td>R</td><td>F1</td><td>P</td><td>R</td><td>F1</td><td>P</td><td>R</td><td>F1</td><td>P</td><td>R</td><td>F1</td></tr><tr><td colspan=\"15\">Pre-Trained NER Models</td></tr><tr><td>BERT-Tagger</td><td>91.20</td><td>92.30</td><td>91.70</td><td>90.01</td><td>88.35</td><td>89.16</td><td>90.43</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>GNN-SL</td><td>93.02</td><td>93.40</td><td>93.20</td><td>91.48</td><td>91.29</td><td>91.39</td><td>92.30</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>ACE + Fine-tune</td><td>93.07</td><td>94.21</td><td>93.64</td><td>91.48</td><td>91.29</td><td>91.39</td><td>92.52</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td></tr><tr><td>BERT-MRC+DSC</td><td>93.41</td><td>93.25</td><td>93.33<",
+      "text_sha256": "efbebe1ba27fd0bbb31458e4f72d4e92b4ce0c059250237369486567ecd5bcbb"
+     },
+     {
+      "span_id": "B-397262305f5f05",
+      "page": null,
+      "location": "https://arxiv.org/html/2601.17898v1#chars-1636-8790",
+      "text": "## 1 Introduction\n\nNamed entity recognition (NER) is a fundamental task in natural language processing, widely used in downstream applications such as relation extraction, knowledge graph construction, information retrieval, and question answering systems. As a typical sequence labeling task, approaches based on traditional auto-encoding pre-trained models have achieved strong results [Devlin et al. (2019)](#bib.bib4); [Li et al. (2020a)](#bib.bib7); [Lu et al. (2022)](#bib.bib28); [Yan et al. (2023)](#bib.bib24).\n\n![Refer to caption](2601.17898v1/intro.png)\n\nThe development of generative pre-trained models [Radford et al. (2019)](#bib.bib36); [Lewis et al. (2020)](#bib.bib5) and large language models (LLMs; [Brown et al., 2020](#bib.bib29); [OpenAI, 2022](#bib.bib31); [OpenAI, 2023](#bib.bib30); [DeepSeek-AI, 2024](#bib.bib32)) is gradually shifting traditional NER task toward a unified generative paradigm. As shown in Figure [1](#S1.F1 \"Figure 1 ‣ 1 Introduction ‣ Assessment of Generative Named Entity Recognition in the Era of Large Language Models\"), LLMs sequentially generate user-provided sentences along with their corresponding entity labels in textual form. This approach demonstrates strong interactivity, generalization, and user-friendliness. Recent studies",
+      "text_sha256": "bdcd4de000604e73c05f4a5bfe420d56068646272507a256aa4f2c4c7474e6ea"
+     },
+     {
+      "span_id": "B-6d7df68138135f",
+      "page": null,
+      "location": "https://arxiv.org/html/2601.17898v1#chars-19633-23660",
+      "text": "### 3.1 Settings\n\nInstructions and Output Format. Prompt design is crucial for LLM fine-tuning. It mainly includes the design of instructions primarily used to specify the tasks the model needs to complete, and the output format used for answer generation, extraction, and validation. For the complete instructions, we provide them in Appendix [A](#A1 \"Appendix A Full Instructions for Different Datasets ‣ Assessment of Generative Named Entity Recognition in the Era of Large Language Models\") for reproducibility. In this section, we mainly compare five different output formats. Specifically, Inline Bracketed and Inline XML represent an embedded paradigm where entity boundaries and types are inserted directly into the original sentence using brackets or XML tags, yielding natural-language-like outputs. The JSON-based formats treat NER as a structured information extraction task. Category-grouped JSON organizes entities by their label keys, which can only handle the entity-label relationship while ambiguity exists due to the lack of positional information. Occurrence-based JSON records an occurrence order index for each entity, providing a certain level of positional reference, while Offset-based JSON demands precise character-level start and end positions, whose fine-g",
+      "text_sha256": "8eb0b2c8ef022e50a442a95b3abf2fa64b29b40eb957551edf414f3882ac06b8"
+     },
+     {
+      "span_id": "B-a23a29f73ba935",
+      "page": null,
+      "location": "https://arxiv.org/html/2601.17898v1#chars-298-1636",
+      "text": "###### Abstract\n\nNamed entity recognition (NER) is evolving from a sequence labeling task into a generative paradigm with the rise of large language models (LLMs). We conduct a systematic evaluation of open-source LLMs on both flat and nested NER tasks. We investigate several research questions including the performance gap between generative NER and traditional NER models, the impact of output formats, whether LLMs rely on memorization, and the preservation of general capabilities after fine-tuning. Through experiments across eight LLMs of varying scales and four standard NER datasets, we find that: (1) With parameter-efficient fine-tuning and structured formats like inline bracketed or XML, open-source LLMs achieve performance competitive with traditional encoder-based models and surpass closed-source LLMs like GPT-3; (2) The NER capability of LLMs stems from instruction-following and generative power, not mere memorization of entity-label pairs; and (3) Applying NER instruction tuning has minimal impact on general capabilities of LLMs, even improving performance on datasets like DROP due to enhanced entity understanding. These findings demonstrate that generative NER with LLMs is a promising, user-friendly alternative to traditional methods. We release the data ",
+      "text_sha256": "109bc8f2fd1aae4398f1f4e45bd4dcbef3f548ea30f31762245c05bcc4e9736c"
+     },
+     {
+      "span_id": "B-8f3006040e13ba",
+      "page": null,
+      "location": "https://arxiv.org/html/2601.17898v1#chars-33180-38471",
+      "text": "## 5 Error Analysis\n\nTo understand what types of errors LLMs are prone to make in NER and their specific gaps compared to traditional models, we conduct a statistical analysis of error samples. We follow [Xie et al. (2023)](#bib.bib2) and categorize errors into eight types, as shown in Table [6](#S4.T6 \"Table 6 ‣ 4 Entity Recognition or Memorization ‣ Assessment of Generative Named Entity Recognition in the Era of Large Language Models\"). Detailed definitions are in Appendix [C](#A3 \"Appendix C Error Type Definitions ‣ Assessment of Generative Named Entity Recognition in the Era of Large Language Models\").\n\nStatistical Results. We present the error distribution statistics for the representative pre-trained model BERT-MRC, and the fine-tuned LLaMA3.1-8B with Inline\nBracketed format in Figure [2](#S4.F2 \"Figure 2 ‣ 4 Entity Recognition or Memorization ‣ Assessment of Generative Named Entity Recognition in the Era of Large Language Models\").\n\nOverall, we observe clear differences in error patterns between the two paradigms. BERT-MRC’s errors are dominated by Omitted Mentions(45.5%), indicating a conservative prediction strategy that tends to miss entities.\nIn contrast, LLaMA3.1-8B exhibits a substantially lower omission rate, reflecting a more aggressive extraction be",
+      "text_sha256": "cae8a13fc181d515c8e28a3174978bce82cf2d264326b7f80e5602f4830046dc"
+     },
+     {
+      "span_id": "B-2d3f7a3267b1ec",
+      "page": null,
+      "location": "https://arxiv.org/html/2601.17898v1#chars-41686-41701",
+      "text": "## References",
+      "text_sha256": "65b72d86eeeb214ab8ca5fd24cb7cd7773e58084e95b670040df03e21e8c6fa7"
+     },
+     {
+      "span_id": "B-1d80478aed47c6",
+      "page": null,
+      "location": "https://arxiv.org/html/2601.17898v1#chars-46325-47786",
+      "text": "## Appendix B Brief Introduction of Baselines\n\nBERT-Tagger [Devlin et al. (2019)](#bib.bib4) uses BERT model and train classification heads for tagging tokens. GNN-SL [Wang et al. (2023)](#bib.bib18) augments sequence labeling by retrieving nearest neighbor examples and modeling their interactions with the input via GNNs. ACE + Fine-tune [Wang et al. (2021)](#bib.bib19) utilizes a reinforcement learning controller to automatically search for the optimal concatenation of various pre-trained embeddings. For a fair comparison, we adopt its sentence-level variant, achieving SOTA performance on the CoNLL2003 dataset. BERT-MRC+DSC [Li et al. (2020b)](#bib.bib38) addresses data imbalance via Dice loss, achieving SOTA performance on the OntoNotes5.0 dataset. BERT-MRC [Li et al. (2020a)](#bib.bib7) formulates NER as a machine reading comprehension task, achieving SOTA performance on the GENIA dataset. BINDER [Zhang et al. (2023)](#bib.bib21) aligns spans and types in a shared space via a bi-encoder and contrastive learning, distinguishing entities with dynamic thresholding. W2NER [Li et al. (2022)](#bib.bib25) unifies flat, nested, and discontinuous NER by modeling word-word relations on a 2D grid to capture token interactions. Biaffine+CNN [Yan et al. (2023)](#bib.bib24) t",
+      "text_sha256": "10b1dbb205a88ca858527c7f02a069ded0cd558e925f3a229dd061cc0679f292"
+     },
+     {
+      "span_id": "B-3f731678be9d44",
+      "page": null,
+      "location": "https://arxiv.org/html/2601.17898v1#chars-8790-19564",
+      "text": "## 2 Related Work\n\nNER with Traditional and Pre-trained Models. Traditional NER methods utilize CNN or LSTM approaches for NER [Ma and Hovy (2016)](#bib.bib11); [Yang et al. (2018)](#bib.bib12), where no prior knowledge is used before model training. Subsequently, pre-trained models represented by BERT [Devlin et al. (2019)](#bib.bib4) further enhanced the performance of NER, gradually becoming solid backbone models and reaching state-of-the-art levels [Li et al. (2020a)](#bib.bib7); [Li et al. (2022)](#bib.bib25); [Lu et al. (2022)](#bib.bib28); [Yan et al. (2023)](#bib.bib24). Overall, these methods treat NER as a token-level sequence labeling task, utilizing auto-encoding models for text modeling. [Cui et al. (2021)](#bib.bib6) and [Ma et al. (2022)](#bib.bib3) explore the use of generative BART [Lewis et al. (2020)](#bib.bib5) model for NER, gradually transforming NER from sequence labeling into a sequence-to-sequence generation task, and shifting NER models from auto-encoding representation models to auto-regressive generative models. As a result, the generative NER approach has also demonstrated promising results, while offering good flexibility and generalization.\n\nNER with LLMs and Future Directions. Recent studies employ advanced LLMs for generative NER. [",
+      "text_sha256": "e77c1333d71f213bd8c2008d7a54d34dca303bbc36331112351b31c3f1effc85"
+     }
+    ]
+   }
+  },
+  {
+   "pair_id": "C20-P2",
+   "source_key": "arxiv-2607.14661",
+   "source_distribution": "included",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C20]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nGraph-based RAG organizes fragmented text into explicit knowledge structures for retrieval through entities, relations, and article summaries. However, directly bringing graph-based RAG to smartphones creates a mismatch between cloud-oriented graph methods and mobile constraints: compact on-device models are more likely to miss entities, predict incorrect relations, or merge distinct entity mentions, while multi-level graph summaries require frequent, large-context LLM invocations. We build [NAME C20], to the best of our knowledge, the first graph-based RAG framework end-to-end deployed on commercial smartphones. [NAME C20] combines MRGraph, a two-layer mobile graph that preserves entities, relations, and source paragraphs; EvoNER, which incrementally learns unseen entity types and locally updates the graph; and ATPlanner, which uses one LLM call to guide hybrid retrieval under a fixed budget. On real smartphones, [NAME C20] outperforms prior mobile RAG baselines by up to 22.4 points in correctness, constructs knowledge graphs 13.77× faster, and consumes only 1.36% of the energy compared with the latest lightweight methods. Code & Demo:",
+      "text_sha256": "e98e68b22db38f3cd921212aea9537d2d7c37237fb162ce9d5e0384d69d3332c"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\ngraphs (Guo et al., 2025; Li et al., 2024; Sun et al., 2024). Each higher-level node summarizes connected lower-level nodes to locate a semantic region, but on-device LLMs have limited usable context and weaker abstraction capabilities. Repeated summarization can introduce descriptions unsupported by source documents while incurring prohibitive latency and energy overhead due to frequent invocations. A natural question is whether reducing the number of LLM invocations by limiting GraphRAG to two hierarchy levels can support mobile deployment. Our experiments on a subset of MultiHopQA show that this two-level GraphRAG variant only achieves an F1-score of 6.79% and requires about 37 182 s for on-device graph construction. This is substantially lower than original GraphRAG with an F1-score of 25.26%. Thus, reducing the number of levels alone can not address either inaccurate on-device knowledge extraction or LLM-based summary costs. Third, everyday smartphone use continuously generates new personal information. Therefore, graph structures need to be updat",
+      "text_sha256": "b579a0fa96c592ea99efd996987a294e9b210ff521d0ecf98fbb0ef0413865ce"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n## 2.2 PREVIOUS RAG METHODS\n\n**Vector-based RAG** encodes document chunks into dense embeddings and retrieves the top-$k$ most similar chunks for each query (Karpukhin et al., 2020). This design scales well, but each chunk is retrieved independently which has no explicit mechanism to chain evidence across documents.\n\n**Graph-based RAG** addresses this by extracting entities and relations from documents and organizing them into entity-relation graphs that make cross-document connections explicit (Edge et al., 2024; Peng et al., 2025). The core intuition is that a graph exposes the *topology* of knowledge, who is connected to whom through what relationship, enabling retrieval to follow structured paths rather than relying solely on semantic similarity.\n\nGraphRAG first splits documents into chunks and invokes an LLM on each chunk to extract entities and relations. Extracted elements are assembled into a graph $\\mathcal{G} = (\\mathcal{E}, \\mathcal{R})$. A defining characteristic is the subsequent construction of a multi-level community hierarchy via Leiden",
+      "text_sha256": "9ce235c6dd23c3aaefa06f8716b8e81957d2c3e7a139fdad77892daf047f70cb"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\nBase EP graph. The EP graph is a heterogeneous graph with two node types and two edge types:\n\n$$\\mathcal{G}_{\\mathrm{EP}} = (\\mathcal{E}, \\mathcal{P}, \\mathcal{L}, \\mathcal{R}), \\tag{1}$$\n\nwhere $\\mathcal{E}$ is the set of entity nodes, $\\mathcal{P}$ is the set of paragraph nodes, $\\mathcal{L} \\subseteq \\mathcal{E} \\times \\mathcal{P}$ is the set of entity-paragraph inclusion links, and $\\mathcal{R} \\subseteq \\mathcal{E} \\times \\mathcal{T} \\times \\mathcal{E}$ is the set of directed relation edges with labels from taxonomy $\\mathcal{T}$. An inclusion link $(e, p) \\in \\mathcal{L}$ records that entity $e$ is mentioned in paragraph $p$; a relation edge $(e_i, \\tau, e_j) \\in \\mathcal{R}$ records a typed connection $\\tau$ from $e_i$ to $e_j$.\n\nNode and edge structures. Each entity node is a tuple\n\n$$e = \\big( n, H(n), \\text{ type} \\in \\mathcal{C}, \\mathbf{ve}_e \\in \\mathbb{R}^d, \\text{ cluster}, \\mathcal{P}_e \\subseteq \\mathcal{P} \\big), \\tag{2}$$\n\nwhere $n$ is the canonical name of entity; $H(n)$ is hash of $n$, which enables $O(1)$ deduplication; type const",
+      "text_sha256": "4485076ca294be450965e08a45f9a7e2f4d47f1f676d7cccb6ab2d2d42f2b274"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\nand energy consumption on smartphones. A lightweight named entity recognizer is cheaper, but is restricted to a fixed label space and cannot reliably process newly emerging entity types (Zhang et al., 2024). Consequently, new documents may be only partially written into the graph, leaving their entities and relations unavailable to subsequent retrieval.\n\nEvoNER processes known types, discovers unseen types through amortized LLM supervision, backfills deferred facts, and adapts the recognizer. It has four steps (Figure 2): entity extraction, known-type graph updating, unknown-type discovery, and incremental model training.\n\nEntity extraction: For chunk $x$, EvoNER scores candidate spans up to width $W$ over deployed types $\\mathcal{C}$ and UNKNOWN, producing $\\mathcal{M}_x = \\{(s_i, e_i, \\ell_i, t_i, c_i)\\}$ with boundaries, surface form, predicted type, and confidence. Mentions with confident boundaries and types enter the known-type branch; those with confident boundaries but uncertain types enter an unknown-entity buffer, preventing graph contaminati",
+      "text_sha256": "eff3ad642d3632321a15c5c0b8e864b953ef88f5793d0bc939e80d393c6be21a"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\nconstraints. Repeated LLM navigation is expensive, while compact on-device models are less reliable at making a sequence of dependent search decisions. Because MRGraph uses a shallow routing index, unguided traversal can follow connected but irrelevant nodes, propagating seed-selection or relation-matching errors.\n\n![img-3.jpeg](img-3.jpeg)\n\nFigure 3: Workflow of plan-guided question answering.\n\nBased on these problems, we proposed ATPlanner. As shown in Figure 3, ATPlanner invokes a compact planner once to predict a multi-hop retrieval structure; lightweight retrieval modules then execute the resulting plan under a fixed budget. The planner shares the answerer's backbone and adds only planner-specific LoRA parameters. After the plan is produced, graph traversal, text retrieval, fallback, and evidence assembly proceed without further LLM navigation. The training details of ATPlanner are provided in Section B.\n\nPlan generation: Given a query q, ATPlanner generates a retrieval plan  \\( \\mathcal{P} = (\\mathcal{E}_{P}, \\mathcal{R}_{P}, H, B) \\) , where  \\(",
+      "text_sha256": "50c7e6e02ea81298bf3037a4f9b517e333222698473f251a032276793be22fe1"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "text evidence. The answering model receives the original query together with this compact evidence set. The generated output records the supporting passage identifiers and whether retrieval contributed to the answer.\n\n## 4 EXPERIMENTS\n\n### 4.1 SETUP\n\nWe use compact LLM backbones from the Qwen3 (Qwen Team, 2025) and Ministral3 (Liu et al., 2026a) families, and compare against two groups of baselines: (1) LLM-only models without retrieval, and (2) RAG methods including Naïve RAG (Lewis et al., 2020), GraphRAG (Edge et al., 2024), InstructRAG (Wei et al., 2025), StableRAG (Zhang et al., 2026), TruthfulRAG (Liu et al., 2026b), xRAG (Cheng et al., 2024), and MiniRAG (Fan et al., 2025), for fair comparison.\n\n[NAME C20] and NaïveRAG are executed entirely on real smartphones. Due to unacceptable graph construction time cost by LLM invocations other RAG methods are simulated in a cloud environment with same experiment settings. To demonstrate the on-device feasibility of [NAME C20], we compared it with MiniRAG's graph construction process on smartphones. Details are provided in Appendix A.\n\nWe test [NAME C20] on two smartphones and two LLM scales, and the specific results are shown in Appendix E. Unless otherwise specified, OnePlus 15 and Qwen3-1.7B (S0) are used in subsequent experiments",
+      "text_sha256": "f599c903df1bdfdb69e8af858e3670c24b5146e515f012e25c00768edf1b8c65"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "Table 1: Correctness (Cr, %) and F1 (%) on four QA benchmarks. Within each base-model block, the best result in each column is shown in bold and the second-best in underlined.\n\n[tbl-0.html](tbl-0.html)\n\nTable 2: Mobile graph construction comparison on S0 using the same articles. Runtime breakdown reports the percentage of total runtime.\n\n[tbl-1.html](tbl-1.html)\n\naccount for only 6%. Although graph construction is not the dominant percentage of total runtime, the graph structure is responsible for the retrieval-quality gains observed in Table 1 and Figure 5.\n\nRuntime answering: We next examine how [NAME C20]'s query-time behavior changes across device and model size. In general, the measurements reveal a clear usability boundary. While both backbones can be executed on smartphones, they occupy very different latency regimes once the full retrieval pipeline is taken into account. Median QA prefill latency is 11.3 s for S0 and 14.3 s for S1, but rises to 27.8 s for S2 and 36.4 s for S3. The 1.7B model therefore remains the more deployable option under current mobile budgets. More broadly, the measured power remains relatively low because we prioritize stable long-term execution, allowing [NAME C20] to run as a persistent on-device system.\n\nFigure 4 reveals a clear separation b",
+      "text_sha256": "6b6aa42fac0797f3b6bd22d285c468699656fe6b4ee8a559876e221305889c2a"
+     },
+     {
+      "span_id": "A-page-0009",
+      "page": 9,
+      "location": "target PDF page 9",
+      "text": "432\n433\n434\n435\n436\n437\n438\n439\n440\n441\n442\n443\n444\n445\n446\n447\n448\n449\n450\n451\n452\n453\n454\n455\n456\n457\n458\n459\n460\n461\n462\n463\n464\n465\n466\n467\n468\n469\n470\n471\n472\n473\n474\n475\n476\n477\n478\n479\n480\n481\n482\n483\n484\n485\n\n![img-4.jpeg](img-4.jpeg)\n\n![img-5.jpeg](img-5.jpeg)\n\n(a) Prefill stage across S0–S3.\n\n![img-6.jpeg](img-6.jpeg)\n\n(b) Decode stage across S0–S3.\n\nFigure 4: Latency and throughput for [NAME C20] under configurations S0–S3. (a) Prefill latency and throughput. (b) Decode latency and throughput.\n\n![img-7.jpeg](img-7.jpeg)\n\n(a) Impact of retrieval branches.\n\n![img-8.jpeg](img-8.jpeg)\n\n(b) Impact of planner design.\n\n![img-9.jpeg](img-9.jpeg)\n\n(c) Impact of MRGraph components.\n\nFigure 5: Ablation results.\n\nFurther analysis of configuration combinations involving various smartphones and LLM backbones, please refer to Appendix E.\n\n### 4.4 ABLATION STUDY\n\nTo isolate the contribution of each [NAME C20] component, we investigate the following research questions on MultiHopQA. We ablate the retrieval strategy, ATPlanner, MRGraph components, and EvoNER on MultiHopQA with Ministral3-3B (Figure 5).\n\nAs shown in Figure 5a, replacing hybrid retrieval with either branch reduces F1 from 0.4337 to 0.2776 (text only) or 0.2924 (graph only), showing their complementarity. Text retriev",
+      "text_sha256": "fd5022d2e8e60bc083b2b521c9a0df7ca9656614e65cee06d79aa7e129a7d9e6"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n# AI USE STATEMENT\n\nIn this work, we used generative AI tools to assist with code implementation, generate supervision for retrieval-planner training, and assess the correctness of answers produced by the evaluated RAG systems. Specifically, Claude Opus 4.6 generated planner-training supervision, which underwent rule-based filtering and manual verification, and Claude Haiku 4.5 served as an LLM judge under the protocol described in Appendix C. We did not use generative AI tools to conduct the preliminary literature review, formulate the proposed methodology, or design the experiments. These activities, together with the execution of experimental tests, were carried out by the human authors. Additionally, we used generative AI tools to edit the manuscript for language and readability. The authors reviewed the AI-assisted manuscript edits and code, tested the implementation, and manually checked a sample of the LLM-generated judgments. We take responsibility for the final content of this work, including the text, code, and evaluation results produced wit",
+      "text_sha256": "80aad80c53d4e3b9d552aa5e5c957440c9dd870bd9bf11abd4e0ebe33013c490"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nKorakit Seemakhupt, Sihang Liu, and Samira Khan. EdgeRAG: Online-indexed RAG for edge devices, 2024.\n\nHaiyang Shen, Hang Yan, Zhongshi Xing, Mugeng Liu, Yue Li, Zhiyang Chen, Yuxiang Wang, Jiuzheng Wang, and Yun Ma. DRAGON: Domain-specific robust automatic data generation for RAG optimization. In Findings of the Association for Computational Linguistics: EACL 2026, pp. 1065–1078. Association for Computational Linguistics, 2026. doi: 10.18653/v1/2026.findings-eacl.56. URL https://aclanthology.org/2026.findings-eacl.56/.\n\nJiashuo Sun, Chengjin Xu, Lumingyuan Tang, et al. Think-on-graph: Deep and responsible reasoning of large language model on knowledge graph. In Proceedings of the International Conference on Learning Representations, 2024.\n\nHarsh Trivedi, Niranjan Balasubramanian, Tushar Khot, et al. Interleaving retrieval with chain-of-thought reasoning for knowledge-intensive multi-step questions. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics, pp. 10014–10037, 2023.\n\nZijie J. Wang and Duen Horng Chau. MeMem",
+      "text_sha256": "bff1a30654e7b54ba35d47226a40cbe00b7c206b727135a38b8ae20a5a1d0759"
+     },
+     {
+      "span_id": "A-page-0013",
+      "page": 13,
+      "location": "target PDF page 13",
+      "text": "Table 3: Execution settings for baseline comparisons.\n\n[tbl-2.html](tbl-2.html)\n\nBaseline scope. Naïve RAG is the direct dense-retrieval baseline. GraphRAG and MiniRAG represent graph-based RAG pipelines; MiniRAG is the closest graph baseline to mobile deployment, so we additionally profile its memory construction on a phone. InstructRAG adds instruction-guided denoising, StableRAG studies retrieval-order stability, TruthfulRAG adds KG-based conflict handling, and xRAG compresses retrieved context. These systems target different operating points, so we interpret the comparison narrowly: it measures how each strategy behaves with compact backbones and matched benchmark inputs, not the maximum performance of the original full-scale systems.\n\n## B EXPERIMENTAL DETAILS\n\nBackbone models and quantization. Unless otherwise specified, all on-device models are quantized to Q6_K format using llama.cpp (Gerganov, 2023). We consider Qwen3-1.7B and Ministral3-3B as default compact backbones, with Qwen3-4B as a larger variant that still fits on device. For capacity reference, we additionally report results using Qwen3-32B and Ministral3-14B on server-grade hardware.\n\nOffline preparation. All one-time offline steps are performed on a cloud server with two NVIDIA RTX A6000 GPUs, i",
+      "text_sha256": "0986acc8930bb4ed2e2a8245f3b008235ddc3a33c00909a777acac9ca07b48d0"
+     },
+     {
+      "span_id": "A-page-0015",
+      "page": 15,
+      "location": "target PDF page 15",
+      "text": "the EvoNER can gradually learn previously unseen entity categories and translate this learning into downstream question-answering improvements.\n\nTable 4: Continual entity learning performance across four domains.\n\n[tbl-3.html](tbl-3.html)\n\nWe initialize EvoNER in a nearly category-agnostic state: it has no predefined domain-specific entity types and can only make surface-level judgments about whether a span is likely to be an entity. During simulated ingestion, unknown entities are buffered and clustered; when a cluster becomes sufficiently coherent, the LLM assigns a type label and then EvoNER starts its continuous learning process. To verify the effectiveness of incremental learning, we evaluate the framework at three checkpoints corresponding to 0%, 50%, and 100% of the training corpus. At each checkpoint, training is paused, the current model state is frozen, and evaluation is conducted on 100 QA questions selected from MultiHopQA.\n\nTable 4 reports the performance across four representative domains. NER \\( _{surf} \\) is the overlap rate between entities identified by NER at the current stage and gold entities; F1-score measures token-level overlap between golden answer and generated answer during QA. Overall, [NAME C20] demonstrates a consistent ability to absorb ne",
+      "text_sha256": "503fabbd3bbc2251e8960571bf06747ccf98341d67f45ade4461e098b6ddd3b7"
+     },
+     {
+      "span_id": "A-page-0017",
+      "page": 17,
+      "location": "target PDF page 17",
+      "text": "864\n865\n866\n867\n868\n869\n870\n871\n872\n873\n874\n875\n876\n877\n878\n879\n880\n881\n882\n883\n884\n885\n886\n887\n888\n889\n890\n891\n892\n893\n894\n895\n896\n897\n898\n899\n900\n901\n902\n903\n904\n905\n906\n907\n908\n909\n910\n911\n912\n913\n914\n915\n916\n917\n\nclustered by contextual embeddings, sparsely labeled by the LLM at the cluster level, and then incorporated through confidence-gated distillation.\n\n**Graph-based RAG systems.** Graph-based RAG systems organize text into graph structures for multi-hop evidence composition (Edge et al., 2024; Han et al., 2025). Representative systems use community summaries, lightweight graph construction, or iterative graph navigation (Guo et al., 2025; Sun et al., 2024; Li et al., 2024; Fan et al., 2025). These designs are effective in server-side settings, but their deep LLM-generated semantic levels are difficult to construct, update, and traverse on smartphones. [NAME C20] therefore uses a shallow graph memory that keeps the abstraction needed for search and the provenance needed for grounded reasoning.",
+      "text_sha256": "a62827ee97121992f8bbd5b656a15c490f12b29f7945685a253b626e75adef1d"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-d27efd32deb918",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": "arXiv:2607.14661v2 [cs.AI] 18 Jul 2026\n\n# SmartRAG: Native Graph-Based RAG for Mobile Device\n\nZhihan Jiang \\( ^{1} \\) , Meng Li \\( ^{1} \\) , Shenghao Liu \\( ^{2} \\) , Keran Li \\( ^{1} \\) , Ruiben Zhou \\( ^{1} \\)\n\nWei Wang \\( ^{1} \\) , Xianjun Deng \\( ^{2} \\) , Shuai Wang \\( ^{3} \\) , Haipeng Dai \\( ^{1} \\)\n\n\\( ^{1} \\) Nanjing University  \\( ^{2} \\) HUST  \\( ^{3} \\) Southeast University\n\nzhihan_jiang@smail.nju.edu.cn, meng@nju.edu.cn\n\n## Abstract\n\nDeploying large language models (LLMs) as personal assistants on mobile devices demands privacy, low latency, and offline availability, yet the computational cost of giant models clashes with strict edge-hardware budgets. We argue that this tension cannot be resolved by model compression alone; it requires decomposing on-device intelligence into complementary functional roles. We present SmartRAG, a fully on-device framework that organizes an intelligent assistant around four coordinated modules—Perception, Memory, Focus, and Thinking. At the core of SmartRAG is EvoNER, a continually learnable named-entity recognizer that incrementally expands its label inventory through teacher-distilled updates, enabling the system to absorb previously unseen entity types without retraining the backbone LLM. Extracted knowledge is stored",
+      "text_sha256": "8a07502e287a78eaedec3dcf72948cc72bc845e188ea30251450c635a0b0c26d"
+     },
+     {
+      "span_id": "B-ocr-97c1b1728a346c",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": "Although on-device RAG has recently achieved preliminary progress, most existing methods remain centered on naive vector retrieval—that is, relying on semantic similarity between queries and document snippets to facilitate memory access. While this paradigm is well-suited for handling problems involving local matching, it struggles to address complex queries that require cross-segment evidence aggregation, entity linking, and multi-step reasoning. To address this limitation, on-cloud RAG research has begun to leverage graph structures to enhance the retrieval process, explicitly modeling the connections between entities, relations, and evidence to improve multi-hop question-answering capabilities. However, the majority of existing graph-based RAG methods are built upon powerful models, relying heavily on models with tens of billions of parameters to execute critical steps such as graph construction, summarization, and relation organization. While this premise may hold true in cloud-based environments, it clearly fails in on-device scenarios: on-device systems simply cannot bear the computational, latency, energy, and cost overheads associated with models of such scale.\n\nBased on this issue, we believe that the key to on-device RAG lies not in directly compressing c",
+      "text_sha256": "cb7351c6e9c0e2128409794eea95724ebd2d6a08252460c1edaca36e529ec1da"
+     },
+     {
+      "span_id": "B-ocr-828a5bbe429c4d",
+      "page": 7,
+      "location": "B PDF page 7",
+      "text": "Answering. The LLM generates responses conditioned on retrieved evidence, constrained to structured schemas that favor extractive grounding to reduce hallucination.\n\n## 4 Experiments\n\n### 4.1 Setup\n\nWe use two compact LLM families in this work: Qwen3 [Qwen Team, 2025] and Ministral3 [Liu et al., 2026a]. Both are quantized to Q6_K via llama.cpp [Gerganov, 2023]. All offline one-time preparation, including quantization, LoRA training, and dataset pre-processing, is performed on a cloud server with two NVIDIA RTX A6000 GPUs, while the full online SmartRAG pipeline—memory ingestion, indexing, retrieval, and answer generation—runs entirely on-device. For multi-hop retrieval planning, we train a task-specific LoRA decomposer [Hu et al., 2022] on a self-constructed dataset derived from MultiHopQA and HotpotQA, where decomposition targets are generated offline using Claude Opus 4.6 and then filtered by rules with manual verification. The decomposer is used only to generate retrieval plans; final answers are always produced by the quantized backbone conditioned on retrieved evidence. All on-device experiments are conducted on two real smartphones: OnePlus 13 (Snapdragon 8 Elite, 16 GB RAM) and OnePlus 15 (Snapdragon 8 Elite Gen 5, 16 GB RAM).\n\nWe evaluate on four QA benchma",
+      "text_sha256": "3a1747f6382c340a62c9fadb2630613dd99e1e25e350186cf766bc62b37b8852"
+     },
+     {
+      "span_id": "B-ocr-77aa76de74890f",
+      "page": 14,
+      "location": "B PDF page 14",
+      "text": "**Why these baselines were not deployed as real-phone end-to-end systems.** Our goal in the baseline comparison is to evaluate answer quality under a matched compact-backbone regime, rather than to claim that every baseline is equally suitable for direct mobile deployment. The original formulations of InstructRAG, StableRAG, and TruthfulRAG introduce additional stages that make them difficult to treat as drop-in phone pipelines. InstructRAG explicitly denoises retrieved contents through self-synthesized rationales and supports both in-context learning (ICL) and supervised fine-tuning (SFT). TruthfulRAG introduces additional KG-oriented processing steps, including knowledge-graph construction, graph retrieval, and entropy-based filtering. StableRAG emphasizes repeatability, frozen retrieval, and structured output normalization, with a pipeline that depends on OpenAI-style generation and embedding calls together with a persistent retrieval store. These original designs are meaningful in their intended settings, but they differ substantially from a single-pass compact on-device assistant stack. For this reason, we treat them as *reference RAG baselines evaluated under a matched backend and quantization setup*, rather than as directly deployable mobile systems.\n\n**Inst",
+      "text_sha256": "47520a3a7990dc1d539dc5dd0f43476f08d585bde579ba7448c89b2569a9a292"
+     },
+     {
+      "span_id": "B-20adb04a102bd7",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.14661v2#chars-11161-12627",
+      "text": "### 3.1 Architecture overview\n\nThe SmartRAG architecture ([Figure 1](#S3.F1 \"In 3.1 Architecture overview ‣ 3 Method ‣ SmartRAG: Native Graph-Based RAG for Mobile Device\")) consists of four interacting modules. The Perception module transforms unstructured text into structured knowledge via EvoNER (an on-device NER component, [Section 3.2](#S3.SS2 \"3.2 Perception: EvoNER and entity discovery ‣ 3 Method ‣ SmartRAG: Native Graph-Based RAG for Mobile Device\")) and a lightweight relation classifier, producing entity–relation triplets. The Memory module organizes these triplets into MRGraph, a persistent knowledge structure that binds entities and relations to their source paragraphs for provenance ([Section 3.3](#S3.SS3 \"3.3 Memory: MRGraph ‣ 3 Method ‣ SmartRAG: Native Graph-Based RAG for Mobile Device\")). At query time, the Focus module retrieves and ranks relevant evidence through a hybrid pipeline combining graph traversal, lexical matching, and dense semantic search ([Section 3.4](#S3.SS4 \"3.4 Focus: hybrid retrieval ‣ 3 Method ‣ SmartRAG: Native Graph-Based RAG for Mobile Device\")). The Thinking module invokes the on-device LLM only for high-value semantic operations: labeling emerging entity types, planning multi-hop retrieval, and synthesizing final answers ([S",
+      "text_sha256": "8b3eda0f6ecf20bfaa433618aee61051b1cc19c3c79691ca01567bb1691b06a9"
+     },
+     {
+      "span_id": "B-8e4ac2f62a66a0",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.14661v2#chars-12676-14346",
+      "text": "#### Span-based NER with character injection.\n\nWe design EvoNER (Evolutionary Named Entity Recognition) to satisfy four on-device requirements: lightweight co-existence with the LLM, accurate entity boundary and type prediction, robustness to out-of-vocabulary surface forms, and support for continual label expansion. Given an input sentence, we encode it into sub-word representations and enumerate candidate spans from word-start positions up to a maximum width WW:\n\n|  |  |  |  |\n| --- | --- | --- | --- |\n|  | r=(i,j),1≤i≤j≤n,(j−i+1)≤W,r=(i,j),\\qquad 1\\leq i\\leq j\\leq n,\\qquad(j-i+1)\\leq W, |  | (1) |\n\nwhere rr denotes a candidate span, ii and jj are its inclusive word-level start and end indices, nn is the sentence length in words, and WW caps span width (W=10W{=}10 in our implementation), yielding O⁡(n​W)O(nW) candidates instead of all O⁡(n2)O(n^{2}) spans. To improve robustness to misspellings and rare surface forms, we augment the contextual representation with a character-level feature injected at the first subword of each word:\n\n|  |  |  |  |\n| --- | --- | --- | --- |\n|  | 𝐡t=[𝐞t;mt⋅𝐜⁡(t)],\\mathbf{h}\\_{t}=[\\mathbf{e}\\_{t}\\,;\\,m\\_{t}\\cdot\\mathbf{c}(t)], |  | (2) |\n\nwhere 𝐡t\\mathbf{h}\\_{t} is the final representation at subword position tt, 𝐞t\\mathbf{e}\\_{t} is ",
+      "text_sha256": "c5e4fe3c8cbabf9087f1bf98e94d27d153363c807b24ebfa0736a0db86e0bd74"
+     },
+     {
+      "span_id": "B-d337f8b4583a8d",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.14661v2#chars-1788-8493",
+      "text": "## 1 Introduction\n\nIn recent years, as the application of large language models (LLMs) in real-world interactive tasks continues to deepen, memory is gradually emerging as a critical capability in LLM system determining whether the system can support long-term personalization, continuous knowledge updates, and contextually consistent reasoning. This issue is of particular significance for on-device scenarios, as the core value of such deployments lies precisely in data locality, privacy protection, and personalized services capabilities that inherently require the system to establish and maintain a local memory built around the user’s private data, device-local content, and environmental context. Given the strict constraints on system-memory (i.e., RAM usage and runtime memory footprint on edge devices), power consumption, and latency budgets inherent to devices, heavyweight LLMs are difficult to deploy directly; furthermore, relying solely on the limited parametric memory of lightweight models often proves insufficient to support continuous updates, user customization, and knowledge-intensive reasoning. Retrieval-Augmented Generation (RAG) addresses this challenge by integrating LLMs with external, non-parametric memory, thereby providing a memory mechanism that i",
+      "text_sha256": "d4cca75fc73c14fc58dc35e802f37e72a4d8ec583d1064a9666477d17a954e10"
+     },
+     {
+      "span_id": "B-9dc4c954e9a761",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.14661v2#chars-209-263",
+      "text": "# SmartRAG: Native Graph-Based RAG for Mobile Device",
+      "text_sha256": "7e4935c328edf47a35931ad93781b4e900838a8045cfb23c6e556a47e0ed04bc"
+     },
+     {
+      "span_id": "B-4ad93730dfc61e",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.14661v2#chars-263-1788",
+      "text": "###### Abstract\n\nDeploying large language models (LLMs) as personal assistants on mobile devices demands privacy, low latency, and offline availability, yet the computational cost of giant models clashes with strict edge-hardware budgets. We argue that this tension cannot be resolved by model compression alone; it requires decomposing on-device intelligence into complementary functional roles. We present SmartRAG, a fully on-device framework that organizes an intelligent assistant around four coordinated modules—*Perception*, *Memory*, *Focus*, and *Thinking*. At the core of SmartRAG is EvoNER, a continually learnable named-entity recognizer that incrementally expands its label inventory through teacher-distilled updates, enabling the system to absorb previously unseen entity types without retraining the backbone LLM. Extracted knowledge is stored in MRGraph, a three-layer provenance-preserving knowledge graph, and retrieved at query time through a hybrid pipeline combining graph traversal, lexical matching, and dense semantic search. The on-device LLM is invoked only for high-value semantic operations—labeling, planning, and answer synthesis—keeping inference costs bounded. Experiments on four QA benchmarks (TriviaQA, Natural Questions, HotpotQA, MultiHopQA) show ",
+      "text_sha256": "e5695001c97584c88b13f439391f82b88f55d4f30a01d43bbcf1ba64515f5867"
+     },
+     {
+      "span_id": "B-43658d80e57ce0",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.14661v2#chars-28166-30565",
+      "text": "### 4.2 Main results: structured memory improves small-backbone QA under on-device constraints\n\n|  |  |  |  |  |  |  |  |  |  |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| Base Model | Method | TriviaQA | | NQ | | HotpotQA | | MultiHopQA | |\n|  |  | Cr | F1 | Cr | F1 | Cr | F1 | Cr | F1 |\n| Qwen3 | | | | | | | | | |\n| LLM-only (no retrieval) | | | | | | | | | |\n|  | Qwen3-1.7B | 22.10 | 21.52 | 9.10 | 10.17 | 14.15 | 13.00 | 22.00 | 19.18 |\n|  | Qwen3-4B | 28.70 | 37.66 | 23.15 | 19.95 | 24.00 | 22.29 | 30.05 | 29.29 |\n|  | Qwen3-32B | 51.45 | 42.26 | 40.15 | 35.92 | 33.25 | 30.56 | 31.54 | 32.69 |\n| Retrieval-augmented (1.7B) | | | | | | | | | |\n|  | Naïve RAG | 47.00 | 36.31 | 62.24 | 37.23 | 41.55 | 37.80 | 45.66 | 34.58 |\n|  | InstructRAG | 43.15 | 22.67 | 41.30 | 34.99 | 33.90 | 26.15 | 13.90 | 12.94 |\n|  | StableRAG | 45.16 | 21.89 | 17.30 | 11.14 | 41.15 | 26.11 | 5.05 | 0.75 |\n|  | TruthfulRAG | 47.10 | 22.86 | 45.10 | 26.38 | 40.71 | 25.51 | 19.95 | 12.64 |\n|  | SmartRAG (ours) | 50.00 | 48.68 | 66.68 | 54.84 | 63.93 | 51.27 | 50.17 | 41.86 |\n| Ministral3 | | | | | | | | | |\n| LLM-only (no retrieval) | | | | | | | | | |\n|  | Ministral3-3B | 35.84 | 28.27 | 24.43 | 18.81 | 16.98 | 19.19 | 17.33 | 26.56 |\n|  | Ministral3-14B | 60.70 | 60.",
+      "text_sha256": "4f8d71651c5bfc06e939f6bb9543c6abd499ebd0ab0c23da63f0e59b22274add"
+     },
+     {
+      "span_id": "B-c032d87a18e6cc",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.14661v2#chars-39945-40423",
+      "text": "## 5 Discussion and conclusion\n\nWe have presented SmartRAG, an on-device architecture for adaptive question answering that decomposes intelligence into four coordinated functional roles. By shifting continuous adaptation to efficient structured computation and reserving LLM inference for high-value semantic operations, SmartRAG achieves multi-hop reasoning performance competitive with substantially larger cloud-based models while running entirely on commodity smartphones.",
+      "text_sha256": "5e60a38bbaf467bebac1ae9f50dc19f2ccf15ea93ef765d7d3733473e9c4dda0"
+     },
+     {
+      "span_id": "B-e0d187de04fb07",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.14661v2#chars-42849-42864",
+      "text": "## References",
+      "text_sha256": "65b72d86eeeb214ab8ca5fd24cb7cd7773e58084e95b670040df03e21e8c6fa7"
+     },
+     {
+      "span_id": "B-eaed2274c7e1ac",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.14661v2#chars-47922-48801",
+      "text": "#### StableRAG.\n\nStableRAG is a method designed to improve repeatability and robustness in RAG systems, mitigating retrieval-permutation-induced hallucinations through stable retrieval ordering and structured rendering. In our experiments, we retained the stability-oriented evaluation logic described in the original paper while replacing the original serving configuration with the same compact quantized backbones and llama.cpp backend used in the rest of the paper. As with TruthfulRAG and InstructRAG, we treat the resulting system as a *simulated reference implementation under matched inference conditions*, not as a true smartphone deployment. This distinction is important because StableRAG is primarily designed to study response stability and retrieval repeatability, whereas SmartRAG is optimized for persistent structured memory and end-to-end on-device execution.",
+      "text_sha256": "f531755982bd829e4093acda098256d7106ba306535e995352ff5cf3acdc298f"
+     },
+     {
+      "span_id": "B-d59547366aa08b",
+      "page": null,
+      "location": "https://arxiv.org/html/2607.14661v2#chars-9934-10669",
+      "text": "#### Named entity recognition and continual learning.\n\nSpan-based NER ([Yu et al., 2020](#bib.bib20); [Fu et al., 2021](#bib.bib21)) formulates entity detection as span classification over enumerated candidates, avoiding the label dependency of sequential taggers. Continual learning for NER ([Monaikul et al., 2021](#bib.bib10)) addresses the challenge of absorbing new entity types without forgetting old ones, commonly using knowledge distillation ([Hinton et al., 2015](#bib.bib9)) or regularization ([Kirkpatrick et al., 2017](#bib.bib8)). Our EvoNER combines span-based detection with a reserved-label classifier and teacher-distilled incremental updates, specifically designed for on-device expansion of the entity vocabulary.",
+      "text_sha256": "4aa446ec93dab91aa7cdfb68a431d61525a0f3228570b0301c288c7f9397514f"
+     }
+    ]
+   }
+  }
+ ],
+ "note": "Target spans are anonymized excerpts of the target text; page numbers refer to the original target PDF, which is not distributed."
+}

@@ -1,0 +1,448 @@
+{
+ "case_id": "C02",
+ "pairs": [
+  {
+   "pair_id": "C02-P1",
+   "source_key": "arxiv-2510.10262",
+   "source_distribution": "link_only",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C02]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nRecently, deep reinforcement learning-based dynamic algorithm configuration (DRL-DAC) has been widely studied in evolutionary computation. However, existing DRL-DAC methods mainly focus on the structure of the current population while neglecting inter-generational evolutionary dynamics, leading to an insufficient characterization of the evolutionary state. To address this limitation, we propose an [NAME C02] that incorporates the Kullback–Leibler (KL) divergence between consecutive populations to capture inter-generational transitions. Combined with search-stage information, this metric guides the feature-wise reweighting of node embeddings, providing the RL agent with a more discriminative state representation for accurate parameter adaptation. Extensive experiments on representative multi-objective combinatorial optimization problems demonstrate that our method significantly improves overall optimization performance, achieving superior convergence and diversity compared to state-of-the-art baselines. Furthermore, evaluations under large-scale and many-o",
+      "text_sha256": "b56f5997e6bfe65088411159b9c0f26513f79f24f59c258470cffa06156cda1a"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\nExisting studies characterize evolutionary search states through several representative strategies. MADAC constructs states from handcrafted statistical indicators and their historical variations, thereby explicitly incorporating search-history information but relying on manually designed features Xue et al. (2022). GS-MODAC instead represents the current population as an objective-space graph and learns a population-level embedding using a graph neural network Reijnen et al. (2025b). More recently, STN-MODAC constructs a Search Trajectory Network that retains solution transitions across generations and employs a temporal graph model to encode structural and temporal search dynamics Reijnen et al. (2025a).\n\nWhile GS-MODAC effectively captures the structure of the current population, it does not explicitly describe how the population has changed from the preceding generation. Thus, populations at the same search stage may exhibit similar objective-space structures while undergoing different degrees of inter-generational change. STN-MODAC addresses this ",
+      "text_sha256": "0d656fa9f277a0019e9844ed5876b22ce4805861aadc6f7df0c8dcfe1e660a63"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n## 2.2 ALGORITHM CONFIGURATION\n\nAlgorithm configuration aims to identify parameter combinations from a predefined configuration space that improve the performance of a target algorithm. Traditional automatic configuration methods typically search for parameter settings offline before execution Schede et al. (2023). Representative methods include ParamILS based on iterative local search Hutter et al. (2009), irace using a racing mechanism to eliminate poorly performing configurations López-Ibáñez et al. (2016), and SMAC3 employing surrogate models to guide configuration search Lindauer et al. (2022). Although these methods reduce manual trial-and-error, the resulting configurations remain fixed during execution.\n\nDynamic algorithm configuration (DAC) instead adapts parameters online according to runtime feedback Biedenkapp et al. (2020); Adriaensen et al. (2022). Biedenkapp et al. cast DAC as a contextual Markov decision process, where an RL policy learns to map search states to parameter configurations via interaction Biedenkapp et al. (2020). For hete",
+      "text_sha256": "99706584075f6e0fe9d299f8540e7e6a7cdb13a1ad1195ea8498afd2fb6ee090"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\n![img-0.jpeg](img-0.jpeg)\n\nFigure 1: Overview of the proposed evolution-aware dynamic configuration framework.\n\n(2017) is employed to encode the population graph:\n\n$$H_t = \\text{GCN}(X_t, E_t), \\quad H_t \\in \\mathbb{R}^{N \\times d} \\tag{1}$$\n\nwhere $X_t$ denotes the normalized node feature matrix, $E_t$ represents the adjacency matrix derived from graph connectivity, and $d$ is the dimension of the latent node embeddings. The $i$-th row $\\boldsymbol{h}_i^t \\in \\mathbb{R}^d$ represents the structural embedding of the $i$-th solution and is subsequently used for evolution-guided feature reweighting.\n\n### 3.3 EVOLUTION-AWARE FEATURE MODELING\n\nAlthough the population graph captures the structure of the current population, it does not explicitly describe inter-generational dynamics. To address this, we introduce the distributional shift between consecutive populations as supplementary evolutionary information. Specifically, the objective vectors at generations $t - 1$ and $t$ are modeled as multivariate Gaussian distributions:\n\n$$\\mathcal{P}_{t-1} \\sim \\mat",
+      "text_sha256": "734548611125b47696ae71f5c1ee6e7cc8b667263c1277d605d0582a23e58f6c"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "encode the signed direction of population movement. To constrain the unbounded non-negative divergence into a stable numerical range, $D_t^{\\text{KL}}$ is normalized into $[0, 1)$:\n\n$$\\widehat{D}_t^{\\text{KL}} = \\frac{D_t^{\\text{KL}}}{D_t^{\\text{KL}} + 1}. \\tag{5}$$\n\nBecause population changes carry different importance weights across different evolutionary stages, the transformed KL divergence is concatenated with the search progress to yield an evolution-aware feature vector:\n\n$$\\boldsymbol{e}_t = \\left[ \\frac{t}{T}, \\widehat{D}_t^{\\text{KL}} \\right], \\tag{6}$$\n\nwhere $T$ represents the total generation budget. The first scalar specifies the temporal search stage, while the second quantifies recent inter-generational progress. Rather than directly determining the algorithm parameters according to $\\widehat{D}_t^{\\text{KL}}$, this evolution-aware feature is used to guide the representation of the current population.\n\n### 3.4 [NAME C02] AND POLICY LEARNING\n\nThe evolution-aware feature vector is first mapped by a multilayer perceptron (MLP) with a tanh output layer to derive a feature-wise weight vector:\n\n$$\\boldsymbol{w}_t = \\phi_\\psi(\\boldsymbol{e}_t), \\quad \\boldsymbol{w}_t \\in \\mathbb{R}^d, \\tag{7}$$\n\nwhere $\\phi_\\psi(\\cdot)$ denotes th",
+      "text_sha256": "fda6b52c81f8478d579a6f386aca503e579ed532b16b431ac6bfcc6b0a3b5ae2"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\n## 4 EXPERIMENTS\n\nThe proposed method is evaluated on two representative multi-objective combinatorial optimization problems to assess its optimization performance, scalability, and generalization capability. The experiments compare both static and dynamic algorithm configuration methods.\n\n### 4.1 EXPERIMENTAL SETTING\n\nBenchmark Problems and Instances. We evaluate the proposed method on the Flexible Job Shop Scheduling Problem (FJSP) and the Capacitated Vehicle Routing Problem (CVRP). The FJSP involves both machine assignment and operation sequencing Dauzère-Pérès et al. (2024). Following standard formulations Tamssaouet et al. (2022), we consider five optimization objectives: Makespan, Balanced Workload, Average Flowtime, Total Workload, and Maximum Flowtime. Depending on the number of objectives, these FJSP variants are denoted as Bi-FJSP, Tri-FJSP, and Penta-FJSP, which optimize the first two, first three, and all five objectives, respectively. The CVRP aims to construct optimal routing plans for a fleet of vehicles servicing a set of customers, whe",
+      "text_sha256": "63907714b142928baf4926dca75eafa043f1e3de51c0509d814ccfaec84f8d97"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\ndifferent random seeds. For each instance, we summarize the resulting HV values using the mean, maximum, and standard deviation, and subsequently report the average of these statistics over all 100 test instances within the same problem configuration. To guarantee consistency, all methods utilize identical predefined reference points for HV calculation. In the resulting performance tables, the highest mean and maximum HV values under each setting are highlighted in bold. An underlined entry indicates that the corresponding method significantly outperforms the baseline method GS-MODAC according to a two-sided Wilcoxon signed-rank test at a significance level of p < 0.05.\n\n## 4.2 EXPERIMENTAL RESULTS\n\nTo evaluate the proposed method, the experiments address the following key research questions:\n\n1. **Overall Optimization Performance:** How does the proposed evolution-aware dynamic configuration method compare against static baselines and state-of-the-art dynamic DAC methods across standard benchmark instances?\n2. **Cross-size Generalization:** Can a poli",
+      "text_sha256": "fa626043a8e679bf225862e7dd6ad564e6bab96c3b5905ac85f8668d75fc6c1f"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "378\n379\n380\n381\n382\n383\n384\n385\n386\n387\n388\n389\n390\n391\n392\n393\n394\n395\n396\n397\n398\n399\n400\n401\n402\n403\n404\n405\n406\n407\n408\n409\n410\n411\n412\n413\n414\n415\n416\n417\n418\n419\n420\n421\n422\n423\n424\n425\n426\n427\n428\n429\n430\n431\n\nTable 1: Hypervolume performance of different methods on FJSP test instances with varying objective counts and problem sizes, and on CVRP test instances with varying problem sizes.\n\n[tbl-0.html](tbl-0.html)\n\nachieves identical or competitive mean HV values on Bi-CVRP-100 and Bi-CVRP-200 compared with policies specifically trained on the corresponding target sizes. Conversely, the policy trained on 100-customer instances achieves competitive mean and maximum HV values on Bi-CVRP-200 compared with the policy trained specifically on 200-customer instances. Similarly, the policy trained on Bi-CVRP-200 performs comparably on Bi-CVRP-500 to the policy specifically trained on Bi-CVRP-500. These findings demonstrate the policy's cross-size generalization ability in both directions.\n\n![img-1.jpeg](img-1.jpeg)\n\n(a)\n\n![img-2.jpeg](img-2.jpeg)\n\n(b)\n\nFigure 2: Comparison of OURS, GS-MODAC, and NSGA-II solution methods: (a) Average HV convergence and (b) Pareto front distributions.\n\n[OCR table id=tbl-0.html; page=8]\n<table><tr><td></td><td colspan=\"3\">Bi-FJSP-5j5m</",
+      "text_sha256": "44bd5cbdffde68164515fe2265aef188309b1c8203f6f718b7b519da800aae08"
+     },
+     {
+      "span_id": "A-page-0009",
+      "page": 9,
+      "location": "target PDF page 9",
+      "text": "432\n433\n434\n435\n436\n437\n438\n439\n440\n441\n442\n443\n444\n445\n446\n447\n448\n449\n450\n451\n452\n453\n454\n455\n456\n457\n458\n459\n460\n461\n462\n463\n464\n465\n466\n467\n468\n469\n470\n471\n472\n473\n474\n475\n476\n477\n478\n479\n480\n481\n482\n483\n484\n485\n\nCross-problem Generalization. Table 3 in Appendix D.2 evaluates the zero-shot transfer performance of models trained on standard FJSP-5j5m instances and directly deployed on unseen DAFJS-SDST variants. Compared with standard FJSP, DAFJS-SDST introduces sequence-dependent setup times (SDST), altering the constraint landscape and search structure. This experiment assesses whether the learned configuration policy can adapt to structural problem variations.\n\nThe proposed method achieves the highest mean and maximum HV across all three objective settings. Notably, GS-MODAC underperforms the default fixed-parameter NSGA-II on the bi- and tri-objective settings, whereas the proposed method consistently maintains superior performance over both baselines. The results indicate that incorporating inter-generational evolutionary dynamics yields a state representation that is less sensitive to shifts in underlying problem constraints, enabling robust zero-shot transfer. However, the proposed method does not record the lowest standard deviation across these three se",
+      "text_sha256": "e947b88811d2da961f5fd50a582022040b8de792ac8e79979672aa9a8cfc9d43"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n# REPRODUCIBILITY STATEMENT\n\nThe main paper and appendices provide the problem formulations, experimental settings, parameter configurations, evaluation protocols, statistical tests, reward formulation, and algorithmic procedure. Additional experimental results, ablation studies, and computational efficiency analyses are provided in the appendices to support reproducibility.\n\n# ETHICS STATEMENT\n\nThis work evaluates optimization algorithms on generated and publicly available benchmark instances and involves no human participants, personal data, or safety-critical deployment. We identify no specific ethical concerns associated with the reported experiments.\n\n# AI USE STATEMENT\n\nThis work was completed without the use of generative AI tools. The authors independently prepared and verified the manuscript and all associated research materials.\n\n# REFERENCES\n\nSteven Adriaensen, André Biedenkapp, Gresa Shala, Noor Awad, Theresa Eimer, Marius Lindauer, and Frank Hutter. Automated dynamic algorithm configuration. Journal of Artificial Intelligence Research, 75:",
+      "text_sha256": "90737cf7b317e40796b16729f84e45bdff816e1d5a68235195c3b4cca8c09433"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "# A TEST PROBLEM CONFIGURATIONS\n\nThis appendix provides the formal definitions of the two multi-objective combinatorial optimization problems considered in this study, namely the Flexible Job Shop Scheduling Problem (FJSP) and the Capacitated Vehicle Routing Problem (CVRP). The corresponding objective functions used to construct different experimental settings are also introduced.\n\n## A.1 FLEXIBLE JOB SHOP SCHEDULING PROBLEM\n\nThe Flexible Job Shop Scheduling Problem considers a set of jobs $\\mathcal{J} = \\{J_1, J_2, \\ldots, J_n\\}$ and a set of machines $\\mathcal{M} = \\{M_1, M_2, \\ldots, M_m\\}$. Each job $J_i$ consists of an ordered sequence of operations $\\mathcal{O}_i = \\{O_{i,1}, O_{i,2}, \\ldots, O_{i,n_i}\\}$, where $n_i$ denotes the number of operations contained in job $J_i$. Each operation $O_{i,j}$ can be processed by one machine selected from its eligible machine set $\\mathcal{M}_{i,j} \\subseteq \\mathcal{M}$. If operation $O_{i,j}$ is assigned to machine $M_k$, its processing time is denoted by $p_{i,j,k}$.\n\nThe operations belonging to the same job must follow their predefined technological order. Let $S_{i,j}$ and $C_{i,j}$ denote the starting and completion times of operation $O_{i,j}$, respectively. The precedence constraint between two consecutive operat",
+      "text_sha256": "e9ebef3bd3b7e32c2e3c1491302f181b725972f1dbbe8b081925277daaedcd00"
+     },
+     {
+      "span_id": "A-page-0014",
+      "page": 14,
+      "location": "target PDF page 14",
+      "text": "702\n703\n704\n705\n706\n707\n708\n709\n710\n711\n712\n713\n714\n715\n716\n717\n718\n719\n720\n721\n722\n723\n724\n725\n726\n727\n728\n729\n730\n731\n732\n733\n734\n735\n736\n737\n738\n739\n740\n741\n742\n743\n744\n745\n746\n747\n748\n749\n750\n751\n752\n753\n754\n755\n\ndiversity within a single scalar value. Moreover, unlike several distance-based indicators, its computation does not require prior knowledge of the true Pareto front, which is generally unavailable for the multi-objective combinatorial optimization problems considered in this work. Therefore, HV provides a suitable and comprehensive measure for comparing the overall optimization performance of different methods.\n\nGiven a non-dominated objective set $\\mathcal{Y}$ and a reference point $\\boldsymbol{r} \\in \\mathbb{R}^M$, the HV is defined as\n\n$$HV_{\\boldsymbol{r}}(\\mathcal{Y}) = \\mu \\left( \\bigcup_{\\boldsymbol{y} \\in \\mathcal{Y}} [\\boldsymbol{y}, \\boldsymbol{r}] \\right),$$\n\nwhere $\\mu(\\cdot)$ denotes the Lebesgue measure, i.e., the $M$-dimensional volume in the objective space. For a minimization problem, $\\boldsymbol{r}$ is selected as a fixed point that is component-wise worse than all evaluated objective vectors. The expression $[\\boldsymbol{y}, \\boldsymbol{r}] = [y_1, r_1] \\times \\cdots \\times [y_M, r_M]$ denotes the $M$-dimensional hyperrectangle bou",
+      "text_sha256": "840ac0c5f9fe0539beecdb9d5e90bfa380ef49413f4fb90be4986559e039a91b"
+     },
+     {
+      "span_id": "A-page-0016",
+      "page": 16,
+      "location": "target PDF page 16",
+      "text": "### D.3 ABLATION ANALYSIS\n\nThe complete experimental results for ablation analysis are reported in Table 5.\n\nTable 5: Ablation study on Bi-CVRP\n\n[tbl-4.html](tbl-4.html)\n\n### E VISUALIZATION OF EVOLUTION-GUIDED FEATURE REWEIGHTING\n\nFigure 3 visualizes how the proposed feature-wise reweighting mechanism modifies the graph-based state representation across generations. Figure 3(a) shows the representation obtained by GS-MODAC. Specifically, the current population graph is encoded by a two-layer GCN, and the resulting node embeddings are directly aggregated through global mean pooling without the evolution-guided feature-wise reweighting introduced in our method. This representation also serves as the base graph representation in the proposed method and therefore provides a direct reference for examining the effect of the additional feature-wise reweighting mechanism.\n\nAs shown in Figure 3(a), the graph-based state representation exhibits a relatively stable vertical-band pattern across generations. Only a subset of latent dimensions remains strongly activated, whereas many dimensions stay close to zero throughout the evolutionary process. This indicates that the representation used by GS-MODAC captures the structural characteristics of the current population, but the",
+      "text_sha256": "3e4ef835eb2621e8c67e2bb78d2dbf9290602ca8b93ddff14351f00c75623997"
+     },
+     {
+      "span_id": "A-page-0018",
+      "page": 18,
+      "location": "target PDF page 18",
+      "text": "918\n919\n920\n921\n922\n923\n924\n925\n926\n927\n928\n929\n930\n931\n932\n933\n934\n935\n936\n937\n938\n939\n940\n941\n942\n943\n944\n945\n946\n947\n948\n949\n950\n951\n952\n953\n954\n955\n956\n957\n958\n959\n960\n961\n962\n963\n964\n965\n966\n967\n968\n969\n970\n971\n\nAlgorithm 1 Framework of the Evolution-Aware DAC Method\n\nInput: Training instance set \\(\\mathcal{I}\\); population size \\(N\\); number of generations \\(T\\) per episode; predefined crossover range \\([p_{\\mathrm{min}}^c, p_{\\mathrm{max}}^m]\\); predefined mutation range \\([p_{\\mathrm{min}}^m, p_{\\mathrm{max}}^m]\\); estimated ideal hypervolume \\(HV_{\\mathrm{ideal}}(I)\\) for each \\(I \\in \\mathcal{I}\\); policy-training termination criterion.\n\nOutput: Trained dynamic configuration policy \\(\\pi_{\\theta}\\).\n\n1: Initialize parallel evolutionary environments, actor \\(\\pi_{\\theta}\\), critic \\(V_{\\omega}\\), GCN encoder, feature-weight generator \\(\\phi_{\\psi}\\), and trajectory buffer \\(\\mathcal{D} \\leftarrow \\emptyset\\)\n\n2: while the policy-training termination criterion is not met do\n\n3:    Clear the trajectory buffer \\(\\mathcal{D} \\leftarrow \\emptyset\\)\n\n4:    for each episode collected from the parallel environments do\n\n5:    Sample a training instance \\(I\\) from \\(\\mathcal{I}\\) and obtain its corresponding \\(HV_{\\mathrm{ideal}}(I)\\)\n\n6:    Initialize and evaluate ",
+      "text_sha256": "d48d26f90e0f0a466768ee1da79664b16a556d4da2c0bfb63271767222d6ed27"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-736efeac333e80",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": null,
+      "text_sha256": "b1a4ced9e05a3abbe496e3362fb3d0fcfe757abca448f503ed9d9ac69aa1e2cd",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-78195cf82b1be4",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": null,
+      "text_sha256": "73df60ff485b46b238f3d6df568a9eb92fed5c650a6506f36f06babbb48307a3",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-aca6bf29d1e17d",
+      "page": 3,
+      "location": "B PDF page 3",
+      "text": null,
+      "text_sha256": "ca4ca5893c482a23a832c158f4857af07ccbdd425c9685a36052fbc25d64b724",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-a2f70edf79e24b",
+      "page": 6,
+      "location": "B PDF page 6",
+      "text": null,
+      "text_sha256": "70b9742fb8392a88b5aca1125891f82a90eb64a5833fbeacaedb0cd08c179ed5",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-a3dfe578b903cd",
+      "page": 11,
+      "location": "B PDF page 11",
+      "text": null,
+      "text_sha256": "2132bb4618af4ef0a06500cd95c8cf63665293733e96b1fab75c30f2771a9d84",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-c45f5dbae847cd",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.10262v1#chars-12717-14560",
+      "text": null,
+      "text_sha256": "0c183cce918386e35aaf3b5ec1ef83d8387ad9e7b85d56c34d532f9789a83736",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-5dd55d0889c901",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.10262v1#chars-1782-7072",
+      "text": null,
+      "text_sha256": "9682ee2cfbac8b9ae506af15530f08721431121721707d8bb9746c90020cf908",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-3fabd438dbf233",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.10262v1#chars-19686-25873",
+      "text": null,
+      "text_sha256": "313dcb6f001b27ce6b1d6fc3ec9ae2dd2387fa0a6a86595aa418aa5cc9ae7d93",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-6a51a78424f570",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.10262v1#chars-28301-37043",
+      "text": null,
+      "text_sha256": "03e8a44bb43114d60492418743430489db444f4b0ecbeba8eb9782fdd47a8964",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-56cf1b4d31949a",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.10262v1#chars-312-1782",
+      "text": null,
+      "text_sha256": "615956703d1d15d3e99ea6d616e9362a23e0a920b58303ae1649ce7763bfb326",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-e64ea90393e588",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.10262v1#chars-48295-49497",
+      "text": null,
+      "text_sha256": "c2e99acb2c46464cc06e87ddf6ac6582229fea00a975bd3e552a97a244a0fb96",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-1395169e6dd0a5",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.10262v1#chars-65105-65148",
+      "text": null,
+      "text_sha256": "5358f22b966f6bab2ee192225215477123febb7bceb1c4232812c64cdb4797d8",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-01a11592883421",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.10262v1#chars-72708-73337",
+      "text": null,
+      "text_sha256": "2dd2d973af0ef26657d78ba08727035275c4427b253f151988a4bb45503ba7fb",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-97812c53c91328",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.10262v1#chars-9120-10875",
+      "text": null,
+      "text_sha256": "704df5354d031f53c2bdc345299d1fd7677f48a703592611c78cde0cce28f530",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     }
+    ]
+   }
+  },
+  {
+   "pair_id": "C02-P2",
+   "source_key": "arxiv-2603.06009",
+   "source_distribution": "link_only",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C02]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nRecently, deep reinforcement learning-based dynamic algorithm configuration (DRL-DAC) has been widely studied in evolutionary computation. However, existing DRL-DAC methods mainly focus on the structure of the current population while neglecting inter-generational evolutionary dynamics, leading to an insufficient characterization of the evolutionary state. To address this limitation, we propose an [NAME C02] that incorporates the Kullback–Leibler (KL) divergence between consecutive populations to capture inter-generational transitions. Combined with search-stage information, this metric guides the feature-wise reweighting of node embeddings, providing the RL agent with a more discriminative state representation for accurate parameter adaptation. Extensive experiments on representative multi-objective combinatorial optimization problems demonstrate that our method significantly improves overall optimization performance, achieving superior convergence and diversity compared to state-of-the-art baselines. Furthermore, evaluations under large-scale and many-o",
+      "text_sha256": "b56f5997e6bfe65088411159b9c0f26513f79f24f59c258470cffa06156cda1a"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\nExisting studies characterize evolutionary search states through several representative strategies. MADAC constructs states from handcrafted statistical indicators and their historical variations, thereby explicitly incorporating search-history information but relying on manually designed features Xue et al. (2022). GS-MODAC instead represents the current population as an objective-space graph and learns a population-level embedding using a graph neural network Reijnen et al. (2025b). More recently, STN-MODAC constructs a Search Trajectory Network that retains solution transitions across generations and employs a temporal graph model to encode structural and temporal search dynamics Reijnen et al. (2025a).\n\nWhile GS-MODAC effectively captures the structure of the current population, it does not explicitly describe how the population has changed from the preceding generation. Thus, populations at the same search stage may exhibit similar objective-space structures while undergoing different degrees of inter-generational change. STN-MODAC addresses this ",
+      "text_sha256": "0d656fa9f277a0019e9844ed5876b22ce4805861aadc6f7df0c8dcfe1e660a63"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n## 2.2 ALGORITHM CONFIGURATION\n\nAlgorithm configuration aims to identify parameter combinations from a predefined configuration space that improve the performance of a target algorithm. Traditional automatic configuration methods typically search for parameter settings offline before execution Schede et al. (2023). Representative methods include ParamILS based on iterative local search Hutter et al. (2009), irace using a racing mechanism to eliminate poorly performing configurations López-Ibáñez et al. (2016), and SMAC3 employing surrogate models to guide configuration search Lindauer et al. (2022). Although these methods reduce manual trial-and-error, the resulting configurations remain fixed during execution.\n\nDynamic algorithm configuration (DAC) instead adapts parameters online according to runtime feedback Biedenkapp et al. (2020); Adriaensen et al. (2022). Biedenkapp et al. cast DAC as a contextual Markov decision process, where an RL policy learns to map search states to parameter configurations via interaction Biedenkapp et al. (2020). For hete",
+      "text_sha256": "99706584075f6e0fe9d299f8540e7e6a7cdb13a1ad1195ea8498afd2fb6ee090"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\n![img-0.jpeg](img-0.jpeg)\n\nFigure 1: Overview of the proposed evolution-aware dynamic configuration framework.\n\n(2017) is employed to encode the population graph:\n\n$$H_t = \\text{GCN}(X_t, E_t), \\quad H_t \\in \\mathbb{R}^{N \\times d} \\tag{1}$$\n\nwhere $X_t$ denotes the normalized node feature matrix, $E_t$ represents the adjacency matrix derived from graph connectivity, and $d$ is the dimension of the latent node embeddings. The $i$-th row $\\boldsymbol{h}_i^t \\in \\mathbb{R}^d$ represents the structural embedding of the $i$-th solution and is subsequently used for evolution-guided feature reweighting.\n\n### 3.3 EVOLUTION-AWARE FEATURE MODELING\n\nAlthough the population graph captures the structure of the current population, it does not explicitly describe inter-generational dynamics. To address this, we introduce the distributional shift between consecutive populations as supplementary evolutionary information. Specifically, the objective vectors at generations $t - 1$ and $t$ are modeled as multivariate Gaussian distributions:\n\n$$\\mathcal{P}_{t-1} \\sim \\mat",
+      "text_sha256": "734548611125b47696ae71f5c1ee6e7cc8b667263c1277d605d0582a23e58f6c"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "encode the signed direction of population movement. To constrain the unbounded non-negative divergence into a stable numerical range, $D_t^{\\text{KL}}$ is normalized into $[0, 1)$:\n\n$$\\widehat{D}_t^{\\text{KL}} = \\frac{D_t^{\\text{KL}}}{D_t^{\\text{KL}} + 1}. \\tag{5}$$\n\nBecause population changes carry different importance weights across different evolutionary stages, the transformed KL divergence is concatenated with the search progress to yield an evolution-aware feature vector:\n\n$$\\boldsymbol{e}_t = \\left[ \\frac{t}{T}, \\widehat{D}_t^{\\text{KL}} \\right], \\tag{6}$$\n\nwhere $T$ represents the total generation budget. The first scalar specifies the temporal search stage, while the second quantifies recent inter-generational progress. Rather than directly determining the algorithm parameters according to $\\widehat{D}_t^{\\text{KL}}$, this evolution-aware feature is used to guide the representation of the current population.\n\n### 3.4 [NAME C02] AND POLICY LEARNING\n\nThe evolution-aware feature vector is first mapped by a multilayer perceptron (MLP) with a tanh output layer to derive a feature-wise weight vector:\n\n$$\\boldsymbol{w}_t = \\phi_\\psi(\\boldsymbol{e}_t), \\quad \\boldsymbol{w}_t \\in \\mathbb{R}^d, \\tag{7}$$\n\nwhere $\\phi_\\psi(\\cdot)$ denotes th",
+      "text_sha256": "fda6b52c81f8478d579a6f386aca503e579ed532b16b431ac6bfcc6b0a3b5ae2"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\n## 4 EXPERIMENTS\n\nThe proposed method is evaluated on two representative multi-objective combinatorial optimization problems to assess its optimization performance, scalability, and generalization capability. The experiments compare both static and dynamic algorithm configuration methods.\n\n### 4.1 EXPERIMENTAL SETTING\n\nBenchmark Problems and Instances. We evaluate the proposed method on the Flexible Job Shop Scheduling Problem (FJSP) and the Capacitated Vehicle Routing Problem (CVRP). The FJSP involves both machine assignment and operation sequencing Dauzère-Pérès et al. (2024). Following standard formulations Tamssaouet et al. (2022), we consider five optimization objectives: Makespan, Balanced Workload, Average Flowtime, Total Workload, and Maximum Flowtime. Depending on the number of objectives, these FJSP variants are denoted as Bi-FJSP, Tri-FJSP, and Penta-FJSP, which optimize the first two, first three, and all five objectives, respectively. The CVRP aims to construct optimal routing plans for a fleet of vehicles servicing a set of customers, whe",
+      "text_sha256": "63907714b142928baf4926dca75eafa043f1e3de51c0509d814ccfaec84f8d97"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\ndifferent random seeds. For each instance, we summarize the resulting HV values using the mean, maximum, and standard deviation, and subsequently report the average of these statistics over all 100 test instances within the same problem configuration. To guarantee consistency, all methods utilize identical predefined reference points for HV calculation. In the resulting performance tables, the highest mean and maximum HV values under each setting are highlighted in bold. An underlined entry indicates that the corresponding method significantly outperforms the baseline method GS-MODAC according to a two-sided Wilcoxon signed-rank test at a significance level of p < 0.05.\n\n## 4.2 EXPERIMENTAL RESULTS\n\nTo evaluate the proposed method, the experiments address the following key research questions:\n\n1. **Overall Optimization Performance:** How does the proposed evolution-aware dynamic configuration method compare against static baselines and state-of-the-art dynamic DAC methods across standard benchmark instances?\n2. **Cross-size Generalization:** Can a poli",
+      "text_sha256": "fa626043a8e679bf225862e7dd6ad564e6bab96c3b5905ac85f8668d75fc6c1f"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "378\n379\n380\n381\n382\n383\n384\n385\n386\n387\n388\n389\n390\n391\n392\n393\n394\n395\n396\n397\n398\n399\n400\n401\n402\n403\n404\n405\n406\n407\n408\n409\n410\n411\n412\n413\n414\n415\n416\n417\n418\n419\n420\n421\n422\n423\n424\n425\n426\n427\n428\n429\n430\n431\n\nTable 1: Hypervolume performance of different methods on FJSP test instances with varying objective counts and problem sizes, and on CVRP test instances with varying problem sizes.\n\n[tbl-0.html](tbl-0.html)\n\nachieves identical or competitive mean HV values on Bi-CVRP-100 and Bi-CVRP-200 compared with policies specifically trained on the corresponding target sizes. Conversely, the policy trained on 100-customer instances achieves competitive mean and maximum HV values on Bi-CVRP-200 compared with the policy trained specifically on 200-customer instances. Similarly, the policy trained on Bi-CVRP-200 performs comparably on Bi-CVRP-500 to the policy specifically trained on Bi-CVRP-500. These findings demonstrate the policy's cross-size generalization ability in both directions.\n\n![img-1.jpeg](img-1.jpeg)\n\n(a)\n\n![img-2.jpeg](img-2.jpeg)\n\n(b)\n\nFigure 2: Comparison of OURS, GS-MODAC, and NSGA-II solution methods: (a) Average HV convergence and (b) Pareto front distributions.\n\n[OCR table id=tbl-0.html; page=8]\n<table><tr><td></td><td colspan=\"3\">Bi-FJSP-5j5m</",
+      "text_sha256": "44bd5cbdffde68164515fe2265aef188309b1c8203f6f718b7b519da800aae08"
+     },
+     {
+      "span_id": "A-page-0009",
+      "page": 9,
+      "location": "target PDF page 9",
+      "text": "432\n433\n434\n435\n436\n437\n438\n439\n440\n441\n442\n443\n444\n445\n446\n447\n448\n449\n450\n451\n452\n453\n454\n455\n456\n457\n458\n459\n460\n461\n462\n463\n464\n465\n466\n467\n468\n469\n470\n471\n472\n473\n474\n475\n476\n477\n478\n479\n480\n481\n482\n483\n484\n485\n\nCross-problem Generalization. Table 3 in Appendix D.2 evaluates the zero-shot transfer performance of models trained on standard FJSP-5j5m instances and directly deployed on unseen DAFJS-SDST variants. Compared with standard FJSP, DAFJS-SDST introduces sequence-dependent setup times (SDST), altering the constraint landscape and search structure. This experiment assesses whether the learned configuration policy can adapt to structural problem variations.\n\nThe proposed method achieves the highest mean and maximum HV across all three objective settings. Notably, GS-MODAC underperforms the default fixed-parameter NSGA-II on the bi- and tri-objective settings, whereas the proposed method consistently maintains superior performance over both baselines. The results indicate that incorporating inter-generational evolutionary dynamics yields a state representation that is less sensitive to shifts in underlying problem constraints, enabling robust zero-shot transfer. However, the proposed method does not record the lowest standard deviation across these three se",
+      "text_sha256": "e947b88811d2da961f5fd50a582022040b8de792ac8e79979672aa9a8cfc9d43"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n# REPRODUCIBILITY STATEMENT\n\nThe main paper and appendices provide the problem formulations, experimental settings, parameter configurations, evaluation protocols, statistical tests, reward formulation, and algorithmic procedure. Additional experimental results, ablation studies, and computational efficiency analyses are provided in the appendices to support reproducibility.\n\n# ETHICS STATEMENT\n\nThis work evaluates optimization algorithms on generated and publicly available benchmark instances and involves no human participants, personal data, or safety-critical deployment. We identify no specific ethical concerns associated with the reported experiments.\n\n# AI USE STATEMENT\n\nThis work was completed without the use of generative AI tools. The authors independently prepared and verified the manuscript and all associated research materials.\n\n# REFERENCES\n\nSteven Adriaensen, André Biedenkapp, Gresa Shala, Noor Awad, Theresa Eimer, Marius Lindauer, and Frank Hutter. Automated dynamic algorithm configuration. Journal of Artificial Intelligence Research, 75:",
+      "text_sha256": "90737cf7b317e40796b16729f84e45bdff816e1d5a68235195c3b4cca8c09433"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "# A TEST PROBLEM CONFIGURATIONS\n\nThis appendix provides the formal definitions of the two multi-objective combinatorial optimization problems considered in this study, namely the Flexible Job Shop Scheduling Problem (FJSP) and the Capacitated Vehicle Routing Problem (CVRP). The corresponding objective functions used to construct different experimental settings are also introduced.\n\n## A.1 FLEXIBLE JOB SHOP SCHEDULING PROBLEM\n\nThe Flexible Job Shop Scheduling Problem considers a set of jobs $\\mathcal{J} = \\{J_1, J_2, \\ldots, J_n\\}$ and a set of machines $\\mathcal{M} = \\{M_1, M_2, \\ldots, M_m\\}$. Each job $J_i$ consists of an ordered sequence of operations $\\mathcal{O}_i = \\{O_{i,1}, O_{i,2}, \\ldots, O_{i,n_i}\\}$, where $n_i$ denotes the number of operations contained in job $J_i$. Each operation $O_{i,j}$ can be processed by one machine selected from its eligible machine set $\\mathcal{M}_{i,j} \\subseteq \\mathcal{M}$. If operation $O_{i,j}$ is assigned to machine $M_k$, its processing time is denoted by $p_{i,j,k}$.\n\nThe operations belonging to the same job must follow their predefined technological order. Let $S_{i,j}$ and $C_{i,j}$ denote the starting and completion times of operation $O_{i,j}$, respectively. The precedence constraint between two consecutive operat",
+      "text_sha256": "e9ebef3bd3b7e32c2e3c1491302f181b725972f1dbbe8b081925277daaedcd00"
+     },
+     {
+      "span_id": "A-page-0014",
+      "page": 14,
+      "location": "target PDF page 14",
+      "text": "702\n703\n704\n705\n706\n707\n708\n709\n710\n711\n712\n713\n714\n715\n716\n717\n718\n719\n720\n721\n722\n723\n724\n725\n726\n727\n728\n729\n730\n731\n732\n733\n734\n735\n736\n737\n738\n739\n740\n741\n742\n743\n744\n745\n746\n747\n748\n749\n750\n751\n752\n753\n754\n755\n\ndiversity within a single scalar value. Moreover, unlike several distance-based indicators, its computation does not require prior knowledge of the true Pareto front, which is generally unavailable for the multi-objective combinatorial optimization problems considered in this work. Therefore, HV provides a suitable and comprehensive measure for comparing the overall optimization performance of different methods.\n\nGiven a non-dominated objective set $\\mathcal{Y}$ and a reference point $\\boldsymbol{r} \\in \\mathbb{R}^M$, the HV is defined as\n\n$$HV_{\\boldsymbol{r}}(\\mathcal{Y}) = \\mu \\left( \\bigcup_{\\boldsymbol{y} \\in \\mathcal{Y}} [\\boldsymbol{y}, \\boldsymbol{r}] \\right),$$\n\nwhere $\\mu(\\cdot)$ denotes the Lebesgue measure, i.e., the $M$-dimensional volume in the objective space. For a minimization problem, $\\boldsymbol{r}$ is selected as a fixed point that is component-wise worse than all evaluated objective vectors. The expression $[\\boldsymbol{y}, \\boldsymbol{r}] = [y_1, r_1] \\times \\cdots \\times [y_M, r_M]$ denotes the $M$-dimensional hyperrectangle bou",
+      "text_sha256": "840ac0c5f9fe0539beecdb9d5e90bfa380ef49413f4fb90be4986559e039a91b"
+     },
+     {
+      "span_id": "A-page-0016",
+      "page": 16,
+      "location": "target PDF page 16",
+      "text": "### D.3 ABLATION ANALYSIS\n\nThe complete experimental results for ablation analysis are reported in Table 5.\n\nTable 5: Ablation study on Bi-CVRP\n\n[tbl-4.html](tbl-4.html)\n\n### E VISUALIZATION OF EVOLUTION-GUIDED FEATURE REWEIGHTING\n\nFigure 3 visualizes how the proposed feature-wise reweighting mechanism modifies the graph-based state representation across generations. Figure 3(a) shows the representation obtained by GS-MODAC. Specifically, the current population graph is encoded by a two-layer GCN, and the resulting node embeddings are directly aggregated through global mean pooling without the evolution-guided feature-wise reweighting introduced in our method. This representation also serves as the base graph representation in the proposed method and therefore provides a direct reference for examining the effect of the additional feature-wise reweighting mechanism.\n\nAs shown in Figure 3(a), the graph-based state representation exhibits a relatively stable vertical-band pattern across generations. Only a subset of latent dimensions remains strongly activated, whereas many dimensions stay close to zero throughout the evolutionary process. This indicates that the representation used by GS-MODAC captures the structural characteristics of the current population, but the",
+      "text_sha256": "3e4ef835eb2621e8c67e2bb78d2dbf9290602ca8b93ddff14351f00c75623997"
+     },
+     {
+      "span_id": "A-page-0018",
+      "page": 18,
+      "location": "target PDF page 18",
+      "text": "918\n919\n920\n921\n922\n923\n924\n925\n926\n927\n928\n929\n930\n931\n932\n933\n934\n935\n936\n937\n938\n939\n940\n941\n942\n943\n944\n945\n946\n947\n948\n949\n950\n951\n952\n953\n954\n955\n956\n957\n958\n959\n960\n961\n962\n963\n964\n965\n966\n967\n968\n969\n970\n971\n\nAlgorithm 1 Framework of the Evolution-Aware DAC Method\n\nInput: Training instance set \\(\\mathcal{I}\\); population size \\(N\\); number of generations \\(T\\) per episode; predefined crossover range \\([p_{\\mathrm{min}}^c, p_{\\mathrm{max}}^m]\\); predefined mutation range \\([p_{\\mathrm{min}}^m, p_{\\mathrm{max}}^m]\\); estimated ideal hypervolume \\(HV_{\\mathrm{ideal}}(I)\\) for each \\(I \\in \\mathcal{I}\\); policy-training termination criterion.\n\nOutput: Trained dynamic configuration policy \\(\\pi_{\\theta}\\).\n\n1: Initialize parallel evolutionary environments, actor \\(\\pi_{\\theta}\\), critic \\(V_{\\omega}\\), GCN encoder, feature-weight generator \\(\\phi_{\\psi}\\), and trajectory buffer \\(\\mathcal{D} \\leftarrow \\emptyset\\)\n\n2: while the policy-training termination criterion is not met do\n\n3:    Clear the trajectory buffer \\(\\mathcal{D} \\leftarrow \\emptyset\\)\n\n4:    for each episode collected from the parallel environments do\n\n5:    Sample a training instance \\(I\\) from \\(\\mathcal{I}\\) and obtain its corresponding \\(HV_{\\mathrm{ideal}}(I)\\)\n\n6:    Initialize and evaluate ",
+      "text_sha256": "d48d26f90e0f0a466768ee1da79664b16a556d4da2c0bfb63271767222d6ed27"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-6f57e788be211f",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": null,
+      "text_sha256": "0b49e2d210d983a24b6259b523f87c248219b5f973eca028d602801210b3c743",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-c93f424df611f8",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": null,
+      "text_sha256": "fb80878806838b5155503dd99edd112f4fb5d18748e274a35d6b61c9a2838a2a",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-77f9e5f6e07854",
+      "page": 3,
+      "location": "B PDF page 3",
+      "text": null,
+      "text_sha256": "40d4299a1e834753bd3732c3e4f033ef52fb8e3d361e3bc362716d4ff9d62a9a",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-0f7c5ecbd44f8e",
+      "page": 7,
+      "location": "B PDF page 7",
+      "text": null,
+      "text_sha256": "805f478e60b24c8ee9fe34fe42855c5f6d0f4315dc69f22f6cf1486d4c703242",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-062e96f2815814",
+      "page": 14,
+      "location": "B PDF page 14",
+      "text": null,
+      "text_sha256": "dd1055eb1f3ea1704793d3df7ebba5c56f2aac4ae820a1f4bf9632179530b09f",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-2150409ed2dff3",
+      "page": 21,
+      "location": "B PDF page 21",
+      "text": null,
+      "text_sha256": "05fbc24e6f2f66996f8ce912ebb44e5592e685515d8a0b319bb44feb3b11f8d9",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-1134c1f7e70e1f",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.06009v1#chars-15804-16925",
+      "text": null,
+      "text_sha256": "441178cc40150b65d5eedebc47ce6cfc6b63ce1f7f48f42ea75aabf3da64b543",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-86f00ac110f988",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.06009v1#chars-2255-8233",
+      "text": null,
+      "text_sha256": "57ffc22cd9126802072ab89c2ec01f2b103fdd9b9d043e596d76072d990ceed0",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-4c724df35ef469",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.06009v1#chars-23351-24927",
+      "text": null,
+      "text_sha256": "d3de98c333d14988d75cda991012dab236fd2cee51a4beab51021a9032a468fc",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-017e55bd5665df",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.06009v1#chars-296-2255",
+      "text": null,
+      "text_sha256": "1b8dc2ba6e9937954e2be4c8d4872df2a15f6fa96c2d0bd882832c311742d83d",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-5d98b911003cbf",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.06009v1#chars-33097-36710",
+      "text": null,
+      "text_sha256": "bf665c8db340486cb43a02ae0ddccab6a0d4c52e233f9d294b125c99e7285ee4",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-2f792f55a90eac",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.06009v1#chars-43293-43857",
+      "text": null,
+      "text_sha256": "d95081177f677c68aacf278a95be39a31ca4fd42f17ac42bb0af9757a70e20df",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-91fbe19f6de44e",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.06009v1#chars-52144-52699",
+      "text": null,
+      "text_sha256": "7f1aa561d2c7b89dd64e16c2294bed32056fc3cf9db5a9999657b2d6b77bc3e5",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-f0a3f618814719",
+      "page": null,
+      "location": "https://arxiv.org/html/2603.06009v1#chars-8250-11102",
+      "text": null,
+      "text_sha256": "7d2e6fb3eb807f85117498c22212aa4de9dcd44052704509eabd1232aa88b93c",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     }
+    ]
+   }
+  }
+ ],
+ "note": "Target spans are anonymized excerpts of the target text; page numbers refer to the original target PDF, which is not distributed."
+}

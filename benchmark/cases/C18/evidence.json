@@ -1,0 +1,114 @@
+{
+ "case_id": "C18",
+ "pairs": [
+  {
+   "pair_id": "C18-P1",
+   "source_key": "withheld-2",
+   "source_distribution": "withheld",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C18]?\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nLarge language models (LLMs) based on the Transformer have demonstrated strong performance across diverse tasks. However, current models still exhibit limitations in out-of-distribution (OOD) generalization compared with humans. We investigate this gap through periodicity, one of the basic OOD scenarios. Periodicity captures invariance amid variation. Periodicity generalization represents a model's ability to extract periodic patterns from training data and generalize to OOD scenarios. We introduce a unified interpretation of periodicity from the perspective of abstract algebra and reasoning, including both single and composite periodicity, to analyze why Transformers struggle to generalize periodicity. Then we construct **Coper** about composite periodicity, a controllable generative dataset with two OOD settings, **Hollow** and **Extrapolation**. Experiments reveal that periodicity generalization in Transformers is limited, where models can memorize periodic data during training, but cannot generalize to unseen composite periodicity. We release the source code to support future research (Repository, 2026).\n\n# 1 INTRODUCTION\n\nIn recen",
+      "text_sha256": "344df465dd55666bdd8a9e39376df2fa315b1ff5106bd971bf356901bb0a00ef"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\nThen we construct **Coper**, a dataset to characterize **Combinations** and transformations of different **periodicities**, including training and test sets. The test set contains two challenging OOD settings: **① Hollow**: the periods of the test samples remain within the training distribution, but certain period composition is deliberately removed from the training set, to evaluate the model's **interpolation ability**; **② Extrapolation**: the periods of the test samples lie beyond the training distribution, to evaluate the model's **extrapolation ability**.\n\nAs shown in Figure 1, experiments show that the Transformers can memorize seen composite periods during training, but struggle in OOD settings. Other model architectures (*e.g.*, Mamba,\n\nRWKV) and existing periodicity modeling works (*e.g.*, FANformer) exhibit similar failures. We further discover three interesting findings: 1) Transformers with RoPE struggle to generalize single periodicity under non-invariant transformations. 2) Transformers struggle to generalize composite periodicity, even ",
+      "text_sha256": "51ba14313ecd39a13c5f93017b720a43abb3ef56b9eee8b657fecaffba03ad8f"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\nFEDformer (Zhou et al., 2022) introduces a frequency-enhanced Transformer that replaces standard attention with Fourier and wavelet blocks to improve long-horizon forecasting.\n\nHowever, the above approaches only study periodicity in in-distribution settings and do not consider OOD scenarios. FAN (Dong et al., 2025b) extends periodicity modeling to OOD scenarios using a Fourier-based module. FANformer (Dong et al., 2025a) further connects periodicity with reasoning, and scales the FAN model to 1B parameters. Through large-scale pretraining of a 1B-parameter model, FANformer (Dong et al., 2025a) integrates FAN into the Transformer architecture, demonstrating that periodicity modeling influences both language modeling and reasoning performance. However, both still struggle with composite periodicity.\n\n### 3 UNIFIED INTERPRETATION OF PERIODICITY VIA GROUP THEORY\n\nIn this section, we present our unified interpretation of periodicity via group theory. Section 3.1 formalizes the group-theoretic definition of periodicity. Section 3.2 then generalizes the above",
+      "text_sha256": "b31990dbd07c62fd7e32ef39f54105d14b97c200ab3dc95ed08b482205b8620b"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "Our group-theoretic definition applies not only to sequence periodicity, but also rule periodicity (discussed in Section 3.2). When the mapping relationship is preserved for inputs or rules under transformations, it can also be viewed as invariance under the action of the corresponding transformation group.\n\n### 3.2 RULE PERIODICITY IN REASONING\n\nReasoning tasks often exhibit rule periodicity, referring to the repetition of the same rule. We still use the group action interpretation in Section 3.1. Let the rule set be $\\mathcal{R} = \\{R_k\\}_{k \\in I}$, the index set be $I = \\mathbb{Z}$, and the value space be $V = \\{0, \\ldots, p - 1\\}$, and we introduce two types of group:\n\n- Shift group $G_\\tau = \\langle \\tau \\rangle \\simeq \\mathbb{Z}$: the generator $\\tau$ acts as $\\tau \\cdot k = k + 1$.\n- Modulo group $G_\\sigma = \\langle \\sigma \\rangle \\simeq \\mathbb{Z}_p$: the generator $\\sigma$ acts as $\\sigma \\cdot x = x + 1 \\pmod p$.\n\nNow we define two primitive reasoning rules as mappings (with position parameter $k$):\n\n① Digit-wise addition without carry:\n\n$$R_k : \\mathbb{Z} \\times \\mathbb{Z} \\to \\mathbb{Z}, \\qquad (x_k, y_k) \\mapsto x_k + y_k.$$\n\nThe shift group $G_\\tau = \\langle \\tau \\rangle$ acts on the index set $I$ as $\\tau \\cdot k = k + 1$, and the induced action on ",
+      "text_sha256": "0471b73e9c1508903fb0f0f0fcc12025fa1f6356ccd00f1a5d53223fa2b1b10d"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\nWe first clarify what kinds of periodicity Transformers with RoPE are able to generalize. Let $f : \\mathbb{Z} \\to X$ be an input sequence, and let $G = \\langle g \\rangle$ be a shift group.\n\n**Proposition.** If $f$ satisfies the sequence periodicity $g^T \\cdot f = f$, then a Transformer with RoPE preserves the shift equivariance:\n\n$$\\mathcal{T}(g^T \\cdot f) = g^T \\cdot \\mathcal{T}(f). \\tag{3}$$\n\nThe proof follows from the equivariance of position-wise operations (i.e., MLP, activation function, layer normalization, and residual connection), self-attention with RoPE relative positions, and layer composition. Full proof is provided in Appendix B.1.\n\nIn particular, when the input sequence satisfies the sequence periodicity $g^T \\cdot f = f$, i.e., $f(t) = f(t + T), \\forall t \\in \\mathbb{Z}$, Transformer with RoPE preserves the\n\nequivariant structure induced by the corresponding shift-group invariance as characterized in Eq. 3. From the proof, sequence periodicity further implies relative position invariance: for all $i, j$, we have\n\n$$f(i) - f(j) = f(i + T",
+      "text_sha256": "d6b2978d7b8145e7c683d7b614f057e1af16a36c3fb150d6fdc14cb1292b617e"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "### 3.4 COMPOSITE PERIODICITY\n\nTo further explore the limitation of Transformer architecture, we introduce the formal definition of composite periodicity. Assume there are two periodic sequences: $f_1 : X_1 \\to Y_1$, $f_2 : X_2 \\to Y_2$, and define composite operation:\n\n$$C(f_1(t), f_2(t)) := (M \\circ R)(f_1(t), f_2(t)), \\tag{7}$$\n\nfor example modular addition:\n\n$$C(f_1(t), f_2(t)) = (f_1(t) + f_2(t)) \\pmod{p}.$$\n\nWe further define the group structure of basic reasoning modulo rule. Let $G_R = G_\\tau = \\langle \\tau \\rangle$ be the shift group acting on addition rules in position space, and $G_M = G_\\sigma = \\langle \\sigma \\rangle$ be the modulo group acting on the modulo operation rules. In the perspective of group theory, the composite group acting on reasoning modulo rules can be presented by direct product:\n\n$$G = G_R \\times G_M = \\langle \\tau \\rangle \\times \\langle \\sigma \\rangle, \\tag{8}$$\n\nand the induced action is\n\n$$(\\tau^i, \\sigma^j) \\cdot (R_k, M_k) = (R_{\\tau^{-i} \\cdot k}, M_k \\circ \\sigma^j) = (R_{k-i}, M_k(\\cdot + j)). \\tag{9}$$\n\nIf the composite group $G$ defined by Eq. 8 is non-invariant according to Eq. 6, Transformers cannot generalize such composite periodicity. We summarize the types of periodicity and their corresponding group-theoretic formula",
+      "text_sha256": "5649b517709f546102cfcb94b00bd25ce734860b74835ff91a071580901e6474"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\nDuring dataset construction, we deliberately introduce two types of OOD settings, Hollow and Extrapolation, to analyze two types of model generalization: interpolation and extrapolation. Each OOD setting contains 1k test samples, in addition to 1k in-distribution test samples. More hyperparameters are listed in Appendix A.\n\n(1) Hollow We define the deliberately held-out hollow combinations within the training range as\n\n$$\\mathcal{P}_{test}^{hollow} = \\{H_1, H_2, \\dots, H_m\\} \\subset [L, U]^2,$$\n\nThese hollows are located inside the training range $[L, U]$, adjacent to trained combinations; however, they are not included in training. Hollow evaluates the model's interpolation ability to infer unseen composite periodic rules from adjacent, in-distribution combinations.\n\n(2) Extrapolation We define the new combinations outside the training range as\n\n$$\\mathcal{P}_{test}^{extra} = \\{(P_1, P_2) \\mid P_1 \\notin [L, U] \\text{ or } P_2 \\notin [L, U]\\}.$$\n\nExtrapolation evaluates the model's extrapolation ability to infer OOD composite periodic rules from the t",
+      "text_sha256": "06eb5a0c974c31d01395b260c01f3f6516c699e2289d205f4b9c4979f7859288"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "378\n379\n380\n381\n382\n383\n384\n385\n386\n387\n388\n389\n390\n391\n392\n393\n394\n395\n396\n397\n398\n399\n400\n401\n402\n403\n404\n405\n406\n407\n408\n409\n410\n411\n412\n413\n414\n415\n416\n417\n418\n419\n420\n421\n422\n423\n424\n425\n426\n427\n428\n429\n430\n431\n\nsame training budget. Importantly, OOD generalization can only be interpreted when in-distribution fitting is sufficient. RWKV reaches 62.6% on Hollow and 60.4% on Extrapolation, but in-distribution accuracy is only 64.4%, far below the Transformer. Overall, existing architectures struggle to support both accurate in-distribution fitting and OOD generalization simultaneously, and none truly learn the composite periodicity R.\n\n## 5.2 EFFECT OF DATA DENSITY OOD GENERALIZATION\n\nIn the second experiment, we further investigate the effect of training data density on OOD generalization. Intuitively, the Hollow lies within the training distribution, and the neighboring period combinations of the Hollow are all observed during training. A natural question is whether reducing the hollow size, i.e., making the training data denser, enables models to fill the missing combinations via interpolation. To this end, while keeping the number of training samples fixed, we shrink the period range from [2, 16] to a denser range of [2, 11] to explicitly control the hollow ",
+      "text_sha256": "6a5d589c4002d5ea92ba042dfc96d373d0ed7d9ec2bdd1898ba5a5327f7780d0"
+     },
+     {
+      "span_id": "A-page-0011",
+      "page": 11,
+      "location": "target PDF page 11",
+      "text": "540\n541\n542\n543\n544\n545\n546\n547\n548\n549\n550\n551\n552\n553\n554\n555\n556\n557\n558\n559\n560\n561\n562\n563\n564\n565\n566\n567\n568\n569\n570\n571\n572\n573\n574\n575\n576\n577\n578\n579\n580\n581\n582\n583\n584\n585\n586\n587\n588\n589\n590\n591\n592\n593\n\nYihong Dong, Ge Li, Xue Jiang, Yongding Tao, Kechi Zhang, Lecheng Wang, Hao Zhu, Huanyu Liu, jiazheng ding, Jia Li, Jinliang Deng, and Hong Mei. Reasoning is periodicity? improving large language models through effective periodicity modeling. In The Thirty-ninth Annual Conference on Neural Information Processing Systems, 2025a.\n\nYihong Dong, Ge Li, Yongding Tao, Xue Jiang, Kechi Zhang, Jia Li, Jinliang Deng, Jing Su, Jun Zhang, and Jingjing Xu. Fourier analysis network. In The Thirty-ninth Annual Conference on Neural Information Processing Systems, 2025b.\n\nDavid S Dummit and Richard M Foote. Abstract algebra. john wile & sons. Inc., Hoboken, NJ, 2004.\n\nAhmed El-Kishky, Alexander Wei, Andre Saraiva, Borys Minaiev, Daniel Selsam, David Dohan, Francis Song, Hunter Lightman, Ignasi Clavera Gilaberte, Jakub Pachocki, Jerry Tworek, Lorenz Kuhn, Lukasz Kaiser, Mark Chen, Max Schwarzer, Mostafa Rohaninejad, Nat McAleese, o3 contributors, Oleg Mürk, Rhythm Garg, Rui Shu, Szymon Sidor, Vineet Kosaraju, and Wenda Zhou. Competitive programming with large reasoning",
+      "text_sha256": "5cc58650feebf0cb51a0c374b9109afcc9ce7e2a67ca58ef68991f2a77e4be10"
+     },
+     {
+      "span_id": "A-page-0013",
+      "page": 13,
+      "location": "target PDF page 13",
+      "text": "# A EXPERIMENTAL DETAILS OF TRAINING AND DATASET\n\nTable 3: Training hyperparameters and dataset parameters.\n\n[tbl-2.html](tbl-2.html)\n\nDataset Construction. Training sequences are sampled such that\n\n$$(P_1, P_2) \\in [4, 14]^2 \\setminus \\text{Hollow},$$\n\nwhere Hollow defines a held-out region within the training range for interpolation evaluation.\n\nThe test set contains two types of OOD scenarios:\n\n- Hollow: combinations within \\([4, 14]^2\\) but excluded from training, i.e., \\(P_1, P_2 \\in [8, 11]\\).\n- Extrapolation: combinations where \\( P_{1} \\) or \\( P_{2} \\) is outside the training range [4, 14], e.g., (1, 16), (2, 15), to evaluate extrapolation ability.\n\nEach sequence is generated by sampling two sequences of length P$_{1}$ and P$_{2}$, repeating them to the least common multiple length, summing element-wise modulo 10, and concatenating as sequence1 + '+' + sequence2 + '='. The next-token prediction task is then defined over this sequence.\n\nFor example, let f$_{1}$(t) = (1, 2, 3) with period P$_{1}$ = 3 and f$_{2}$(t) = (1, 2) with period P$_{2}$ = 2. Then, their composition via Eq. 7 produces\n\n$$\\begin{array}{l} C(f_1(t), f_2(t)) \\\\ = (f_1(t \\bmod 3) + f_2(t \\bmod 2)) \\bmod 10 \\\\ = (2, 4, 4, 3, 3, 5, \\dots). \\end{array}$$\n\nWe choose to use the pretrained Qwen2",
+      "text_sha256": "35bd90e1fc492b773189fa9d66e4f8a0b8c11e212b4232337ff79865776a7573"
+     },
+     {
+      "span_id": "A-page-0016",
+      "page": 16,
+      "location": "target PDF page 16",
+      "text": "⑤ Composition of Layers. A Transformer is a composition of layers:\n\n$$\\mathcal{T} = F_L \\circ \\dots \\circ F_1.$$\n\nWe prove by induction that each composition preserves shift equivariance.\n\nBase case. For $F_1$,\n\n$$F_1(g^T \\cdot f) = g^T \\cdot F_1(f).$$\n\nInductive step. Assume\n\n$$F_{k-1} \\circ \\dots \\circ F_1(g^T \\cdot f) = g^T \\cdot (F_{k-1} \\circ \\dots \\circ F_1)(f).$$\n\nThen,\n\n$$\\begin{array}{l} F_k \\circ \\dots \\circ F_1(g^T \\cdot f) \\\\ = F_k \\big(g^T \\cdot (F_{k-1} \\circ \\dots \\circ F_1)(f)\\big) \\\\ = g^T \\cdot F_k \\big((F_{k-1} \\circ \\dots \\circ F_1)(f)\\big) \\\\ = g^T \\cdot (F_k \\circ \\dots \\circ F_1)(f). \\end{array}$$\n\nThus,\n\n$$\\mathcal{T}(g^T \\cdot f) = g^T \\cdot \\mathcal{T}(f).$$\n\nTherefore, the complete Transformer preserves shift equivariance.\n\n### B.2 FORMAL ILLUSTRATION OF ROPE AND SINGLE PERIOD SHIFT INVARIANCE\n\nIn Section 3.3, we dive into sequence periodicity and rule periodicity. Here we analyze how Transformer models simple sequence periodicity satisfying Eq. 4 through RoPE, for example the time shift invariance of a single periodic sequence $f(t) = f(t + T)$.\n\nThe core idea of RoPE is to map time step $t$ onto the phase rotation in the complex plane:\n\n$$\\text{RoPE}(x_t) = x_t e^{i\\theta t}, \\quad \\theta = \\frac{2\\pi}{T},$$\n\nwhere $T$ is the implicit p",
+      "text_sha256": "218a7159cf57fa45785f232b2de84d0be3ab7068746dd953a18db09c2d7ea780"
+     },
+     {
+      "span_id": "A-page-0018",
+      "page": 18,
+      "location": "target PDF page 18",
+      "text": "918\n919\n920\n921\n922\n923\n924\n925\n926\n927\n928\n929\n930\n931\n932\n933\n934\n935\n936\n937\n938\n939\n940\n941\n942\n943\n944\n945\n946\n947\n948\n949\n950\n951\n952\n953\n954\n955\n956\n957\n958\n959\n960\n961\n962\n963\n964\n965\n966\n967\n968\n969\n970\n971\n\nthe performance is at the token level, which is the ratio of correctly predicted tokens across all predicted ones.\n\nThe result is shown in Fig. 8, where the two graphs represent the performance of two positional encoding, and the two colors stand for in-distribution and OOD generalization ability. Fig. 11 reports loss of both positional encodings on in-distribution and OOD datasets during training. We draw the following conclusions:\n\nIn the in-distribution scenario ($T \\in \\{4, 5, 6, 8,$\n\n$9, 10\\}$), RoPE and absolute positional encoding both achieve near 1.00 accuracy, indicating their common ability to memorize the seen periodic patterns. In the case of hollow interpolation ($T = 7$), RoPE remains a high accuracy, but the performance of absolute positional encoding drops significantly. In extrapolation cases ($T \\in \\{2, 3, 11, 12\\}$), the accuracy of RoPE declines at a certain degree. On the contrast, the accuracy of absolute positional encoding is far less than RoPE's. The failure of absolute positional encoding on generalizing OOD cases proves its",
+      "text_sha256": "8b3ed8116b3d94b09c6b9b746094e90cfbfbb1b277819820625462888d520c51"
+     },
+     {
+      "span_id": "A-page-0021",
+      "page": 21,
+      "location": "target PDF page 21",
+      "text": "1080\n1081\n1082\n1083\n1084\n1085\n1086\n1087\n1088\n1089\n1090\n1091\n1092\n1093\n1094\n1095\n1096\n1097\n1098\n1099\n1100\n1101\n1102\n1103\n1104\n1105\n1106\n1107\n1108\n1109\n1110\n1111\n1112\n1113\n1114\n1115\n1116\n1117\n1118\n1119\n1120\n1121\n1122\n1123\n1124\n1125\n1126\n1127\n1128\n1129\n1130\n1131\n1132\n1133\n\n![img-13.jpeg](img-13.jpeg)\n\nFigure 12: Category accuracy heatmap across models after increasing data density.\n\n![img-14.jpeg](img-14.jpeg)\n\nFigure 13: Loss curves on ID and OOD test sets after increasing data density.\n\n### E COMPLETE EXPERIMENTAL RESULTS FOR SCALING MODEL PARAMETERS (EXPERIMENT 3)\n\nThe full results for different model and different parameter scales are shown in Table 5.\n\n### F COMPLETE EXPERIMENTAL RESULTS FOR THE CIRCULAR CONVOLUTION TASK (EXPERIMENT 4)\n\nThe full accuracy heatmap, the category accuracy bar, and the loss curves for the circular convolution task are shown in Fig. 14, Fig. 15, and Fig. 16, respectively.\n\n![img-15.jpeg](img-15.jpeg)\n\nFigure 14: Heatmaps of model performance (450 training epochs) on the circular convolution task across different period lengths.\n\n### G COMPLETE EXPERIMENTAL RESULTS FOR MORE COMPOSITE PERIODICITY\n\nIn Section 5, our main experiment evaluates models' ability to generalize composite periodicity using the Coper dataset introduced in Section ",
+      "text_sha256": "67d0a7628ba2076d71fd35fa44f0702de2966fb5f247df3e80a40601e00f81cd"
+     },
+     {
+      "span_id": "A-page-0023",
+      "page": 23,
+      "location": "target PDF page 23",
+      "text": "1188\n1189\n1190\n1191\n1192\n1193\n1194\n1195\n1196\n1197\n1198\n1199\n1200\n1201\n1202\n1203\n1204\n1205\n1206\n1207\n1208\n1209\n1210\n1211\n1212\n1213\n1214\n1215\n1216\n1217\n1218\n1219\n1220\n1221\n1222\n1223\n1224\n1225\n1226\n1227\n1228\n1229\n1230\n1231\n1232\n1233\n1234\n1235\n1236\n1237\n1238\n1239\n1240\n1241\n\n![img-18.jpeg](img-18.jpeg)\n\nFigure 17: Heatmaps of model performance (450 training epochs) on the add–subtract alternating task across different period lengths.\n\n![img-19.jpeg](img-19.jpeg)\n\nFigure 18: Accuracy by category of different models on the add-subtract alternating task under various OOD settings.\n\n![img-20.jpeg](img-20.jpeg)\n\nFigure 19: Training loss curves of different models on the add-subtract alternating task.\n\nis decoded back to numerical values using the same digit alignment. The Qwen2.5 tokenizer and embedding are frozen during training.\n\nBeyond sequence and rule periodicity, we further define hidden periodicity, where individual samples do not exhibit explicit repetitive patterns, and the periodic structure only emerges at the level of the full data distribution. Formally, let the input be represented as a token sequence  \\( (x_{1}, x_{2}, x_{3}, \\ldots) \\) . Hidden periodicity exists if there is a non-zero shift vector  \\( (T_{1}, T_{2}, T_{3}, \\ldots) \\)  such that\n\n\\[\nf (x _ {1",
+      "text_sha256": "78659b82374723c09061a1454e24fcf2df0f253e8facac8779d9c23c39295616"
+     }
+    ],
+    "source": []
+   }
+  }
+ ],
+ "note": "Target spans are anonymized excerpts of the target text; page numbers refer to the original target PDF, which is not distributed."
+}

@@ -1,0 +1,66 @@
+name: Wrong result about a paper
+description: A result shown for a specific target and source paper is wrong.
+title: "[Correction] "
+labels: ["type: correction", "priority: urgent"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Are you an author of the paper?** The fastest and private route is email: **red.flag.autoresearch@gmail.com**. You do not need a GitHub account, and nothing becomes public.
+
+        Either way, we correct a wrong result right away, and we take the result off the live page and the public data while we check. See docs/CORRECTIONS.md for the full process.
+
+        A **Source review recommended** label means a person should compare the two papers. It is not a finding of plagiarism or misconduct.
+
+        Benchmark cases are anonymized: for a benchmark case, give only its case id, not the paper's title or link.
+  - type: dropdown
+    id: where
+    attributes:
+      label: Where did you see the result?
+      options:
+        - Live page
+        - Benchmark case
+        - Somewhere else (explain below)
+    validations:
+      required: true
+  - type: input
+    id: link
+    attributes:
+      label: Link to the result or benchmark case id
+      description: The live-page link of the result, or the benchmark case id.
+    validations:
+      required: true
+  - type: dropdown
+    id: reason
+    attributes:
+      label: Why is the result wrong?
+      multiple: true
+      options:
+        - The source is an earlier version of the same work (preprint, workshop or thesis)
+        - The papers share authors
+        - The matching text is attributed or cited
+        - The match is a shared dataset, baseline, standard definition or common phrasing
+        - The evidence locations do not match the papers
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: explanation
+    attributes:
+      label: Explanation and evidence
+      description: Point to pages, sections, citations or public links. Do not post private correspondence or unpublished manuscripts.
+    validations:
+      required: true
+  - type: checkboxes
+    id: role
+    attributes:
+      label: About you
+      options:
+        - label: I am an author of one of the two papers.
+  - type: checkboxes
+    id: consent
+    attributes:
+      label: Public issue
+      options:
+        - label: I understand this issue is public. I could have emailed red.flag.autoresearch@gmail.com instead.
+          required: true

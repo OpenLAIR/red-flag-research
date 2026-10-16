@@ -1,0 +1,434 @@
+{
+ "case_id": "C06",
+ "pairs": [
+  {
+   "pair_id": "C06-P1",
+   "source_key": "arxiv-2511.16301",
+   "source_distribution": "included",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C06]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nFeed-forward foundation models have significantly accelerated uncalibrated 3D reconstruction by inferring geometry in a single pass. However, their reliance on global self-attention introduces a severe quadratic computational bottleneck at high resolutions, forcing a compromise between inference efficiency and the preservation of fine-grained geometric details. To address this accuracy-efficiency trade-off, we introduce [NAME C06], an asymmetric dual-branch extension of VGGT that allocates global multi-view reasoning and high-resolution detail extraction to complementary streams. A low-resolution branch efficiently anchors global scene context and camera prediction, while a parallel Hybrid Detail Extractor (HDE) captures per-view, fine-grained structural cues directly from high-resolution inputs. By integrating multi-layer local convolutions with scalable linear attention, the HDE extracts structural cues across multiple scales. These multi-scale features are then progressively injected into the global low-resolution stream via a customized hierarchical fusion head, effectively refining th",
+      "text_sha256": "a609a2ebaa9d2644af49611c22c59a02f8d1b04650dcfe032d05b474ff74997c"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\ninformation, resulting in a significant loss of geometric precision. Concurrently, methods such as CARVE Xu et al. (2025) and DAGE Ngo et al. (2026) explore dual-stream architectures to divide the representation space, typically dedicating a standard transformer-based secondary branch to process high-resolution inputs. Yet, these transformer branches inherently lack the strong local inductive biases Xiao et al. (2021) necessary to capture sharp structural gradients. Furthermore, they typically process high-resolution features at a single, fixed scale. While complex geometric boundaries naturally vary in size and inherently demand varying receptive fields, the absence of a multi-scale extraction mechanism restricts their capacity to fully recover fine-grained details. This ultimately leads to blurred geometric edges and compromised structural fidelity.\n\nIn this paper, we propose a novel asymmetric dual-branch architecture, named [NAME C06], to resolve the conflict between computational scalability and geometric fidelity. Instead of directly passing hig",
+      "text_sha256": "e90085d149c38a38b13e70bcecd7d41c55edc83c96ee901aa55eb896073acf80"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n![img-0.jpeg](img-0.jpeg)\n\nFigure 1: Architectural pipeline of our proposed [NAME C06]. Our framework explicitly separates global geometry modeling and local detail extraction into two dedicated streams. A low-resolution main branch establishes robust global context and camera poses, while a concurrent high-resolution branch employs the Hybrid Detail Extractor (HDE) to capture fine-grained multi-scale structural cues without the quadratic cost of self-attention. These parallel representations are subsequently integrated via a customized Dense Prediction Transformer (DPT) head, which progressively injects high-frequency boundaries into the global stream.\n\nDespite their powerful geometric reasoning, these models are bottlenecked by the quadratic complexity of self-attention at high resolutions. While methods Feng et al. (2025); Yuan et al. (2026) like LiteVGGT Shu et al. (2025) and FastVGGT Shen et al. (2025) mitigate this via token compression, they inevitably discard fine-grained structural cues, leading to blurred edges. Dual-stream architectures suc",
+      "text_sha256": "5da8c882e69146da5ed13f765617e4272a12d667660e2fe8677cb2d975a01498"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\nresolution cues without increasing the spatial resolution of the global attention grid. Fig. 1 provides an overview.\n\n### 3.1 OVERALL ARCHITECTURE\n\nGiven a sequence of $S$ uncalibrated high-resolution images denoted as $\\mathbf{I}_{high} \\in \\mathbb{R}^{S \\times 3 \\times H \\times W}$, we strategically allocate the geometry estimation process across two complementary streams.\n\nFirst, a Low-Resolution Branch processes a downsampled sequence, $\\mathbf{I}_{low} \\in \\mathbb{R}^{S \\times 3 \\times \\frac{H}{2} \\times \\frac{W}{2}}$. This branch acts as the global geometric anchor, robustly extracting multi-view coherence, scene context, and relative camera poses with minimal computational overhead. Concurrently, a High-Resolution Branch processes the uncompressed sequence $\\mathbf{I}_{high}$ using our proposed Hybrid Detail Extractor (HDE). This branch is exclusively dedicated to retrieving fine-grained geometric details and sharp structural boundaries, strictly bypassing costly global attention mechanisms.\n\nFinally, the parallel feature streams from these two ",
+      "text_sha256": "58ea8db86d0eea398f50ac8dbd9a5c16aedee00a3b8286dd43f650cfb0bfa96a"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "**Local Inductive Bias Injection.** To explicitly capture high-frequency boundaries and fine-grained textures, we first inject essential local inductive biases into the feature space. Let LN(·) denote Layer Normalization and DWConv(·) represent the depth-wise convolution operation. The localized feature aggregation is formulated as:\n\n$$\\mathbf{F}_{conv}^{(l)} = \\text{DWConv} \\left( \\text{LN}(\\mathbf{F}_{in}^{(l)}) \\right) + \\mathbf{F}_{in}^{(l)} \\tag{2}$$\n\n**Scalable Linear Attention.** To efficiently approximate global receptive fields, we replace the canonical softmax attention with a linear attention variant Shen et al. (2021). By defining a feature map $\\phi(\\cdot)$ that acts as a positive activation function, the linear attention mechanism is expressed as:\n\n$$\\mathbf{F}_{attn}^{(l)} = \\frac{\\phi(\\mathbf{Q}) \\left( \\phi(\\mathbf{K})^\\top \\mathbf{V} \\right)}{\\phi(\\mathbf{Q}) \\sum_{j=1}^N \\phi(\\mathbf{K}_j)^\\top} \\tag{3}$$\n\nBy utilizing the associative property of matrix multiplication, we compute the right-side term $(\\phi(\\mathbf{K})^\\top \\mathbf{V})$ first. This crucial reordering reduces the computational complexity from $\\mathcal{O}(N^2 d)$ to $\\mathcal{O}(N d^2)$. Given that $d \\ll N$ for high-resolution inputs, this structural modification ensures linear sc",
+      "text_sha256": "ffca3d8c165eb26437d4a27ca45226acf01243ecb8572a049fcf6c21c996b3ce"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\n### 3.5 TRAINING DETAILS\n\nTraining Objectives. We optimize our framework end-to-end using a joint geometric loss:\n\n\\[\n\\mathcal {L} _ {\\text { total }} = \\mathcal {L} _ {\\text { pose }} + \\lambda_ {\\text { depth }} \\mathcal {L} _ {\\text { depth }} + \\lambda_ {\\text { pts }} \\mathcal {L} _ {\\text { pts }} \\tag {6}\n\\]\n\nHere,  \\( L_{pose} \\)  applies hierarchical weighting across iterative stages to enforce strict epipolar alignment. The dense losses ( \\( L_{depth} \\) ,  \\( L_{pts} \\) ) are confidence-aware, decoupling absolute geometric error minimization from confidence optimization. Crucially, both incorporate first-order spatial gradient matching to penalize blurriness, directly preserving the pristine high-frequency boundaries extracted by our high-resolution branch.\n\nImplementation Details. The low-resolution stream is initialized with pre-trained VGGT Wang et al. (2025a) weights, while the HDE branch and Multi-Scale DPT Head are initialized randomly. The input frames for the low-res stream are resized to a maximum dimension of 518 pixels, strictly m",
+      "text_sha256": "8f8b18f591a1f81d7e52a1e3fe7668b68184691ea1ce11888af2dbc55855422c"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "Table 2: Quantitative comparison of Camera Pose Estimation. The best and second-best results are highlighted with red and orange backgrounds, respectively. The Rank represents the unweighted average ranking across all evaluated metrics (lower is better).\n\n[tbl-1.html](tbl-1.html)\n\n![img-1.jpeg](img-1.jpeg)\n\nFigure 2: Qualitative comparison of multi-view depth estimation. Our method natively recovers sharp boundaries and intricate thin structures compared with VGGT and Pi3.\n\ncomplete systems and does not isolate architecture gains from input-resolution gains. As shown in Table 3, our method establishes new state-of-the-art results. Compared against both conventionally upsampled baselines and recent native high-resolution architectures Ngo et al. (2026), our framework demonstrates superior geometric fidelity by securing first place in 7 out of 10 metrics.\n\nQualitative comparisons shown in Fig. 2 further corroborate this advantage. Unlike the upsampled VGGT and Pi3 baselines, our natively decoded outputs successfully preserve sharp boundaries and intricate thin structures, including lamp cords and distant shelves, effectively eliminating severe over-smoothing artifacts.\n\nBeyond geometric accuracy, our dual-branch architecture maintains high computational efficiency at",
+      "text_sha256": "2782b956ec92aa549d47f03daece447b98a56688711798cd6f51a7a497a156e3"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "378\n379\n380\n381\n382\n383\n384\n385\n386\n387\n388\n389\n390\n391\n392\n393\n394\n395\n396\n397\n398\n399\n400\n401\n402\n403\n404\n405\n406\n407\n408\n409\n410\n411\n412\n413\n414\n415\n416\n417\n418\n419\n420\n421\n422\n423\n424\n425\n426\n427\n428\n429\n430\n431\n\nTable 3: Quantitative comparison of Multi-view Depth Estimation. The best and second-best results are highlighted with red and orange backgrounds, respectively. Abs Rel is lower-is-better (↓), while δ < 1.25 is higher-is-better (↑). Notably, DAGE and our method natively output at 1036p, whereas other baselines are bilinearly upsampled to 1036p for evaluation.\n\n[tbl-2.html](tbl-2.html)\n\n![img-2.jpeg](img-2.jpeg)\n\nFigure 3: Qualitative comparison of unprojected 3D point maps. We compare our natively decoded high resolution outputs against the VGGT baseline across diverse indoor and outdoor scenes.\n\nprotocols, predictions are aligned to ground truth via Umeyama Sim(3) and ICP refinement. We report Accuracy (ACC ↓), Completeness (Comp ↓), Normal Consistency (NC ↑), and the mean Rank across all metrics.\n\nAs shown in Table 4, our method achieves a mean Rank of 1.67, significantly outperforming foundation models like VGGT Wang et al. (2025a) and Pi3 Wang et al. (2025d). It leads on all three DTU metrics and on 7-Scenes ACC and Comp, while Pi3 performs better ",
+      "text_sha256": "f827107b131fd07ec3cc4761f3fb774e0bc47cad23c9fe2bca22935d6ae45904"
+     },
+     {
+      "span_id": "A-page-0009",
+      "page": 9,
+      "location": "target PDF page 9",
+      "text": "Table 4: Quantitative comparison of Point Map Estimation. The best and second-best results are highlighted with red and orange backgrounds, respectively. ACC and Comp metrics are lower-is-better (↓), while NC is higher-is-better (↑). The Rank represents the unweighted average ranking across all evaluated metrics (lower is better).\n\n[tbl-3.html](tbl-3.html)\n\n### 4.4 ABLATION STUDY\n\nTo explicitly validate our architectural contributions, we conduct an ablation study on the Hypersim Test set Roberts et al. (2021). As shown in Table 5, we evaluate variants across three geometric dimensions: Camera Pose (AUC30 ↑), Depth Error (Abs Rel Mean ↓), and Point Map Error (XYZ Abs Rel Mean ↓).\n\nEffectiveness of Multi-Scale Fusion. Fusing only the highest-resolution features (Single L1) or solely the lowest-resolution features (Single L5) yields suboptimal performance across all metrics. This confirms that aggregating all hierarchical levels is essential to balance broad geometric contexts with fine-grained local boundaries.\n\nThe Crucial Role of the Feature Injector. Restricting high-resolution fusion strictly to the final DPT Head (w/o Injector) maintains\n\n2D depth performance but noticeably degrades unprojected 3D point map accuracy, increasing the XYZ error from 0.2262 to 0.23",
+      "text_sha256": "aa6cf9238b5f74e1977e367564f31906bb6ba3808fb0d23a741b25f8ad8b2807"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n# REFERENCES\n\nEduardo Arnold, Jamie Wynn, Sara Vicente, Guillermo Garcia-Hernando, Aron Monszpart, Victor Prisacariu, Daniyar Turmukhambetov, and Eric Brachmann. Map-free visual relocalization: Metric pose relative to a single image. In European Conference on Computer Vision, pp. 690–708. Springer, 2022.\n\nArmen Avetisyan, Christopher Xie, Henry Howard-Jenkins, Tsun-Yi Yang, Samir Aroudj, Suvam Patra, Fuyang Zhang, Duncan Frost, Luke Holland, Campbell Orme, et al. Scenescript: Reconstructing scenes with an autoregressive structured language model. In European Conference on Computer Vision, pp. 247–263. Springer, 2024.\n\nAleksei Bochkovskii, Amaël Delaunoy, Hugo Germain, Marcel Santos, Yichao Zhou, Stephan R Richter, and Vladlen Koltun. Depth pro: Sharp monocular metric depth in less than a second. arXiv preprint arXiv:2410.02073, 2024.\n\nAljaz Bozic, Pablo Palafox, Justus Thies, Angela Dai, and Matthias Nießner. Transformerfusion: Monocular rgb scene reconstruction using transformers. Advances in Neural Information Processing Systems, 34:1403–1414, 2021.\n",
+      "text_sha256": "611d8c360da2f59fac3b943861993175dd343edeffa754d856a43a498d24b457"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nMike Roberts, Jason Ramapuram, Anurag Ranjan, Atulit Kumar, Miguel Angel Bautista, Nathan Paczan, Russ Webb, and Joshua M Susskind. Hypersim: A photorealistic synthetic dataset for holistic indoor scene understanding. In Proceedings of the IEEE/CVF international conference on computer vision, pp. 10912–10922, 2021.\n\nThomas Schops, Johannes L Schonberger, Silvano Galliani, Torsten Sattler, Konrad Schindler, Marc Pollefeys, and Andreas Geiger. A multi-view stereo benchmark with high-resolution images and multi-camera videos. In Proceedings of the IEEE conference on computer vision and pattern recognition, pp. 3260–3269, 2017.\n\nSteven M Seitz, Brian Curless, James Diebel, Daniel Scharstein, and Richard Szeliski. A comparison and evaluation of multi-view stereo reconstruction algorithms. In Proceedings of the Computer Vision and Pattern Recognition Conference, volume 1, pp. 519–528. IEEE, 2006.\n\nYou Shen, Zhipeng Zhang, Yansong Qu, Xiawu Zheng, Jiayi Ji, Shengchuan Zhang, and Liujuan Cao. Fastvggt: Training-free acceleration of visual geometry transformer.",
+      "text_sha256": "46d27f7cba4059679266b118bedf8630091aa496a80d7aa0623e1df18c131f26"
+     },
+     {
+      "span_id": "A-page-0013",
+      "page": 13,
+      "location": "target PDF page 13",
+      "text": "648\n649\n650\n651\n652\n653\n654\n655\n656\n657\n658\n659\n660\n661\n662\n663\n664\n665\n666\n667\n668\n669\n670\n671\n672\n673\n674\n675\n676\n677\n678\n679\n680\n681\n682\n683\n684\n685\n686\n687\n688\n689\n690\n691\n692\n693\n694\n695\n696\n697\n698\n699\n700\n701\n\nShuzhe Wang, Vincent Leroy, Yohann Cabon, Boris Chidlovskii, and Jerome Revaud. Dust3r: Geometric 3d vision made easy. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pp. 20697–20709, 2024.\n\nWenshan Wang, Delong Zhu, Xiangwei Wang, Yaoyu Hu, Yuheng Qiu, Chen Wang, Yafei Hu, Ashish Kapoor, and Sebastian Scherer. Tartanair: A dataset to push the limits of visual slam. In 2020 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pp. 4909–4916. IEEE, 2020.\n\nYifan Wang, Jianjun Zhou, Haoyi Zhu, Wenzheng Chang, Yang Zhou, Zizun Li, Junyi Chen, Jiangmiao Pang, Chunhua Shen, and Tong He. Pi3: Permutation-equivariant visual geometry learning. arXiv preprint arXiv:2507.13347, 2025d.\n\nHongchi Xia, Yang Fu, Sifei Liu, and Xiaolong Wang. Rgbd objects in the wild: Scaling real-world 3d object learning from rgb-d videos. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 22378–22389, 2024.\n\nTete Xiao, Mannat Singh, Eric Mintun, Trevor Darrell, Piotr Dollár, and Ross Gi",
+      "text_sha256": "8e2aa159ab636d6f96d82f68e05b931a0fbeda60bde21275f2f1733bd56f6513"
+     },
+     {
+      "span_id": "A-page-0015",
+      "page": 15,
+      "location": "target PDF page 15",
+      "text": "756\n757\n758\n759\n760\n761\n762\n763\n764\n765\n766\n767\n768\n769\n770\n771\n772\n773\n774\n775\n776\n777\n778\n779\n780\n781\n782\n783\n784\n785\n786\n787\n788\n789\n790\n791\n792\n793\n794\n795\n796\n797\n798\n799\n800\n801\n802\n803\n804\n805\n806\n807\n808\n809\n\nresolution. We report the Area Under the Curve at a 30° threshold (AUC₃₀ ↑) for Co3Dv2 Reizenstein et al. (2021) and RealEstate10K Zhou et al. (2018), and Absolute Trajectory Error (ATE ↓) alongside Relative Pose Errors for both translation (RPE-t ↓) and rotation (RPE-r ↓) for the TUM-dynamics Zhao et al. (2022) and ScanNet++ Yeshwanth et al. (2023) benchmarks.\n\n### B.2 MULTI-VIEW DEPTH ESTIMATION\n\nUnlike global pose, dense depth estimation inherently requires strict pixel-to-pixel correspondence with the ground truth. To rigorously assess the preservation of fine-grained structural boundaries, all depth evaluations are standardized against the 1036p high-resolution Ground Truth (GT). Consequently, baseline methods must bilinearly upsample their 518p depth predictions to 1036p prior to evaluation. This upsampling process inevitably introduces interpolation artifacts and blurs geometric edges. In contrast, [NAME C06] directly outputs high-fidelity 1036p depth maps, ensuring geometric integrity without relying on post-processing upsampling. Following CU",
+      "text_sha256": "86ccc95984d6937b8236b92b5450cf18cca8fd0ee5ee2a1604693eb48a517193"
+     },
+     {
+      "span_id": "A-page-0017",
+      "page": 17,
+      "location": "target PDF page 17",
+      "text": "864\n865\n866\n867\n868\n869\n870\n871\n872\n873\n874\n875\n876\n877\n878\n879\n880\n881\n882\n883\n884\n885\n886\n887\n888\n889\n890\n891\n892\n893\n894\n895\n896\n897\n898\n899\n900\n901\n902\n903\n904\n905\n906\n907\n908\n909\n910\n911\n912\n913\n914\n915\n916\n917\n\n![img-23.jpeg](img-23.jpeg)\n\nFigure 5: Additional Qualitative Point Cloud Comparisons. We compare the dense 3D reconstruction results of our [NAME C06] against VGGT and Pi3 across diverse environments. The insets highlight specific high-frequency regions.\n\nglass can introduce localized depth ambiguities. Future work will explore integrating explicit 4D motion priors and material reasoning to elevate reconstruction fidelity in these complex edge cases.",
+      "text_sha256": "5fd2790d649264d4c77d38c13ba47b27d79c86ad4ea92717162a1b882f83dbff"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-45970be21539f6",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": "arXiv:2511.16301v2 [cs.CV] 24 Nov 2025\n\n# Upsample Anything: A Simple and Hard to Beat Baseline for Feature Upsampling\n\nMinseok Seo \\( ^{1} \\)  Mark Hamilton \\( ^{2,3} \\)  Changick Kim \\( ^{1} \\)\n\n\\( ^{1} \\) KAIST  \\( ^{2} \\) MIT  \\( ^{3} \\) Microsoft\n\nminseok.seo@kaist.ac.kr\n\n![img-0.jpeg](img-0.jpeg)\n\n![img-1.jpeg](img-1.jpeg)\n\n![img-2.jpeg](img-2.jpeg)\n\n![img-3.jpeg](img-3.jpeg)\n\n## Upsample Anything\n\nA universal, training-free upsampler via lightweight test-time optimization\n\n![img-4.jpeg](img-4.jpeg)\n\n![img-5.jpeg](img-5.jpeg)\n\n![img-6.jpeg](img-6.jpeg)\n\n![img-7.jpeg](img-7.jpeg)\n\nFigure 1. Our method performs lightweight test-time optimization ( \\( \\approx0.419 \\)  s/image) without requiring any dataset-level training. It generalizes seamlessly across domains while maintaining consistent reconstruction quality for every image. (All examples are randomly selected, without cherry-picking.)\n\n## Abstract\n\nWe present Upsample Anything, a lightweight test-time optimization (TTO) framework that restores low-resolution features to high-resolution, pixel-wise outputs without any training. Although Vision Foundation Models demonstrate strong generalization across diverse downstream tasks, their representations are typically downsampled by  \\( 14\\times/16\\times \\)  (e.g",
+      "text_sha256": "46d7ae4cad1d53989d550f78b6176b0f91dc2e40edf288be5cf0be648e0f951f"
+     },
+     {
+      "span_id": "B-ocr-c1c5112406d944",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": "Step1. Training Upsampler\n\n![img-8.jpeg](img-8.jpeg)\n\nStep2. Inference (Task-specific inference only)\n\n![img-9.jpeg](img-9.jpeg)\n\n(a) Dataset-Level Training Method\n\nStep1. Test-time Optimization & Inference\n\n![img-10.jpeg](img-10.jpeg)\n\n(b) Upsample Anything (Ours)\n\nFigure 2. Comparison of dataset-level training and our test-time optimization (TTO). (a) Dataset-level methods (FeatUp, LoftUp, JAFAR, AnyUp) require paired training data and handle only 2D feature maps. (b) Our Upsample Anything performs TTO using only one HR image and generalizes to feature, depth, segmentation, and even 3D features.\n\nerarchical features that capture semantic abstraction from the input image, and the decoder reconstructs dense, task-specific predictions such as class maps, depth, or optical flow at the original spatial resolution.\n\nRecent advances in large-scale self-supervised learning [1, 8, 17, 18, 27, 31] introduce general-purpose encoders called Vision Foundation Models (VFMs) that can serve as universal backbones across diverse downstream tasks. This paradigm shift has led to the emergence of Vision Foundation Models (VFMs) such as DINO [17], CLIP [18], SigLIP [27], and MAE [8], which provide transferable and semantically rich features with minimal task-specific fine-tuning.\n\nBy",
+      "text_sha256": "49b9760371972ce7d89f6affbbdf38725fe5f447bbc082ea99612cedc99f4ceb"
+     },
+     {
+      "span_id": "B-ocr-adf71609ec0a4c",
+      "page": 3,
+      "location": "B PDF page 3",
+      "text": "Gaussian parameters—$(\\sigma_x, \\sigma_y, \\theta, \\sigma_r)$—that define a continuous spatial-range splatting kernel. These optimized kernels are then applied to the LR feature maps from a foundation encoder to produce HR feature maps aligned with the original image grid. Although the optimization is guided only by color reconstruction, the learned kernels implicitly capture geometry and semantics. As a result, Upsample Anything not only enhances 2D feature resolution but also generalizes to other pixel- or voxel-level signals (e.g., depth, segmentation, or even 3D representations) without retraining. This property highlights its potential as a unified, lightweight, and resolution-free upsampling operator across 2D and 3D domains. Despite requiring no dataset-level training, it consistently achieves state-of-the-art or near-SOTA performance on multiple pixel-level benchmarks, including semantic segmentation and depth estimation.\n\n## 2. Related Works\n\n### 2.1. Joint Bilateral Upsampling\n\nJoint Bilateral Upsampling (JBU), first introduced by [14], is a classic non-learning, edge-preserving upsampling technique designed to transfer structural details from a high-resolution guidance image to a low-resolution signal such as a depth map or label map. Formally, JBU comput",
+      "text_sha256": "15256cc446634899e14c908ac14320b559ee67d3e0d1f83f9cb437e9c5422fc1"
+     },
+     {
+      "span_id": "B-ocr-dfa0937c25962c",
+      "page": 4,
+      "location": "B PDF page 4",
+      "text": "![img-11.jpeg](img-11.jpeg)\n\nFigure 3. Overview of Upsample Anything. Given a high-resolution image \\( I_{hr} \\), we downsample it to \\( I_{lr} \\) and optimize GSJBU to reconstruct \\( I_{hr} \\), learning per-pixel anisotropic kernels \\( \\{\\sigma_x, \\sigma_y, \\theta, \\sigma_r\\} \\) via test-time optimization (TTO). The learned kernels are then applied to foundation features \\( F_{lr} \\) for rendering the high-resolution features \\( F_{hr} \\), achieving pixel-wise anisotropic joint bilateral upsampling.\n\nterm is provided by the HR guidance image. In contrast, Upsample Anything assigns per-pixel anisotropic covariances  \\( \\Sigma_{p} \\)  and range scales  \\( \\sigma_{r,p} \\)  through test-time optimization, enabling adaptive fusion across space and range. This pixel-level Gaussian parameterization captures locally varying orientations and scales, making Upsample Anything a continuous, edge-preserving extension of JBU within the 2DGS framework. For the exact derivation and a more formal discussion of how this formulation differs from a simple combination, please refer to Appendix §12.\n\n## 4. Methods\n\n### 4.1. Overview\n\nAs illustrated in Fig. 3, our method, Upsample Anything, consists of two stages: (i) test-time optimization (TTO) and (ii) feature rendering. In the TTO s",
+      "text_sha256": "cca998bf70ca1ae6251520d114d51519b01528f5fd8f19948e437bd41753f4ba"
+     },
+     {
+      "span_id": "B-ocr-d3dc77f3923e2c",
+      "page": 9,
+      "location": "B PDF page 9",
+      "text": "# Upsample Anything: A Simple and Hard to Beat Baseline for Feature Upsampling\n\nSupplementary Material\n\n## 7. Semantic Segmentation on Cityscapes\n\nWe evaluated feature upsampling and probability-map upsampling on Cityscapes using the official LoftUp segmentation codebase with a stronger training setup that includes 448×448 input resolution, 100 epochs, and a learning-rate scheduler. Under this configuration, all methods, including LoftUp and ours, produced almost the same mIoU as bilinear interpolation, which differs from the improvements reported in the LoftUp paper.\n\nTo ensure correctness, we carefully re-examined our implementation through an automated code audit with ChatGPT and a manual review by multiple authors. We found no inconsistencies or bugs.\n\nThe quantitative results are summarized in Table 7. Across all methods, including feature-level and probability-level upsampling, the differences remain within a very narrow range. Cityscapes primarily contains large and regular structures, and its annotations are relatively coarse. With a sufficiently trained segmentation head, bilinear interpolation already performs near optimally, leaving little room for additional gains. In contrast, datasets such as COCO, PASCAL-VOC, and ADE20K include many small objects and",
+      "text_sha256": "2c80f807f187d8aa6de50952c7d6c9995fc58a651b48d8a9bbb1ffff5a3db168"
+     },
+     {
+      "span_id": "B-4cf90167e61113",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.16301v1#chars-0-209",
+      "text": "##### Report GitHub Issue\n\nContent selection saved. Describe the issue below:\n\n![](/static/base/1.0.1/images/icons/smileybones-small.svg)\n![arXiv logo](/static/base/1.0.1/images/arxiv-logo-primary-light.svg)",
+      "text_sha256": "b6ce4002cecd703897826701071e49a7aec6e718e8c2dc79f33e578dacc45bb3"
+     },
+     {
+      "span_id": "B-bd5cc707e57c7d",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.16301v1#chars-13276-14746",
+      "text": "### 4.1 Overview\n\nAs illustrated in [Fig. 3](#S2.F3 \"In 2.2 Feature Upsampling ‣ 2 Related Works ‣ Upsample Anything: A Simple and Hard to Beat Baseline for Feature Upsampling\"), our method, Upsample Anything, consists of two stages:\n(i) test-time optimization (TTO) and\n(ii) feature rendering.\nIn the TTO stage, Upsample Anything learns per-pixel anisotropic Gaussian parameters\n{σx,σy,θ,σr}\\{\\sigma\\_{x},\\sigma\\_{y},\\theta,\\sigma\\_{r}\\}\nby reconstructing the high-resolution image Ih​rI\\_{hr} from its patch-wise downsampled version Il​rI\\_{lr}.\nThis process enables each pixel to learn how spatially and photometrically similar neighbors should be blended-effectively discovering local mixing weights that generalize beyond the image domain.\nOnce optimized, these Gaussian kernels are directly transferred to the foundation feature space,\nwhere the low-resolution feature map Fl​r∈ℝC×H/s×W/sF\\_{lr}\\!\\in\\!\\mathbb{R}^{C\\times H/s\\times W/s}\nis splatted to produce the high-resolution feature Fh​r∈ℝC×H×WF\\_{hr}\\!\\in\\!\\mathbb{R}^{C\\times H\\times W}\nusing the same learned anisotropic weighting mechanism.\nBecause the splatting weights depend only on spatial–range similarity,\nthis transfer is naturally domain-agnostic, allowing the learned kernels to act as universal upsampling oper",
+      "text_sha256": "bc0dd153c73f6379e485d4fcb9cb252ffe59498d70fea2faf3edcf2c991261d1"
+     },
+     {
+      "span_id": "B-66305e777fa252",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.16301v1#chars-1559-7325",
+      "text": "## 1 Introduction\n\n![Refer to caption](2511.16301v1/teaser2.png)\n\nModern computer vision systems for pixel-level prediction tasks such as semantic, instance, and panoptic segmentation [[5](#bib.bib1), [15](#bib.bib3), [2](#bib.bib2), [30](#bib.bib4)] or depth estimation [[20](#bib.bib5), [26](#bib.bib6), [11](#bib.bib7)] often use an encoder–decoder paradigm.\nThe encoder extracts hierarchical features that capture semantic abstraction from the input image, and the decoder reconstructs dense, task-specific predictions such as class maps, depth, or optical flow at the original spatial resolution.\n\nRecent advances in large-scale self-supervised learning [[1](#bib.bib8), [17](#bib.bib9), [7](#bib.bib10), [31](#bib.bib11), [18](#bib.bib12), [27](#bib.bib13)] introduce general-purpose encoders called Vision Foundation Models (VFMs) that can serve as universal backbones across diverse downstream tasks.\nThis paradigm shift has led to the emergence of Vision Foundation Models (VFMs) such as DINO [[17](#bib.bib9)], CLIP [[18](#bib.bib12)], SigLIP [[27](#bib.bib13)], and MAE [[7](#bib.bib10)], which provide transferable and semantically rich features with minimal task-specific fine-tuning.\n\nBy decoupling the encoder from the downstream task, these foundation models dramatical",
+      "text_sha256": "fbfd618e196590e41ce2efe1b3975f8f51585ec6e43bf2ee4979f57890b8a406"
+     },
+     {
+      "span_id": "B-6fe9fd22cabcd7",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.16301v1#chars-22141-22171",
+      "text": "### 5.3 quantitative results",
+      "text_sha256": "44c08f0d3139dd24019a8e059ae7c222065a9dbbbd019659ed84265f3e218548"
+     },
+     {
+      "span_id": "B-4ebfaac4742137",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.16301v1#chars-289-1559",
+      "text": "###### Abstract\n\nWe present Upsample Anything, a lightweight test-time optimization (TTO) framework that restores low-resolution features to high-resolution, pixel-wise outputs without any training.\nAlthough Vision Foundation Models demonstrate strong generalization across diverse downstream tasks, their representations are typically downsampled by 14×/16× (e.g., ViT), which limits their direct use in pixel-level applications.\nExisting feature upsampling approaches depend on dataset-specific retraining or heavy implicit optimization, restricting scalability and generalization.\nUpsample Anything addresses these issues through a simple per-image optimization that learns an anisotropic Gaussian kernel combining spatial and range cues, effectively bridging Gaussian Splatting and Joint Bilateral Upsampling.\nThe learned kernel acts as a universal, edge-aware operator that transfers seamlessly across architectures and modalities, enabling precise high-resolution reconstruction of features, depth, or probability maps.\nIt runs in only ≈0.419​s\\approx 0.419\\text{s} per 224×224 image and achieves state-of-the-art performance on semantic segmentation, depth estimation, and both depth and probability map upsampling.\n\n![Refer to caption](2511.16301v1/teaser.png)",
+      "text_sha256": "3641400d5782d8101ffb8139fe90e11c4ffb7ad73e084b8a146a2f769c8198a2"
+     },
+     {
+      "span_id": "B-306e0f5716a999",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.16301v1#chars-38620-39531",
+      "text": "## 8 Details of Probabilistic Map Upsampling in Table 1.\n\nFigure [8](#S8.F8 \"Figure 8 ‣ 8 Details of Probabilistic Map Upsampling in Table 1. ‣ Upsample Anything: A Simple and Hard to Beat Baseline for Feature Upsampling\")-(c) corresponds to the Upsample Anything (prob.) configuration reported in Table 1.\nIn this setting, the segmentation map is predicted from downsampled features using a lightweight 1×1 convolution, followed by our probabilistic upsampling to reconstruct high-resolution outputs.\nThis simple setup already shows strong performance.\nBecause the computation is performed on a small feature map, heavier or more complex decoders are expected to be feasible without large computational overhead.\nThis suggests that the proposed segmentation pipeline has further potential, although designing such decoders is beyond the scope of this work.\n\n![Refer to caption](2511.16301v1/seg_pipeline.png)",
+      "text_sha256": "98c2f164b193edb840f5e454b3171df435609b303e906b9539b9c625e9dc2dd9"
+     },
+     {
+      "span_id": "B-983109aa286bfc",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.16301v1#chars-47263-48214",
+      "text": "###### Proof.\n\nBy construction,\n‖ϕ⁡(p)−ϕ⁡(q)‖Λ−12=(p−q)⊤​(σs−2​I2)​(p−q)+(I⁡(p)−I⁡(q))⊤​(σr−2​Id)​(I⁡(p)−I⁡(q)).\\|\\phi(p)-\\phi(q)\\|\\_{\\Lambda^{-1}}^{2}=(p-q)^{\\!\\top}(\\sigma\\_{s}^{-2}I\\_{2})(p-q)+(I(p)-I(q))^{\\!\\top}(\\sigma\\_{r}^{-2}I\\_{d})(I(p)-I(q)).\nThus\n𝒢Λ​(ϕ⁡(p),ϕ⁡(q))=exp⁡(−‖p−q‖22​σs2)​exp⁡(−‖I⁡(p)−I⁡(q)‖22​σr2),\\mathcal{G}\\_{\\Lambda}(\\phi(p),\\phi(q))=\\exp\\!\\big(-\\tfrac{\\|p-q\\|^{2}}{2\\sigma\\_{s}^{2}}\\big)\\,\\exp\\!\\big(-\\tfrac{\\|I(p)-I(q)\\|^{2}}{2\\sigma\\_{r}^{2}}\\big),\nand substituting this identity in ([1](#S2.E1 \"Equation 1 ‣ 2.1 Joint Bilateral Upsampling ‣ 2 Related Works ‣ Upsample Anything: A Simple and Hard to Beat Baseline for Feature Upsampling\")) yields ([9](#S13.E9 \"Equation 9 ‣ Theorem 1 (JBU as a normalized Gaussian mixture in the joint domain). ‣ Notation. ‣ 13 Formal Relation Between Joint Bilateral Upsampling and Gaussian Splatting ‣ Upsample Anything: A Simple and Hard to Beat Baseline for Feature Upsampling\")).\n∎",
+      "text_sha256": "29aa2d049c8daafd376daaee49dd16ec68373d74cd20d696d6179979ec4d7d30"
+     },
+     {
+      "span_id": "B-4e22ff6995e2ee",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.16301v1#chars-54877-56369",
+      "text": "#### Consequences.\n\n(i) *Equivalence in the joint domain* (Thm. [1](#Thmtheorem1 \"Theorem 1 (JBU as a normalized Gaussian mixture in the joint domain). ‣ Notation. ‣ 13 Formal Relation Between Joint Bilateral Upsampling and Gaussian Splatting ‣ Upsample Anything: A Simple and Hard to Beat Baseline for Feature Upsampling\")) shows that JBU is a GS evaluation on (x,I⁡(x))(x,I(x)) with block-diagonal covariance.\n(ii) *Anisotropic generalization* ([12](#S13.E12 \"Equation 12 ‣ Theorem 2 (Specialization of GSJBU to JBU (isotropic limit)). ‣ Connection to standard 2D GS. ‣ 13 Formal Relation Between Joint Bilateral Upsampling and Gaussian Splatting ‣ Upsample Anything: A Simple and Hard to Beat Baseline for Feature Upsampling\")) recovers JBU in the isotropic limit (Thm. [2](#Thmtheorem2 \"Theorem 2 (Specialization of GSJBU to JBU (isotropic limit)). ‣ Connection to standard 2D GS. ‣ 13 Formal Relation Between Joint Bilateral Upsampling and Gaussian Splatting ‣ Upsample Anything: A Simple and Hard to Beat Baseline for Feature Upsampling\")), and enables per-center covariance learning (our GSJBU).\n(iii) *Discrete-to-continuous consistency* (Prop. [1](#Thmproposition1 \"Proposition 1 (Discrete-to-continuous convergence). ‣ Connection to standard 2D GS. ‣ 13 Formal Relation Betwe",
+      "text_sha256": "969905f74dccb2787b99c1ca743dd8c01ddf61f398854d9740dc219e98e424c9"
+     },
+     {
+      "span_id": "B-c73598c1664869",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.16301v1#chars-8997-10467",
+      "text": "### 2.2 Feature Upsampling\n\nA pioneering work in feature upsampling is FeatUp [[6](#bib.bib20)], which proposed two model-agnostic modules: FeatUp (JBU) and FeatUp (Implicit).\nThe former generalizes Joint Bilateral Upsampling (JBU) [[14](#bib.bib26)] to high-dimensional feature space by replacing the fixed Gaussian range kernel with a learnable MLP, while the latter parameterizes high-resolution features as an implicit function Fh​r=MLP​(x,I⁡(x))F\\_{hr}=\\text{MLP}(x,I(x)) optimized per image.\nWhile FeatUp effectively restores spatial detail from foundation features, it either requires dataset-level training or incurs long per-image optimization.\n\nSeveral follow-up studies further improved spatial fidelity through learnable upsamplers.\nLiFT [[22](#bib.bib21)] employed a lightweight U-Net-like upsampler with reconstruction loss,\nLoftUp [[10](#bib.bib22)] integrated RGB coordinates via cross-attention with pseudo-groundtruth supervision,\nand JAFAR [[3](#bib.bib23)] introduced joint-attention filtering for semantic–structural alignment.\nAnyUp [[23](#bib.bib24)] proposed resolution-conditioned kernels for scalable upsampling.\nDespite their strong performance, these methods rely on dataset-level training, which makes them less adaptive to unseen domains.\nThey often gener",
+      "text_sha256": "f886ecc9acdbbabf86fcfbf330959d05f8f2032fb4fa5425475c27e8316dd5d7"
+     }
+    ]
+   }
+  },
+  {
+   "pair_id": "C06-P2",
+   "source_key": "arxiv-2606.01207",
+   "source_distribution": "link_only",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C06]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nFeed-forward foundation models have significantly accelerated uncalibrated 3D reconstruction by inferring geometry in a single pass. However, their reliance on global self-attention introduces a severe quadratic computational bottleneck at high resolutions, forcing a compromise between inference efficiency and the preservation of fine-grained geometric details. To address this accuracy-efficiency trade-off, we introduce [NAME C06], an asymmetric dual-branch extension of VGGT that allocates global multi-view reasoning and high-resolution detail extraction to complementary streams. A low-resolution branch efficiently anchors global scene context and camera prediction, while a parallel Hybrid Detail Extractor (HDE) captures per-view, fine-grained structural cues directly from high-resolution inputs. By integrating multi-layer local convolutions with scalable linear attention, the HDE extracts structural cues across multiple scales. These multi-scale features are then progressively injected into the global low-resolution stream via a customized hierarchical fusion head, effectively refining th",
+      "text_sha256": "a609a2ebaa9d2644af49611c22c59a02f8d1b04650dcfe032d05b474ff74997c"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\ninformation, resulting in a significant loss of geometric precision. Concurrently, methods such as CARVE Xu et al. (2025) and DAGE Ngo et al. (2026) explore dual-stream architectures to divide the representation space, typically dedicating a standard transformer-based secondary branch to process high-resolution inputs. Yet, these transformer branches inherently lack the strong local inductive biases Xiao et al. (2021) necessary to capture sharp structural gradients. Furthermore, they typically process high-resolution features at a single, fixed scale. While complex geometric boundaries naturally vary in size and inherently demand varying receptive fields, the absence of a multi-scale extraction mechanism restricts their capacity to fully recover fine-grained details. This ultimately leads to blurred geometric edges and compromised structural fidelity.\n\nIn this paper, we propose a novel asymmetric dual-branch architecture, named [NAME C06], to resolve the conflict between computational scalability and geometric fidelity. Instead of directly passing hig",
+      "text_sha256": "e90085d149c38a38b13e70bcecd7d41c55edc83c96ee901aa55eb896073acf80"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n![img-0.jpeg](img-0.jpeg)\n\nFigure 1: Architectural pipeline of our proposed [NAME C06]. Our framework explicitly separates global geometry modeling and local detail extraction into two dedicated streams. A low-resolution main branch establishes robust global context and camera poses, while a concurrent high-resolution branch employs the Hybrid Detail Extractor (HDE) to capture fine-grained multi-scale structural cues without the quadratic cost of self-attention. These parallel representations are subsequently integrated via a customized Dense Prediction Transformer (DPT) head, which progressively injects high-frequency boundaries into the global stream.\n\nDespite their powerful geometric reasoning, these models are bottlenecked by the quadratic complexity of self-attention at high resolutions. While methods Feng et al. (2025); Yuan et al. (2026) like LiteVGGT Shu et al. (2025) and FastVGGT Shen et al. (2025) mitigate this via token compression, they inevitably discard fine-grained structural cues, leading to blurred edges. Dual-stream architectures suc",
+      "text_sha256": "5da8c882e69146da5ed13f765617e4272a12d667660e2fe8677cb2d975a01498"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\nresolution cues without increasing the spatial resolution of the global attention grid. Fig. 1 provides an overview.\n\n### 3.1 OVERALL ARCHITECTURE\n\nGiven a sequence of $S$ uncalibrated high-resolution images denoted as $\\mathbf{I}_{high} \\in \\mathbb{R}^{S \\times 3 \\times H \\times W}$, we strategically allocate the geometry estimation process across two complementary streams.\n\nFirst, a Low-Resolution Branch processes a downsampled sequence, $\\mathbf{I}_{low} \\in \\mathbb{R}^{S \\times 3 \\times \\frac{H}{2} \\times \\frac{W}{2}}$. This branch acts as the global geometric anchor, robustly extracting multi-view coherence, scene context, and relative camera poses with minimal computational overhead. Concurrently, a High-Resolution Branch processes the uncompressed sequence $\\mathbf{I}_{high}$ using our proposed Hybrid Detail Extractor (HDE). This branch is exclusively dedicated to retrieving fine-grained geometric details and sharp structural boundaries, strictly bypassing costly global attention mechanisms.\n\nFinally, the parallel feature streams from these two ",
+      "text_sha256": "58ea8db86d0eea398f50ac8dbd9a5c16aedee00a3b8286dd43f650cfb0bfa96a"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "**Local Inductive Bias Injection.** To explicitly capture high-frequency boundaries and fine-grained textures, we first inject essential local inductive biases into the feature space. Let LN(·) denote Layer Normalization and DWConv(·) represent the depth-wise convolution operation. The localized feature aggregation is formulated as:\n\n$$\\mathbf{F}_{conv}^{(l)} = \\text{DWConv} \\left( \\text{LN}(\\mathbf{F}_{in}^{(l)}) \\right) + \\mathbf{F}_{in}^{(l)} \\tag{2}$$\n\n**Scalable Linear Attention.** To efficiently approximate global receptive fields, we replace the canonical softmax attention with a linear attention variant Shen et al. (2021). By defining a feature map $\\phi(\\cdot)$ that acts as a positive activation function, the linear attention mechanism is expressed as:\n\n$$\\mathbf{F}_{attn}^{(l)} = \\frac{\\phi(\\mathbf{Q}) \\left( \\phi(\\mathbf{K})^\\top \\mathbf{V} \\right)}{\\phi(\\mathbf{Q}) \\sum_{j=1}^N \\phi(\\mathbf{K}_j)^\\top} \\tag{3}$$\n\nBy utilizing the associative property of matrix multiplication, we compute the right-side term $(\\phi(\\mathbf{K})^\\top \\mathbf{V})$ first. This crucial reordering reduces the computational complexity from $\\mathcal{O}(N^2 d)$ to $\\mathcal{O}(N d^2)$. Given that $d \\ll N$ for high-resolution inputs, this structural modification ensures linear sc",
+      "text_sha256": "ffca3d8c165eb26437d4a27ca45226acf01243ecb8572a049fcf6c21c996b3ce"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\n### 3.5 TRAINING DETAILS\n\nTraining Objectives. We optimize our framework end-to-end using a joint geometric loss:\n\n\\[\n\\mathcal {L} _ {\\text { total }} = \\mathcal {L} _ {\\text { pose }} + \\lambda_ {\\text { depth }} \\mathcal {L} _ {\\text { depth }} + \\lambda_ {\\text { pts }} \\mathcal {L} _ {\\text { pts }} \\tag {6}\n\\]\n\nHere,  \\( L_{pose} \\)  applies hierarchical weighting across iterative stages to enforce strict epipolar alignment. The dense losses ( \\( L_{depth} \\) ,  \\( L_{pts} \\) ) are confidence-aware, decoupling absolute geometric error minimization from confidence optimization. Crucially, both incorporate first-order spatial gradient matching to penalize blurriness, directly preserving the pristine high-frequency boundaries extracted by our high-resolution branch.\n\nImplementation Details. The low-resolution stream is initialized with pre-trained VGGT Wang et al. (2025a) weights, while the HDE branch and Multi-Scale DPT Head are initialized randomly. The input frames for the low-res stream are resized to a maximum dimension of 518 pixels, strictly m",
+      "text_sha256": "8f8b18f591a1f81d7e52a1e3fe7668b68184691ea1ce11888af2dbc55855422c"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "Table 2: Quantitative comparison of Camera Pose Estimation. The best and second-best results are highlighted with red and orange backgrounds, respectively. The Rank represents the unweighted average ranking across all evaluated metrics (lower is better).\n\n[tbl-1.html](tbl-1.html)\n\n![img-1.jpeg](img-1.jpeg)\n\nFigure 2: Qualitative comparison of multi-view depth estimation. Our method natively recovers sharp boundaries and intricate thin structures compared with VGGT and Pi3.\n\ncomplete systems and does not isolate architecture gains from input-resolution gains. As shown in Table 3, our method establishes new state-of-the-art results. Compared against both conventionally upsampled baselines and recent native high-resolution architectures Ngo et al. (2026), our framework demonstrates superior geometric fidelity by securing first place in 7 out of 10 metrics.\n\nQualitative comparisons shown in Fig. 2 further corroborate this advantage. Unlike the upsampled VGGT and Pi3 baselines, our natively decoded outputs successfully preserve sharp boundaries and intricate thin structures, including lamp cords and distant shelves, effectively eliminating severe over-smoothing artifacts.\n\nBeyond geometric accuracy, our dual-branch architecture maintains high computational efficiency at",
+      "text_sha256": "2782b956ec92aa549d47f03daece447b98a56688711798cd6f51a7a497a156e3"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "378\n379\n380\n381\n382\n383\n384\n385\n386\n387\n388\n389\n390\n391\n392\n393\n394\n395\n396\n397\n398\n399\n400\n401\n402\n403\n404\n405\n406\n407\n408\n409\n410\n411\n412\n413\n414\n415\n416\n417\n418\n419\n420\n421\n422\n423\n424\n425\n426\n427\n428\n429\n430\n431\n\nTable 3: Quantitative comparison of Multi-view Depth Estimation. The best and second-best results are highlighted with red and orange backgrounds, respectively. Abs Rel is lower-is-better (↓), while δ < 1.25 is higher-is-better (↑). Notably, DAGE and our method natively output at 1036p, whereas other baselines are bilinearly upsampled to 1036p for evaluation.\n\n[tbl-2.html](tbl-2.html)\n\n![img-2.jpeg](img-2.jpeg)\n\nFigure 3: Qualitative comparison of unprojected 3D point maps. We compare our natively decoded high resolution outputs against the VGGT baseline across diverse indoor and outdoor scenes.\n\nprotocols, predictions are aligned to ground truth via Umeyama Sim(3) and ICP refinement. We report Accuracy (ACC ↓), Completeness (Comp ↓), Normal Consistency (NC ↑), and the mean Rank across all metrics.\n\nAs shown in Table 4, our method achieves a mean Rank of 1.67, significantly outperforming foundation models like VGGT Wang et al. (2025a) and Pi3 Wang et al. (2025d). It leads on all three DTU metrics and on 7-Scenes ACC and Comp, while Pi3 performs better ",
+      "text_sha256": "f827107b131fd07ec3cc4761f3fb774e0bc47cad23c9fe2bca22935d6ae45904"
+     },
+     {
+      "span_id": "A-page-0009",
+      "page": 9,
+      "location": "target PDF page 9",
+      "text": "Table 4: Quantitative comparison of Point Map Estimation. The best and second-best results are highlighted with red and orange backgrounds, respectively. ACC and Comp metrics are lower-is-better (↓), while NC is higher-is-better (↑). The Rank represents the unweighted average ranking across all evaluated metrics (lower is better).\n\n[tbl-3.html](tbl-3.html)\n\n### 4.4 ABLATION STUDY\n\nTo explicitly validate our architectural contributions, we conduct an ablation study on the Hypersim Test set Roberts et al. (2021). As shown in Table 5, we evaluate variants across three geometric dimensions: Camera Pose (AUC30 ↑), Depth Error (Abs Rel Mean ↓), and Point Map Error (XYZ Abs Rel Mean ↓).\n\nEffectiveness of Multi-Scale Fusion. Fusing only the highest-resolution features (Single L1) or solely the lowest-resolution features (Single L5) yields suboptimal performance across all metrics. This confirms that aggregating all hierarchical levels is essential to balance broad geometric contexts with fine-grained local boundaries.\n\nThe Crucial Role of the Feature Injector. Restricting high-resolution fusion strictly to the final DPT Head (w/o Injector) maintains\n\n2D depth performance but noticeably degrades unprojected 3D point map accuracy, increasing the XYZ error from 0.2262 to 0.23",
+      "text_sha256": "aa6cf9238b5f74e1977e367564f31906bb6ba3808fb0d23a741b25f8ad8b2807"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n# REFERENCES\n\nEduardo Arnold, Jamie Wynn, Sara Vicente, Guillermo Garcia-Hernando, Aron Monszpart, Victor Prisacariu, Daniyar Turmukhambetov, and Eric Brachmann. Map-free visual relocalization: Metric pose relative to a single image. In European Conference on Computer Vision, pp. 690–708. Springer, 2022.\n\nArmen Avetisyan, Christopher Xie, Henry Howard-Jenkins, Tsun-Yi Yang, Samir Aroudj, Suvam Patra, Fuyang Zhang, Duncan Frost, Luke Holland, Campbell Orme, et al. Scenescript: Reconstructing scenes with an autoregressive structured language model. In European Conference on Computer Vision, pp. 247–263. Springer, 2024.\n\nAleksei Bochkovskii, Amaël Delaunoy, Hugo Germain, Marcel Santos, Yichao Zhou, Stephan R Richter, and Vladlen Koltun. Depth pro: Sharp monocular metric depth in less than a second. arXiv preprint arXiv:2410.02073, 2024.\n\nAljaz Bozic, Pablo Palafox, Justus Thies, Angela Dai, and Matthias Nießner. Transformerfusion: Monocular rgb scene reconstruction using transformers. Advances in Neural Information Processing Systems, 34:1403–1414, 2021.\n",
+      "text_sha256": "611d8c360da2f59fac3b943861993175dd343edeffa754d856a43a498d24b457"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nMike Roberts, Jason Ramapuram, Anurag Ranjan, Atulit Kumar, Miguel Angel Bautista, Nathan Paczan, Russ Webb, and Joshua M Susskind. Hypersim: A photorealistic synthetic dataset for holistic indoor scene understanding. In Proceedings of the IEEE/CVF international conference on computer vision, pp. 10912–10922, 2021.\n\nThomas Schops, Johannes L Schonberger, Silvano Galliani, Torsten Sattler, Konrad Schindler, Marc Pollefeys, and Andreas Geiger. A multi-view stereo benchmark with high-resolution images and multi-camera videos. In Proceedings of the IEEE conference on computer vision and pattern recognition, pp. 3260–3269, 2017.\n\nSteven M Seitz, Brian Curless, James Diebel, Daniel Scharstein, and Richard Szeliski. A comparison and evaluation of multi-view stereo reconstruction algorithms. In Proceedings of the Computer Vision and Pattern Recognition Conference, volume 1, pp. 519–528. IEEE, 2006.\n\nYou Shen, Zhipeng Zhang, Yansong Qu, Xiawu Zheng, Jiayi Ji, Shengchuan Zhang, and Liujuan Cao. Fastvggt: Training-free acceleration of visual geometry transformer.",
+      "text_sha256": "46d27f7cba4059679266b118bedf8630091aa496a80d7aa0623e1df18c131f26"
+     },
+     {
+      "span_id": "A-page-0013",
+      "page": 13,
+      "location": "target PDF page 13",
+      "text": "648\n649\n650\n651\n652\n653\n654\n655\n656\n657\n658\n659\n660\n661\n662\n663\n664\n665\n666\n667\n668\n669\n670\n671\n672\n673\n674\n675\n676\n677\n678\n679\n680\n681\n682\n683\n684\n685\n686\n687\n688\n689\n690\n691\n692\n693\n694\n695\n696\n697\n698\n699\n700\n701\n\nShuzhe Wang, Vincent Leroy, Yohann Cabon, Boris Chidlovskii, and Jerome Revaud. Dust3r: Geometric 3d vision made easy. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition, pp. 20697–20709, 2024.\n\nWenshan Wang, Delong Zhu, Xiangwei Wang, Yaoyu Hu, Yuheng Qiu, Chen Wang, Yafei Hu, Ashish Kapoor, and Sebastian Scherer. Tartanair: A dataset to push the limits of visual slam. In 2020 IEEE/RSJ International Conference on Intelligent Robots and Systems (IROS), pp. 4909–4916. IEEE, 2020.\n\nYifan Wang, Jianjun Zhou, Haoyi Zhu, Wenzheng Chang, Yang Zhou, Zizun Li, Junyi Chen, Jiangmiao Pang, Chunhua Shen, and Tong He. Pi3: Permutation-equivariant visual geometry learning. arXiv preprint arXiv:2507.13347, 2025d.\n\nHongchi Xia, Yang Fu, Sifei Liu, and Xiaolong Wang. Rgbd objects in the wild: Scaling real-world 3d object learning from rgb-d videos. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition, pp. 22378–22389, 2024.\n\nTete Xiao, Mannat Singh, Eric Mintun, Trevor Darrell, Piotr Dollár, and Ross Gi",
+      "text_sha256": "8e2aa159ab636d6f96d82f68e05b931a0fbeda60bde21275f2f1733bd56f6513"
+     },
+     {
+      "span_id": "A-page-0015",
+      "page": 15,
+      "location": "target PDF page 15",
+      "text": "756\n757\n758\n759\n760\n761\n762\n763\n764\n765\n766\n767\n768\n769\n770\n771\n772\n773\n774\n775\n776\n777\n778\n779\n780\n781\n782\n783\n784\n785\n786\n787\n788\n789\n790\n791\n792\n793\n794\n795\n796\n797\n798\n799\n800\n801\n802\n803\n804\n805\n806\n807\n808\n809\n\nresolution. We report the Area Under the Curve at a 30° threshold (AUC₃₀ ↑) for Co3Dv2 Reizenstein et al. (2021) and RealEstate10K Zhou et al. (2018), and Absolute Trajectory Error (ATE ↓) alongside Relative Pose Errors for both translation (RPE-t ↓) and rotation (RPE-r ↓) for the TUM-dynamics Zhao et al. (2022) and ScanNet++ Yeshwanth et al. (2023) benchmarks.\n\n### B.2 MULTI-VIEW DEPTH ESTIMATION\n\nUnlike global pose, dense depth estimation inherently requires strict pixel-to-pixel correspondence with the ground truth. To rigorously assess the preservation of fine-grained structural boundaries, all depth evaluations are standardized against the 1036p high-resolution Ground Truth (GT). Consequently, baseline methods must bilinearly upsample their 518p depth predictions to 1036p prior to evaluation. This upsampling process inevitably introduces interpolation artifacts and blurs geometric edges. In contrast, [NAME C06] directly outputs high-fidelity 1036p depth maps, ensuring geometric integrity without relying on post-processing upsampling. Following CU",
+      "text_sha256": "86ccc95984d6937b8236b92b5450cf18cca8fd0ee5ee2a1604693eb48a517193"
+     },
+     {
+      "span_id": "A-page-0017",
+      "page": 17,
+      "location": "target PDF page 17",
+      "text": "864\n865\n866\n867\n868\n869\n870\n871\n872\n873\n874\n875\n876\n877\n878\n879\n880\n881\n882\n883\n884\n885\n886\n887\n888\n889\n890\n891\n892\n893\n894\n895\n896\n897\n898\n899\n900\n901\n902\n903\n904\n905\n906\n907\n908\n909\n910\n911\n912\n913\n914\n915\n916\n917\n\n![img-23.jpeg](img-23.jpeg)\n\nFigure 5: Additional Qualitative Point Cloud Comparisons. We compare the dense 3D reconstruction results of our [NAME C06] against VGGT and Pi3 across diverse environments. The insets highlight specific high-frequency regions.\n\nglass can introduce localized depth ambiguities. Future work will explore integrating explicit 4D motion priors and material reasoning to elevate reconstruction fidelity in these complex edge cases.",
+      "text_sha256": "5fd2790d649264d4c77d38c13ba47b27d79c86ad4ea92717162a1b882f83dbff"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-fcde0ee66983ab",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": null,
+      "text_sha256": "fd4516e959b852a3f86175fe7f5af4343d6878780b5cf0f0c105799717953b28",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-3bf59b997339c5",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": null,
+      "text_sha256": "7d39a818eb0946d9a1223f61320d712878a0157c54fdcc46875913bebd1bd938",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-ad0025e144724e",
+      "page": 3,
+      "location": "B PDF page 3",
+      "text": null,
+      "text_sha256": "f524d59e20c92baf32dbb431c7b1581c6d99fd4603b0b7edc8b7a62a70a1828e",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-73f4221d330488",
+      "page": 6,
+      "location": "B PDF page 6",
+      "text": null,
+      "text_sha256": "22397b0a8b57ff4910f7803066d74f4933342b45d85aea9dfb0091f69ddc6961",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-cf1c49142c4fa3",
+      "page": null,
+      "location": "https://arxiv.org/html/2606.01207v1#chars-10970-11689",
+      "text": null,
+      "text_sha256": "a70511b345ec87cc9e02055e82e942d3a2cacd0d909d0db94459568ce6d39d5e",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-37f38229302f13",
+      "page": null,
+      "location": "https://arxiv.org/html/2606.01207v1#chars-12734-14702",
+      "text": null,
+      "text_sha256": "a37c5d508c03afb7f633ea6be24a38818663f8e2fc1cc271746a4aa902761865",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-380b6ea27ce942",
+      "page": null,
+      "location": "https://arxiv.org/html/2606.01207v1#chars-18987-19014",
+      "text": null,
+      "text_sha256": "67c49e3a6fc7047bb90db3cd466a69565e9501a38ccaf25645a73805ff7d0247",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-32524310dfa5a2",
+      "page": null,
+      "location": "https://arxiv.org/html/2606.01207v1#chars-1924-1943",
+      "text": null,
+      "text_sha256": "18f8b993fceb1a7535f9d0a0f4b58ea721117844a80f48a2844eba5cc8c9a8ef",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-f028a1731df3d4",
+      "page": null,
+      "location": "https://arxiv.org/html/2606.01207v1#chars-21361-22918",
+      "text": null,
+      "text_sha256": "a8ffd03e285d24aab4a72be617dcf36b22664ed45126d452a93706471c2801a0",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-15e679465aa0e2",
+      "page": null,
+      "location": "https://arxiv.org/html/2606.01207v1#chars-25148-26014",
+      "text": null,
+      "text_sha256": "e90afe30ab074ea48d7684778d4dbdee4251b5283ebf5ef0d39cb1ef892f1b88",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-09563cde5664c6",
+      "page": null,
+      "location": "https://arxiv.org/html/2606.01207v1#chars-338-1924",
+      "text": null,
+      "text_sha256": "ca306a522458ce297ae1c170c2c4b20039bb87f9feb8340637c29e2a4c5440f1",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-a0021333306514",
+      "page": null,
+      "location": "https://arxiv.org/html/2606.01207v1#chars-4125-5325",
+      "text": null,
+      "text_sha256": "02e9bb88b44df53f782321a6b114fb1d49d0468eb6cf25a9ae439c14d87770e8",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-fd03c6d8cd6ec7",
+      "page": null,
+      "location": "https://arxiv.org/html/2606.01207v1#chars-7704-8061",
+      "text": null,
+      "text_sha256": "9c7b88890f2ee6834c87fa768df5b27f5f4d6d3dd35b4edad548f4704fe9029e",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-e602f6e196d704",
+      "page": null,
+      "location": "https://arxiv.org/html/2606.01207v1#chars-9578-10382",
+      "text": null,
+      "text_sha256": "db7c2461c545dd808ad7d1c5d85d3bf0eb16cea271509f59f4e6e6f14a9b8d11",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     }
+    ]
+   }
+  }
+ ],
+ "note": "Target spans are anonymized excerpts of the target text; page numbers refer to the original target PDF, which is not distributed."
+}

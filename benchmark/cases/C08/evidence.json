@@ -1,0 +1,335 @@
+{
+ "case_id": "C08",
+ "pairs": [
+  {
+   "pair_id": "C08-P1",
+   "source_key": "arxiv-2510.25941",
+   "source_distribution": "link_only",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C08]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nPrinted circuit board (PCB) schematic design defines nearly all electronic hardware, but it remains mostly manual and expertise-intensive. While generative AI has advanced digital and analog IC design, PCB schematic generation from natural-language intent is largely unexplored. This paper presents [NAME C08], a large language model that generates editable PCB schematics from natural-language requests. The key challenge lies in the lack of an LLM-suited representation and a large-scale dataset. Current schematic formats are dominated by verbose, tool-specific syntax and geometry-heavy descriptions, making them difficult to generate reliably. We introduce a semantically grounded code representation that encodes schematic editing primitives with relative placement and pin-name-based wiring, transforming a geometry-driven generation problem into a semantics-driven matching task amenable to LLMs. We further construct a large-scale dataset of PCB schematics paired with user prompts via a human-agent collaborative pipeline that converts open-source hardware designs into our representation. Experiments show that [NAME C08] significantly ou",
+      "text_sha256": "5f31e792d9b94673adb37292ca89cf9f701b5983fdff28990c9594957a9f1f39"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\n![img-0.jpeg](img-0.jpeg)\n\nFigure 1: Overview of automated PCB design workflow. Based on the user request, [NAME C08] generates a PCB schematic design using custom code representations, which is then converted to a netlist for PCB layout and fabrication.\n\noperations such as selecting, placing, and connecting components. As shown in Figure 2, existing representations expose different limitations for language-model generation. Raw schematic files are dominated by verbose, tool-specific, and version-dependent syntax and metadata, requiring the model to generate low-level structural and geometric details in addition to circuit semantics. Image-based representations preserve visual appearance but are neither directly editable nor suitable for downstream electrical analysis. Netlists encode electrical connectivity but do not themselves specify component placement or wire geometry; these must be supplied separately to obtain a readable schematic. Consequently, generating an editable schematic requires a representation that captures both electrical intent and spat",
+      "text_sha256": "68a7ff8590c336eb06f8e3491a1eb206d980b6513f8cc458e98011c57d5b7737"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n![img-1.jpeg](img-1.jpeg)\n\nFigure 2: Comparison of schematic representations for LLM-based generation. Raw schematic files contain verbose metadata prone to formatting errors, while generated images are not machine-readable. Our code representation encodes editing primitives and pin-level semantics, transforming geometry prediction to a semantics-driven task amenable to LLM training.\n\n## 2 PRELIMINARIES AND RELATED WORK\n\n### 2.1 PCB SCHEMATIC DESIGN PROCESS\n\nThe PCB schematic design process conventionally depends on electronic design automation (EDA) software, including proprietary tools like Altium Designer (2025), Cadence Design Systems (2025), EAGLE (2023), and open-source alternatives like KiCad (2025). While these tools support similar schematic content and editing operations, they rely on different file formats. Throughout this paper, we use the KiCad schematic format because it is open source. A schematic contains three main item types: (1) component symbols representing physical circuit components such as chips, resistors, capacitors, (2) power",
+      "text_sha256": "c2969a25b66b8b9924692a586c844362269a7c032c5c5a51cb0df56cf03bb328"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\nsuo et al., 2024) converts netlists into LTSpice schematic files. These tasks support circuit digitization and visualization, but begin with an existing design whose connectivity is specified or recoverable from the input. Generating a schematic from a natural-language request additionally requires determining components and connections that satisfy the stated requirements. Zou et al. (2026) proposes a feedback-based iterative framework for PCB schematic design. However, it evaluates on only 23 tasks, relies on SKiDL graph rendering that fails to scale to larger schematics, and lacks an open-source model implementation for direct baseline comparison. Similarly, while Hasan et al. (2026) introduces an agentic benchmarking framework for LLM-aided circuit design, its codebase is not publicly available, precluding a fair empirical comparison. Both approaches interface general-purpose LLMs with programmatic circuit libraries such as SKiDL (SKiDL, 2025) via multi-turn iterative prompting. However, they rely on automatic graph visualization engines that lack ",
+      "text_sha256": "29dc51f0723228c6cded9b2e9cb2da7ec1157723ca8b4ac8f9284b2619d1345c"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "Table 1: Code representation illustration and ablation.\n\n[tbl-0.html](tbl-0.html)\n\ndef add_schematic_symbol(symbol_lib, symbol_name, x, y, ref, value,\nrotation, mirror)\ndef add_label(label_pos, label_text, label_ref, label_type, text_orient):\ndef get_pin_location(symbol_ref, pin_name):\ndef connect_pins(symbol_a, pin_a, symbol_b, pin_b):\ndef write_out_all_wires():\n\nadd_schematic_symbol() places a symbol with the given name from a symbol library on the assigned location with optional rotating and mirroring operations, meanwhile assigning a unique reference name and an optional value string. add_label() places net labels with given text on specific locations and orientation, meanwhile allowing specifying label types (e.g., input, output, bidirectional) and a unique label reference ID. get_pin_location() gets the location of a specific pin, queried by symbol reference name and the pin name. For power symbols and net labels that have one pin only, the pin name is set as default to '1'. connect_pins() connects two pins according to the symbol reference names and pin names of the two pins. Finally, write_out_all_wires() writes out all wires to a KiCad schematic file with specified connections.\n\nLLMs' ability to understand spatial relationships is relatively limited (Yamad",
+      "text_sha256": "0675d2ccad4797d6128754a55fbabc78646412dc6b78b171a0ad13cce0786bf2"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\n![img-2.jpeg](img-2.jpeg)\n\nFigure 3: Pipeline of constructing the schematic dataset from online open-source PCB designs using LLM sketching and human correction.\n\nby capturing key editing operations, including relative-coordinate placement and pin-name-based connectivity, which enables more structured and semantically meaningful schematic generation.\n\n### 3.2 CONSTRUCTING THE SCHEMATIC DESIGN DATASET\n\nMost online PCB designs provide an image of the schematic design instead of editable source files, which avoids issues with EDA tool compatibility and version discrepancies. However, it brings challenges to constructing a dataset based on schematic files. Thus, we propose a pipeline shown in Figure 3 to convert the design image to editable schematic and corresponding code representations. We first introduce an agentic-sketch module to acquire a draft (Section 3.2.1), which is later annotated by human engineers to fix possible errors. Then, we develop a schematic-to-code converter to translate the aligned schematic into code representations to form the dat",
+      "text_sha256": "460c90a79aa342c437d252533a2f747f21b3768bb9efc834f6bfc5a239810441"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\n### 3.3 FINE-TUNING AND PROMPTED GENERATION\n\nWe separately fine-tune GPT-oss-20b and Qwen3.8-27B to generate schematic construction programs from natural-language requests. Both backbones use the same underlying request–program pairs, but receive backbone-specific synthetic chain-of-thought (CoT) supervision. Specifically, each backbone generates CoT traces for its own training examples, and these traces are incorporated into the corresponding training sequences. The CoT tokens contribute to the supervised training loss, providing explicit supervision for intermediate reasoning alongside schematic program generation.\n\nAt inference time, each model produces a construction program in a single generation attempt, after which the program is executed to obtain an editable schematic with no iterative generation or execution-feedback repair applied. Detailed training settings are provided in Section 6.5.\n\n## 4 EXPERIMENTAL VALIDATION\n\n### 4.1 EXPERIMENT SETUP\n\nDataset details. Our proposed dataset contains 2105 KiCad schematics from 1390 unique designs. The t",
+      "text_sha256": "aeb9e3a1cc49d5cf6a9d27400554516aaee01c9ea2300fcf86625a82e6016ae2"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "Table 2: Performance comparison of [NAME C08] finetuned with different base models and representations.\n\n[tbl-1.html](tbl-1.html)\n\nBaselines. To isolate the contribution of each design choice in our representation, we compare [NAME C08], trained with the proposed Code-L1 representation, against ablation variants: Code-L2 (w/o relative coordinates) and Code-L3 (w/o relative coordinates and pin-name connectivity), each finetuned from GPT-oss-20b and Qwen-3.8-27B on the same dataset. To assess explicit reasoning supervision, we additionally train a CoT masked variant for each backbone. This variant retains the CoT traces in the training sequences but excludes their tokens from the supervised loss. We compare the resulting models with prompted general-purpose LLMs. We also include the raw KiCad schematic file representation, which directly uses the text of the KiCad schematic file as training data. Moreover, using the testing set of the proposed dataset as the benchmark, we compare [NAME C08] with three larger LLMs, including GPT-5.5 (OpenAI, 2026), GPT-5.2 (OpenAI, 2025), and Grok-4 (xAI, 2025). All models are evaluated in multiple-run setting on identical test inputs. To ensure fairness, we provide uniform prompts in the same test set, including schematic representation descript",
+      "text_sha256": "38c38d6c8c93ef65522ae3558a4928cd5c0726b07351f453d6c69cae0591da3e"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n## AI USE STATEMENT\n\nWe used LLMs to assist with language and LaTeX polishing, synthetic dataset construction. The authors take full responsibility for the final manuscript, methods, results, and claims.\n\n## ETHICS STATEMENT\n\n[NAME C08] aims to make PCB schematic design more accessible, while recognizing that errors in generated circuits can cause hardware failures or physical harm. The reported execution checks, connectivity metrics, and expert assessments do not establish safety or reliability in physical deployment. Generated designs therefore require qualified engineering review and application-appropriate electrical validation before fabrication or use, particularly in safety-critical settings. The dataset is derived from publicly available hardware designs, including SparkFun designs described in the paper as licensed under CC BY-SA 4.0; redistribution of source and derived assets must preserve applicable attribution and license obligations. The study does not involve external human participants or the collection of personal or sensitive data; expert",
+      "text_sha256": "7da1896e669ef25209a5c7f58a254f46fb6a0c235940dc0697ce8f7148d42f3c"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nShai Shalev-Shwartz and Shai Ben-David. Understanding machine learning: From theory to algorithms. Cambridge university press, 2014.\n\nSiemens Digital Industries Software. Design automation. [URL REDACTED] 2025. Accessed: 2025-09-03.\n\nSKiDL. Skidl, 2025. URL [URL REDACTED] Accessed: 2025-09-18.\n\nSparkFun Electronics. Sparkfun electronics, 2025. URL [URL REDACTED] Accessed: 2025-09-13.\n\nShailja Thakur, Baleegh Ahmad, Hammond Pearce, Benjamin Tan, Brendan Dolan-Gavitt, Ramesh Karri, and Siddharth Garg. Verigen: A large language model for verilog code generation. ACM Transactions on Design Automation of Electronic Systems, 29(3):1–31, 2024.\n\nYidong Tian, Andrew J. Forsyth, Zhuoru Li, and Cheng Zhang. A component manipulation algorithm to enable design automation of power electronic pcbs. In 2021 IEEE Design Methodologies Conference (DMC), pp. 1–6, 2021. doi: 10.1109/DMC51747.2021.9529938.\n\nYidong Tian, Andrew J. Forsyth, Zhuoru Li, and Cheng Zh",
+      "text_sha256": "f6e48423e34b17d16260ce3bf37b6f801f4b960377274edd777746a2128a579e"
+     },
+     {
+      "span_id": "A-page-0014",
+      "page": 14,
+      "location": "target PDF page 14",
+      "text": "702\n703\n704\n705\n706\n707\n708\n709\n710\n711\n712\n713\n714\n715\n716\n717\n718\n719\n720\n721\n722\n723\n724\n725\n726\n727\n728\n729\n730\n731\n732\n733\n734\n735\n736\n737\n738\n739\n740\n741\n742\n743\n744\n745\n746\n747\n748\n749\n750\n751\n752\n753\n754\n755\n\nadd_schematic_symbol(symbol_lib=\"power\", symbol_name=\"+1V8\", pos_x=center_x_1 + (13), pos_y=center_y_1 + (5), reference=\"#PWR_1V1\", value=\"+1V8\", rotation=0, mirror=\"None\")\nadd_schematic_symbol(symbol_lib=\"Connector\", symbol_name=\"TestPoint\", pos_x=center_x_1 + (16), pos_y=center_y_1 + (2), reference=\"TP1\", value=\"TP1\", rotation=270, mirror=\"x\")\n\n### Placing all global labels in the Schematic and connect them to the neighbor pin ###\n\n### Connecting all wires in the Schematic ###\n\n# Connecting #PWR_1V1 pin +1V8 (Pin ID 1 -- Name +1V8) to TP1 pin TP1 (Pin ID 1 -- Name TP1)\nconnect_pins(\"#PWR_1V1\", \"+1V8\", \"TP1\", \"TP1\")\n\n# Connecting #PWR1 pin VIN (Pin ID 1 -- Name VIN) to C1 pin 1 (Pin ID 1 -- Name None)\nconnect_pins(\"#PWR1\", \"VIN\", \"C1\", \"1\")\n\n# Connecting U1 pin VOUT (Pin ID 5 -- Name VOUT) to #PWR_1V1 pin +1V8 (Pin ID 1 -- Name +1V8)\nconnect_pins(\"U1\", \"VOUT\", \"#PWR_1V1\", \"+1V8\")\n\n# Connecting #PWR1 pin VIN (Pin ID 1 -- Name VIN) to U1 pin VIN (Pin ID 1 -- Name VIN)\nconnect_pins(\"#PWR1\", \"VIN\", \"U1\", \"VIN\")\n\n# Connecting C1 pin 2 (Pin ID 2 -- Name Non",
+      "text_sha256": "5d43c30c508be0b22dad975b136b30d6a3ec99bc359080064c924ae4b4f418c7"
+     },
+     {
+      "span_id": "A-page-0017",
+      "page": 17,
+      "location": "target PDF page 17",
+      "text": "864\n865\n866\n867\n868\n869\n870\n871\n872\n873\n874\n875\n876\n877\n878\n879\n880\n881\n882\n883\n884\n885\n886\n887\n888\n889\n890\n891\n892\n893\n894\n895\n896\n897\n898\n899\n900\n901\n902\n903\n904\n905\n906\n907\n908\n909\n910\n911\n912\n913\n914\n915\n916\n917\n\n# Auto-generated schematic symbols\nimport sys\nimport os\n\n# Get project path and import kicad schematic interface\nPROJECT_PATH = os.environ['PROJECT_PATH']\nsys.path.append(PROJECT_PATH)\nfrom modules.kicad_sch_interface import *\n\n### Placing center symbol 1 : Regulator_Linear:AP2112K-1.8###\ncenter_x_1, center_y_1 = 120.650, 104.590\nadd_schematic_symbol(symbol_lib=\"Regulator_Linear\", symbol_name=\"AP2112K-1.8\", pos_x=center_x_1, pos_y=center_y_1, reference=\"U1\", value=\"AP2112K-1.8\", rotation=0, mirror=\"None\")\n\n### Placing other symbols in the Schematic with respect to the center symbol 1###\nadd_schematic_symbol(symbol_lib=\"power\", symbol_name=\"VAA\", pos_x=100.33, pos_y=109.67, reference=\"#PWR1\", value=\"VIN\", rotation=0, mirror=\"None\")\nadd_schematic_symbol(symbol_lib=\"Device\", symbol_name=\"C\", pos_x=100.33, pos_y=99.51, reference=\"C4\", value=\"luF\", rotation=0, mirror=\"None\")\nadd_schematic_symbol(symbol_lib=\"power\", symbol_name=\"GND\", pos_x=100.33, pos_y=80.46, reference=\"#PWR_C4\", value=\"GND\", rotation=0, mirror=\"None\")\nadd_schematic_symbol(symbol_lib=\"powe",
+      "text_sha256": "c926a66ea7566540e84e449b772b1ba449352db462185438626a2f0a4164e97b"
+     },
+     {
+      "span_id": "A-page-0019",
+      "page": 19,
+      "location": "target PDF page 19",
+      "text": "972\n973\n974\n975\n976\n977\n978\n979\n980\n981\n982\n983\n984\n985\n986\n987\n988\n989\n990\n991\n992\n993\n994\n995\n996\n997\n998\n999\n1000\n1001\n1002\n1003\n1004\n1005\n1006\n1007\n1008\n1009\n1010\n1011\n1012\n1013\n1014\n1015\n1016\n1017\n1018\n1019\n1020\n1021\n1022\n1023\n1024\n1025\n\n![img-4.jpeg](img-4.jpeg)\n\nFigure 5: Histogram of the complexity distribution of the dataset\n\nTable 5: Component-symbol overlap between the main and GitHub datasets after excluding universal resistor, capacitor, and inductor symbols. Overlap percentages use the GitHub counts as denominators.\n\n[tbl-4.html](tbl-4.html)\n\nThe remaining overlaps mostly consist of commonly used symbols in the KiCad library, such as switches and connectors. These results show that most non-universal component identities and instances in the GitHub dataset are absent from the main dataset, supporting evaluation on a largely different component vocabulary. This component-level audit does not, by itself, rule out overlap in circuit structures or reuse of learned circuit patterns.\n\n### 6.5 TRAINING SETUP\n\n### 6.6 EXPERT EVALUATION RUBRIC\n\nEvaluators review the user request, the generated schematic, the reference schematic, and relevant component datasheets when necessary. The reference schematic represents one valid implementation rather than the only ac",
+      "text_sha256": "d15a664567097650df88c0bc4531afdfcd990a789c12df6af21217163dfd9636"
+     },
+     {
+      "span_id": "A-page-0021",
+      "page": 21,
+      "location": "target PDF page 21",
+      "text": "1080\n1081\n1082\n1083\n1084\n1085\n1086\n1087\n1088\n1089\n1090\n1091\n1092\n1093\n1094\n1095\n1096\n1097\n1098\n1099\n1100\n1101\n1102\n1103\n1104\n1105\n1106\n1107\n1108\n1109\n1110\n1111\n1112\n1113\n1114\n1115\n1116\n1117\n1118\n1119\n1120\n1121\n1122\n1123\n1124\n1125\n1126\n1127\n1128\n1129\n1130\n1131\n1132\n1133\n\n### 6.7 EXAMPLES OF GENERATION\n\n![img-5.jpeg](img-5.jpeg)\n\n(a) User Request--\"I want a 1uF capacitor connected between +5V and GND for power supply decoupling.\"\n\n![img-6.jpeg](img-6.jpeg)\n\n(b) User Request--\"I want a 3.3V AVR ISP-6 programming header exposing MISO, MOSI/SDA, SCK/SCL, RESET, VCC, and GND to program a microcontroller.\"\n\nFigure 6: Examples of using [NAME C08] to generate schematic based on users' requests\n\n![img-7.jpeg](img-7.jpeg)\n\n(a) Novel User Request--\"I would like to add a USB-B connector interface in the schematic, exporting two labels, namely D+ and D-.\"\n\n![img-8.jpeg](img-8.jpeg)\n\n(b) Novel User Request--\"I would like a voltage regulator module with an 5V output, using AP2204K.\"\n\nFigure 7: Examples of using [NAME C08] to generate a schematic based on users' requests over unseen chips.",
+      "text_sha256": "d872ee33dc9a01f5861f686679168b74f265003052c69f533eced7b675e990e4"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-16f7d61bd53f87",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": null,
+      "text_sha256": "83eec57d631b027a70790555804c09f66ad9d4aba9223c82d4408789a53a20ad",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-b269235371af3d",
+      "page": 4,
+      "location": "B PDF page 4",
+      "text": null,
+      "text_sha256": "b1e36e1f3e5d426f5a7ae1cafab7215910122183c510f7f619d307a4724c22ce",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-1d21202f8b85dc",
+      "page": 25,
+      "location": "B PDF page 25",
+      "text": null,
+      "text_sha256": "e17459c9ad7173b7d61a46539b055398f9c6388028bf4adc5270db8f7324926f",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ea5077d31680f9",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.25941v1#chars-12336-12903",
+      "text": null,
+      "text_sha256": "2fbfc9aa7bfbd906a33022a3c10cb1691bf63368a6d9095e6fb1e0ac18a7e15a",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-fc4cf1616a07bc",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.25941v1#chars-15932-16665",
+      "text": null,
+      "text_sha256": "4da71b88182b2b03fdb5d7e0b87eb9fdabc7a95d44b175946b6f1b766180c963",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-5e45d8b71011b7",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.25941v1#chars-1598-7118",
+      "text": null,
+      "text_sha256": "57066543630b6eb23af3552430e52c8d94112b899d3a1cadf05f9c9c9b841a14",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-0bac9acc8515fd",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.25941v1#chars-16665-18609",
+      "text": null,
+      "text_sha256": "56912cc1a9c0d927256d68c502740e5eeffa1e54508dafb0f7cb139df3003358",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-bd4e66b07d63da",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.25941v1#chars-29087-29695",
+      "text": null,
+      "text_sha256": "d734955e2c5a3ef9fae79ebd34e1afe214dc11277040e765c2ec1190956f71b1",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-3d9ded87c2c5a4",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.25941v1#chars-36611-36626",
+      "text": null,
+      "text_sha256": "65b72d86eeeb214ab8ca5fd24cb7cd7773e58084e95b670040df03e21e8c6fa7",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-0eef295ab8b95e",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.25941v1#chars-404-1598",
+      "text": null,
+      "text_sha256": "28e5008e13b410af8ff988071f700f8ad2b27ddcfed7e41a690ad4b0710e74ce",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-15917beb9faf4e",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.25941v1#chars-45306-45563",
+      "text": null,
+      "text_sha256": "99ca1eb5493035dda99f3e5ee1b70c67790cdb8831ab0d5a9f3ddeecbcda7a4b",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-d9dca91214ca7b",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.25941v1#chars-52205-53195",
+      "text": null,
+      "text_sha256": "e9649131c42b188622b08101e718f71042de18bf1fcd9ad7fe16d84089f181f4",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-e94c5e4c885da8",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.25941v1#chars-62703-63974",
+      "text": null,
+      "text_sha256": "49a630cbd7e3a37e6edbc2a76d42751381cbfc4ff56d045eb94997ec936542fd",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-b7891502ff97ae",
+      "page": null,
+      "location": "https://arxiv.org/html/2510.25941v1#chars-72577-73916",
+      "text": null,
+      "text_sha256": "76c21ece4db92fa4c44837207e98e648b4a3827ea2e03023fc12d1c6c96cc59d",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     }
+    ]
+   }
+  },
+  {
+   "pair_id": "C08-P2",
+   "source_key": "withheld-1",
+   "source_distribution": "withheld",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C08]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nPrinted circuit board (PCB) schematic design defines nearly all electronic hardware, but it remains mostly manual and expertise-intensive. While generative AI has advanced digital and analog IC design, PCB schematic generation from natural-language intent is largely unexplored. This paper presents [NAME C08], a large language model that generates editable PCB schematics from natural-language requests. The key challenge lies in the lack of an LLM-suited representation and a large-scale dataset. Current schematic formats are dominated by verbose, tool-specific syntax and geometry-heavy descriptions, making them difficult to generate reliably. We introduce a semantically grounded code representation that encodes schematic editing primitives with relative placement and pin-name-based wiring, transforming a geometry-driven generation problem into a semantics-driven matching task amenable to LLMs. We further construct a large-scale dataset of PCB schematics paired with user prompts via a human-agent collaborative pipeline that converts open-source hardware designs into our representation. Experiments show that [NAME C08] significantly ou",
+      "text_sha256": "5f31e792d9b94673adb37292ca89cf9f701b5983fdff28990c9594957a9f1f39"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\n![img-0.jpeg](img-0.jpeg)\n\nFigure 1: Overview of automated PCB design workflow. Based on the user request, [NAME C08] generates a PCB schematic design using custom code representations, which is then converted to a netlist for PCB layout and fabrication.\n\noperations such as selecting, placing, and connecting components. As shown in Figure 2, existing representations expose different limitations for language-model generation. Raw schematic files are dominated by verbose, tool-specific, and version-dependent syntax and metadata, requiring the model to generate low-level structural and geometric details in addition to circuit semantics. Image-based representations preserve visual appearance but are neither directly editable nor suitable for downstream electrical analysis. Netlists encode electrical connectivity but do not themselves specify component placement or wire geometry; these must be supplied separately to obtain a readable schematic. Consequently, generating an editable schematic requires a representation that captures both electrical intent and spat",
+      "text_sha256": "68a7ff8590c336eb06f8e3491a1eb206d980b6513f8cc458e98011c57d5b7737"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n![img-1.jpeg](img-1.jpeg)\n\nFigure 2: Comparison of schematic representations for LLM-based generation. Raw schematic files contain verbose metadata prone to formatting errors, while generated images are not machine-readable. Our code representation encodes editing primitives and pin-level semantics, transforming geometry prediction to a semantics-driven task amenable to LLM training.\n\n## 2 PRELIMINARIES AND RELATED WORK\n\n### 2.1 PCB SCHEMATIC DESIGN PROCESS\n\nThe PCB schematic design process conventionally depends on electronic design automation (EDA) software, including proprietary tools like Altium Designer (2025), Cadence Design Systems (2025), EAGLE (2023), and open-source alternatives like KiCad (2025). While these tools support similar schematic content and editing operations, they rely on different file formats. Throughout this paper, we use the KiCad schematic format because it is open source. A schematic contains three main item types: (1) component symbols representing physical circuit components such as chips, resistors, capacitors, (2) power",
+      "text_sha256": "c2969a25b66b8b9924692a586c844362269a7c032c5c5a51cb0df56cf03bb328"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\nsuo et al., 2024) converts netlists into LTSpice schematic files. These tasks support circuit digitization and visualization, but begin with an existing design whose connectivity is specified or recoverable from the input. Generating a schematic from a natural-language request additionally requires determining components and connections that satisfy the stated requirements. Zou et al. (2026) proposes a feedback-based iterative framework for PCB schematic design. However, it evaluates on only 23 tasks, relies on SKiDL graph rendering that fails to scale to larger schematics, and lacks an open-source model implementation for direct baseline comparison. Similarly, while Hasan et al. (2026) introduces an agentic benchmarking framework for LLM-aided circuit design, its codebase is not publicly available, precluding a fair empirical comparison. Both approaches interface general-purpose LLMs with programmatic circuit libraries such as SKiDL (SKiDL, 2025) via multi-turn iterative prompting. However, they rely on automatic graph visualization engines that lack ",
+      "text_sha256": "29dc51f0723228c6cded9b2e9cb2da7ec1157723ca8b4ac8f9284b2619d1345c"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "Table 1: Code representation illustration and ablation.\n\n[tbl-0.html](tbl-0.html)\n\ndef add_schematic_symbol(symbol_lib, symbol_name, x, y, ref, value,\nrotation, mirror)\ndef add_label(label_pos, label_text, label_ref, label_type, text_orient):\ndef get_pin_location(symbol_ref, pin_name):\ndef connect_pins(symbol_a, pin_a, symbol_b, pin_b):\ndef write_out_all_wires():\n\nadd_schematic_symbol() places a symbol with the given name from a symbol library on the assigned location with optional rotating and mirroring operations, meanwhile assigning a unique reference name and an optional value string. add_label() places net labels with given text on specific locations and orientation, meanwhile allowing specifying label types (e.g., input, output, bidirectional) and a unique label reference ID. get_pin_location() gets the location of a specific pin, queried by symbol reference name and the pin name. For power symbols and net labels that have one pin only, the pin name is set as default to '1'. connect_pins() connects two pins according to the symbol reference names and pin names of the two pins. Finally, write_out_all_wires() writes out all wires to a KiCad schematic file with specified connections.\n\nLLMs' ability to understand spatial relationships is relatively limited (Yamad",
+      "text_sha256": "0675d2ccad4797d6128754a55fbabc78646412dc6b78b171a0ad13cce0786bf2"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\n![img-2.jpeg](img-2.jpeg)\n\nFigure 3: Pipeline of constructing the schematic dataset from online open-source PCB designs using LLM sketching and human correction.\n\nby capturing key editing operations, including relative-coordinate placement and pin-name-based connectivity, which enables more structured and semantically meaningful schematic generation.\n\n### 3.2 CONSTRUCTING THE SCHEMATIC DESIGN DATASET\n\nMost online PCB designs provide an image of the schematic design instead of editable source files, which avoids issues with EDA tool compatibility and version discrepancies. However, it brings challenges to constructing a dataset based on schematic files. Thus, we propose a pipeline shown in Figure 3 to convert the design image to editable schematic and corresponding code representations. We first introduce an agentic-sketch module to acquire a draft (Section 3.2.1), which is later annotated by human engineers to fix possible errors. Then, we develop a schematic-to-code converter to translate the aligned schematic into code representations to form the dat",
+      "text_sha256": "460c90a79aa342c437d252533a2f747f21b3768bb9efc834f6bfc5a239810441"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\n### 3.3 FINE-TUNING AND PROMPTED GENERATION\n\nWe separately fine-tune GPT-oss-20b and Qwen3.8-27B to generate schematic construction programs from natural-language requests. Both backbones use the same underlying request–program pairs, but receive backbone-specific synthetic chain-of-thought (CoT) supervision. Specifically, each backbone generates CoT traces for its own training examples, and these traces are incorporated into the corresponding training sequences. The CoT tokens contribute to the supervised training loss, providing explicit supervision for intermediate reasoning alongside schematic program generation.\n\nAt inference time, each model produces a construction program in a single generation attempt, after which the program is executed to obtain an editable schematic with no iterative generation or execution-feedback repair applied. Detailed training settings are provided in Section 6.5.\n\n## 4 EXPERIMENTAL VALIDATION\n\n### 4.1 EXPERIMENT SETUP\n\nDataset details. Our proposed dataset contains 2105 KiCad schematics from 1390 unique designs. The t",
+      "text_sha256": "aeb9e3a1cc49d5cf6a9d27400554516aaee01c9ea2300fcf86625a82e6016ae2"
+     },
+     {
+      "span_id": "A-page-0008",
+      "page": 8,
+      "location": "target PDF page 8",
+      "text": "Table 2: Performance comparison of [NAME C08] finetuned with different base models and representations.\n\n[tbl-1.html](tbl-1.html)\n\nBaselines. To isolate the contribution of each design choice in our representation, we compare [NAME C08], trained with the proposed Code-L1 representation, against ablation variants: Code-L2 (w/o relative coordinates) and Code-L3 (w/o relative coordinates and pin-name connectivity), each finetuned from GPT-oss-20b and Qwen-3.8-27B on the same dataset. To assess explicit reasoning supervision, we additionally train a CoT masked variant for each backbone. This variant retains the CoT traces in the training sequences but excludes their tokens from the supervised loss. We compare the resulting models with prompted general-purpose LLMs. We also include the raw KiCad schematic file representation, which directly uses the text of the KiCad schematic file as training data. Moreover, using the testing set of the proposed dataset as the benchmark, we compare [NAME C08] with three larger LLMs, including GPT-5.5 (OpenAI, 2026), GPT-5.2 (OpenAI, 2025), and Grok-4 (xAI, 2025). All models are evaluated in multiple-run setting on identical test inputs. To ensure fairness, we provide uniform prompts in the same test set, including schematic representation descript",
+      "text_sha256": "38c38d6c8c93ef65522ae3558a4928cd5c0726b07351f453d6c69cae0591da3e"
+     },
+     {
+      "span_id": "A-page-0010",
+      "page": 10,
+      "location": "target PDF page 10",
+      "text": "486\n487\n488\n489\n490\n491\n492\n493\n494\n495\n496\n497\n498\n499\n500\n501\n502\n503\n504\n505\n506\n507\n508\n509\n510\n511\n512\n513\n514\n515\n516\n517\n518\n519\n520\n521\n522\n523\n524\n525\n526\n527\n528\n529\n530\n531\n532\n533\n534\n535\n536\n537\n538\n539\n\n## AI USE STATEMENT\n\nWe used LLMs to assist with language and LaTeX polishing, synthetic dataset construction. The authors take full responsibility for the final manuscript, methods, results, and claims.\n\n## ETHICS STATEMENT\n\n[NAME C08] aims to make PCB schematic design more accessible, while recognizing that errors in generated circuits can cause hardware failures or physical harm. The reported execution checks, connectivity metrics, and expert assessments do not establish safety or reliability in physical deployment. Generated designs therefore require qualified engineering review and application-appropriate electrical validation before fabrication or use, particularly in safety-critical settings. The dataset is derived from publicly available hardware designs, including SparkFun designs described in the paper as licensed under CC BY-SA 4.0; redistribution of source and derived assets must preserve applicable attribution and license obligations. The study does not involve external human participants or the collection of personal or sensitive data; expert",
+      "text_sha256": "7da1896e669ef25209a5c7f58a254f46fb6a0c235940dc0697ce8f7148d42f3c"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nShai Shalev-Shwartz and Shai Ben-David. Understanding machine learning: From theory to algorithms. Cambridge university press, 2014.\n\nSiemens Digital Industries Software. Design automation. [URL REDACTED] 2025. Accessed: 2025-09-03.\n\nSKiDL. Skidl, 2025. URL [URL REDACTED] Accessed: 2025-09-18.\n\nSparkFun Electronics. Sparkfun electronics, 2025. URL [URL REDACTED] Accessed: 2025-09-13.\n\nShailja Thakur, Baleegh Ahmad, Hammond Pearce, Benjamin Tan, Brendan Dolan-Gavitt, Ramesh Karri, and Siddharth Garg. Verigen: A large language model for verilog code generation. ACM Transactions on Design Automation of Electronic Systems, 29(3):1–31, 2024.\n\nYidong Tian, Andrew J. Forsyth, Zhuoru Li, and Cheng Zhang. A component manipulation algorithm to enable design automation of power electronic pcbs. In 2021 IEEE Design Methodologies Conference (DMC), pp. 1–6, 2021. doi: 10.1109/DMC51747.2021.9529938.\n\nYidong Tian, Andrew J. Forsyth, Zhuoru Li, and Cheng Zh",
+      "text_sha256": "f6e48423e34b17d16260ce3bf37b6f801f4b960377274edd777746a2128a579e"
+     },
+     {
+      "span_id": "A-page-0014",
+      "page": 14,
+      "location": "target PDF page 14",
+      "text": "702\n703\n704\n705\n706\n707\n708\n709\n710\n711\n712\n713\n714\n715\n716\n717\n718\n719\n720\n721\n722\n723\n724\n725\n726\n727\n728\n729\n730\n731\n732\n733\n734\n735\n736\n737\n738\n739\n740\n741\n742\n743\n744\n745\n746\n747\n748\n749\n750\n751\n752\n753\n754\n755\n\nadd_schematic_symbol(symbol_lib=\"power\", symbol_name=\"+1V8\", pos_x=center_x_1 + (13), pos_y=center_y_1 + (5), reference=\"#PWR_1V1\", value=\"+1V8\", rotation=0, mirror=\"None\")\nadd_schematic_symbol(symbol_lib=\"Connector\", symbol_name=\"TestPoint\", pos_x=center_x_1 + (16), pos_y=center_y_1 + (2), reference=\"TP1\", value=\"TP1\", rotation=270, mirror=\"x\")\n\n### Placing all global labels in the Schematic and connect them to the neighbor pin ###\n\n### Connecting all wires in the Schematic ###\n\n# Connecting #PWR_1V1 pin +1V8 (Pin ID 1 -- Name +1V8) to TP1 pin TP1 (Pin ID 1 -- Name TP1)\nconnect_pins(\"#PWR_1V1\", \"+1V8\", \"TP1\", \"TP1\")\n\n# Connecting #PWR1 pin VIN (Pin ID 1 -- Name VIN) to C1 pin 1 (Pin ID 1 -- Name None)\nconnect_pins(\"#PWR1\", \"VIN\", \"C1\", \"1\")\n\n# Connecting U1 pin VOUT (Pin ID 5 -- Name VOUT) to #PWR_1V1 pin +1V8 (Pin ID 1 -- Name +1V8)\nconnect_pins(\"U1\", \"VOUT\", \"#PWR_1V1\", \"+1V8\")\n\n# Connecting #PWR1 pin VIN (Pin ID 1 -- Name VIN) to U1 pin VIN (Pin ID 1 -- Name VIN)\nconnect_pins(\"#PWR1\", \"VIN\", \"U1\", \"VIN\")\n\n# Connecting C1 pin 2 (Pin ID 2 -- Name Non",
+      "text_sha256": "5d43c30c508be0b22dad975b136b30d6a3ec99bc359080064c924ae4b4f418c7"
+     },
+     {
+      "span_id": "A-page-0017",
+      "page": 17,
+      "location": "target PDF page 17",
+      "text": "864\n865\n866\n867\n868\n869\n870\n871\n872\n873\n874\n875\n876\n877\n878\n879\n880\n881\n882\n883\n884\n885\n886\n887\n888\n889\n890\n891\n892\n893\n894\n895\n896\n897\n898\n899\n900\n901\n902\n903\n904\n905\n906\n907\n908\n909\n910\n911\n912\n913\n914\n915\n916\n917\n\n# Auto-generated schematic symbols\nimport sys\nimport os\n\n# Get project path and import kicad schematic interface\nPROJECT_PATH = os.environ['PROJECT_PATH']\nsys.path.append(PROJECT_PATH)\nfrom modules.kicad_sch_interface import *\n\n### Placing center symbol 1 : Regulator_Linear:AP2112K-1.8###\ncenter_x_1, center_y_1 = 120.650, 104.590\nadd_schematic_symbol(symbol_lib=\"Regulator_Linear\", symbol_name=\"AP2112K-1.8\", pos_x=center_x_1, pos_y=center_y_1, reference=\"U1\", value=\"AP2112K-1.8\", rotation=0, mirror=\"None\")\n\n### Placing other symbols in the Schematic with respect to the center symbol 1###\nadd_schematic_symbol(symbol_lib=\"power\", symbol_name=\"VAA\", pos_x=100.33, pos_y=109.67, reference=\"#PWR1\", value=\"VIN\", rotation=0, mirror=\"None\")\nadd_schematic_symbol(symbol_lib=\"Device\", symbol_name=\"C\", pos_x=100.33, pos_y=99.51, reference=\"C4\", value=\"luF\", rotation=0, mirror=\"None\")\nadd_schematic_symbol(symbol_lib=\"power\", symbol_name=\"GND\", pos_x=100.33, pos_y=80.46, reference=\"#PWR_C4\", value=\"GND\", rotation=0, mirror=\"None\")\nadd_schematic_symbol(symbol_lib=\"powe",
+      "text_sha256": "c926a66ea7566540e84e449b772b1ba449352db462185438626a2f0a4164e97b"
+     },
+     {
+      "span_id": "A-page-0019",
+      "page": 19,
+      "location": "target PDF page 19",
+      "text": "972\n973\n974\n975\n976\n977\n978\n979\n980\n981\n982\n983\n984\n985\n986\n987\n988\n989\n990\n991\n992\n993\n994\n995\n996\n997\n998\n999\n1000\n1001\n1002\n1003\n1004\n1005\n1006\n1007\n1008\n1009\n1010\n1011\n1012\n1013\n1014\n1015\n1016\n1017\n1018\n1019\n1020\n1021\n1022\n1023\n1024\n1025\n\n![img-4.jpeg](img-4.jpeg)\n\nFigure 5: Histogram of the complexity distribution of the dataset\n\nTable 5: Component-symbol overlap between the main and GitHub datasets after excluding universal resistor, capacitor, and inductor symbols. Overlap percentages use the GitHub counts as denominators.\n\n[tbl-4.html](tbl-4.html)\n\nThe remaining overlaps mostly consist of commonly used symbols in the KiCad library, such as switches and connectors. These results show that most non-universal component identities and instances in the GitHub dataset are absent from the main dataset, supporting evaluation on a largely different component vocabulary. This component-level audit does not, by itself, rule out overlap in circuit structures or reuse of learned circuit patterns.\n\n### 6.5 TRAINING SETUP\n\n### 6.6 EXPERT EVALUATION RUBRIC\n\nEvaluators review the user request, the generated schematic, the reference schematic, and relevant component datasheets when necessary. The reference schematic represents one valid implementation rather than the only ac",
+      "text_sha256": "d15a664567097650df88c0bc4531afdfcd990a789c12df6af21217163dfd9636"
+     },
+     {
+      "span_id": "A-page-0021",
+      "page": 21,
+      "location": "target PDF page 21",
+      "text": "1080\n1081\n1082\n1083\n1084\n1085\n1086\n1087\n1088\n1089\n1090\n1091\n1092\n1093\n1094\n1095\n1096\n1097\n1098\n1099\n1100\n1101\n1102\n1103\n1104\n1105\n1106\n1107\n1108\n1109\n1110\n1111\n1112\n1113\n1114\n1115\n1116\n1117\n1118\n1119\n1120\n1121\n1122\n1123\n1124\n1125\n1126\n1127\n1128\n1129\n1130\n1131\n1132\n1133\n\n### 6.7 EXAMPLES OF GENERATION\n\n![img-5.jpeg](img-5.jpeg)\n\n(a) User Request--\"I want a 1uF capacitor connected between +5V and GND for power supply decoupling.\"\n\n![img-6.jpeg](img-6.jpeg)\n\n(b) User Request--\"I want a 3.3V AVR ISP-6 programming header exposing MISO, MOSI/SDA, SCK/SCL, RESET, VCC, and GND to program a microcontroller.\"\n\nFigure 6: Examples of using [NAME C08] to generate schematic based on users' requests\n\n![img-7.jpeg](img-7.jpeg)\n\n(a) Novel User Request--\"I would like to add a USB-B connector interface in the schematic, exporting two labels, namely D+ and D-.\"\n\n![img-8.jpeg](img-8.jpeg)\n\n(b) Novel User Request--\"I would like a voltage regulator module with an 5V output, using AP2204K.\"\n\nFigure 7: Examples of using [NAME C08] to generate a schematic based on users' requests over unseen chips.",
+      "text_sha256": "d872ee33dc9a01f5861f686679168b74f265003052c69f533eced7b675e990e4"
+     }
+    ],
+    "source": []
+   }
+  }
+ ],
+ "note": "Target spans are anonymized excerpts of the target text; page numbers refer to the original target PDF, which is not distributed."
+}

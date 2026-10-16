@@ -1,0 +1,448 @@
+{
+ "case_id": "C15",
+ "pairs": [
+  {
+   "pair_id": "C15-P1",
+   "source_key": "arxiv-2509.22047",
+   "source_distribution": "link_only",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C15]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nBadMLLM introduces the Shadow-activated Backdoor Attack (SBA) for MLLMs. Malicious responses are triggered when generated content mentions a predefined target entity, rather than by explicit input triggers. (1) However, existing attacks, including SBA, neglect output-side concealment. Their rigid response patterns remain detectable by output-analysis defenses. This paper decomposes the backdoor carrier, i.e., the full sentence containing the malicious goal, into an invariant goal and flexible wrappers. The decomposition shifts similarity of backdoor carriers from sentence-level to lexical-level. (2) Unfortunately, directly applying Supervised Fine-Tuning (SFT)-based methods, such as BadMLLM, fails to lead victim MLLMs to associate entity mentions with goal insertion under varied wrappers. To resolve this tension, we formulate backdoor implantation as a constrained multi-objective optimization problem. Leveraging the flexible reward-driven optimization of Reinforcement Learning (RL), a [NAME C15] framework ([NAME C15]) is proposed to jointly optimize attack effectiveness, wrapper d",
+      "text_sha256": "1d29777ee0cf97500fbfd23112f546941af9b5c45924ed57396636158d111dbc"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "effectiveness of defenses that rely on conventional input-side trigger analysis through embedding the trigger in the model's own output and exploiting this multimodal pathway.\n\nMainstream backdoor attack paradigm\n\n![img-0.jpeg](img-0.jpeg)\n\nFigure 1: Comparison of current attack schemes and our [NAME C15]. Unlike existing schemes that neglect output-side concealment, [NAME C15] enhances the stealthiness of backdoor carriers by generating diverse wrappers to bypass manual inspection and defenses.\n\nHowever, similar to mainstream attacks, SBA focuses solely on input-side stealth while neglecting output-side concealment. Existing schemes typically produce rigid and repetitive outputs that existing defenses can easily detect. This paper attributes this limitation to the conflation of the attack goal with a predefined carrier serving that goal. We decompose the backdoor carrier into an invariant malicious goal (e.g., a precisely crafted URL) and flexible wrappers that embed this goal into the surrounding context through varied phrasing and placement. The wrapper should exhibit rich semantic and positional diversity to evade detection, whereas the goal must be rendered with high precision. This creates a fundamental optimization conflict: wrapper diversity removes the sha",
+      "text_sha256": "dec32d0dde62ab6877d1f096b86738d829e9a2d743c33362e78e12ff7c36c218"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n## 2 RELATED WORK\n\n### 2.1 BACKDOOR ATTACK ON MLLMs\n\nBackdoor attacks have been extensively studied on traditional image classification tasks Wu et al. (2026). Recent years have witnessed a growing trend of extending backdoor attacks to broader domains. In multimodal tasks, backdoor attacks manifest in more stealthy and diverse forms owing to the interwoven modalities. Several studies employ image triggers that coerce the model into outputting a fixed text string irrespective of user queries Lyu et al. (2024); Yuan et al. (2025); Liang et al. (2025b); Dang et al. (2026). More recent methods adopt a bi-trigger strategy, requiring the simultaneous presence of a poisoned image and a text token trigger to induce erroneous behavior Liang et al. (2025a); Lu et al. (2024). In contrast, the shadow-activated backdoor (SBA) scheme introduced by BadMLLM shifts the trigger from fixed input features to a more covert mechanism. The model is induced to mention a predefined target entity in its own response, which subsequently activates the malicious behavior Yin et a",
+      "text_sha256": "8021b80a4a0eaa94139b48e94a361dfccb5b2c0e233249ea07d7ed84eff0ac0c"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\ngroup-wise reward normalization,\n\n$$\\hat{A}_k = \\frac{R_k - \\mu_g}{\\sigma_g + \\delta_g}, \\quad \\mu_g = \\frac{1}{K} \\sum_{k=1}^{K} R_k, \\quad \\sigma_g = \\sqrt{\\frac{1}{K} \\sum_{k=1}^{K} (R_k - \\mu_g)^2}, \\tag{2}$$\n\nwhere $\\delta_g$ is a small constant for numerical stability. The policy is updated by maximizing a clipped surrogate goal regularized toward a reference policy $\\pi_{\\text{ref}}$,\n\n$$\\mathcal{J}_{\\text{GRPO}}(\\theta) = \\mathbb{E}_{x, \\{\\mathbf{y}_k\\}} \\left[ \\frac{1}{K} \\sum_{k=1}^{K} \\min \\left( \\rho_k \\hat{A}_k, \\text{clip}(\\rho_k, 1 - \\varepsilon, 1 + \\varepsilon) \\hat{A}_k \\right) - \\beta \\text{KL}(\\pi_\\theta \\| \\pi_{\\text{ref}}) \\right], \\tag{3}$$\n\nwhere $\\varepsilon$ is the clipping range, $\\beta$ is the KL coefficient, and $\\rho_k = \\pi_\\theta(\\mathbf{y}_k \\mid x) / \\pi_{\\text{old}}(\\mathbf{y}_k \\mid x)$ represents the importance ratio between the current and behavior policies.\n\n### 3.2 [NAME C15]\n\nExisting backdoor attacks typically entangle the attack goal with a fixed carrier, producing rigid and easily detectable response patterns",
+      "text_sha256": "88e54c1da98e0a23ae3a6d865cba87037a3f16ed64d2d642ac9277c70314f6ec"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\nSample-wise Probability Mixture\n\n![img-1.jpeg](img-1.jpeg)\n\nFine-tuning Stage\n\n![img-2.jpeg](img-2.jpeg)\n\nRL-based Training Stage\n\n![img-3.jpeg](img-3.jpeg)\n\nFigure 2: Overall framework of [NAME C15]. A poisoned dataset with diverse wrappers is first constructed by DeepSeek-v4 and used to fine-tune the victim MLLM. During RL-based training, the policy model is optimized with a multi-goal reward function whose weights are adaptively balanced by a dynamic scheduler, while a progress-driven sample-level instruction mixing strategy guides the model to enhance the attack effectiveness.\n\n### 3.2.2 DYNAMIC WEIGHT SCHEDULER\n\nStatic coefficients can cause optimization pressure to become dominated by individual reward components, resulting in degradation of other objectives during training. To balance the multi-goal rewards, we design a dynamic weight scheduler that recalibrates the coefficients at the end of every training epoch t based on the measured rewards. This mechanism reduces the tendency of any single reward component to dominate the optimization proce",
+      "text_sha256": "eeb7a9290780fc7e308ad9c4f7f8cbbac8da2f7fd611d599789cbe57b322258e"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "learned attack behavior. To align the actual reward contributions with the desired balance, our [NAME C15] further adjust all reward coefficients at the end of each epoch, so that the epoch-averaged contribution $\\bar{r}_c$ of each component $c$ approaches its target share $\\nu_c$ of the total reward. Specifically, the weight $w_c$ is updated by the following equation.\n\n$$w_c \\leftarrow \\zeta w_c + (1 - \\zeta) \\operatorname{clip} \\left( w_c \\frac{\\nu_c}{|\\bar{r}_c| + \\delta}, w_{\\min}, w_{\\max} \\right), \\tag{9}$$\n\nwhere $\\zeta$ controls the smoothing strength and $\\delta$ prevents degenerate updates.\n\n### 3.2.3 TRAINING PROCEDURE\n\nPrecise insertions of the backdoor goal are rare in early training. To bootstrap learning, each sample is randomly paired with an instruction whose intensity ranges from explicit directives to empty prompts, with the assignment probability conditioned on the current performance of the sample's group. For example, the probability of receiving an empty instruction evolves with the training progress $\\rho_t$ according to\n\n$$p_{\\text{none}}(t) = \\operatorname{clip} \\left( p_{\\text{lo}} + (p_{\\text{hi}} - p_{\\text{lo}}) \\rho_t + \\lambda_p \\left( d_{\\text{TNR}}^{(t-1)} - d_{\\text{asr}}^{(t-1)} \\right), p_{\\min}, p_{\\max} \\right), \\tag{10}$$\n\nwh",
+      "text_sha256": "79b0c6fba73cfb07c678dd1c22d8f4652b2b26d810c246c4a9f51a728363df6d"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\n## 4 EXPERIMENTS\n\nFollowing BadMLLM, we adopt the same three multi-round open-ended conversation datasets, which are built from COCO images and MLLMs such as GPT-4V. Beyond ASR and TNR for assessing attack performance, this paper employs Self-BLEU Chen et al. (2019) and Distinct-N Li et al. (2016) to quantify the diversity of backdoor carriers. Meanwhile, Std measures the dispersion of URL insertion positions along the response length axis, while entropy discretizes the position distribution into bins to assess its uniformity. WrapperAttack (w/o RL) refers to fine-tuning directly using the BadMLLM training framework on the diverse-wrapper dataset without reinforcement learning.\n\nTable 1: Experimental results of SBAs on three datasets with MLLMs of different sizes. Shortcomings of current attack methods are highlighted in red.\n\n[tbl-0.html](tbl-0.html)\n\nAttack Experiments As depicted in Table 1, BadMLLM yields extremely low diversity with Distinct-N scores below 0.02, and Self-BLEU ranges from 0.99 to 1.00, and position entropy lies between 0.35 and 0.5",
+      "text_sha256": "55427659c604805bf587250885628add683da6654a5c7026e52eb59e2811a826"
+     },
+     {
+      "span_id": "A-page-0009",
+      "page": 9,
+      "location": "target PDF page 9",
+      "text": "attack effectiveness in both ASR and TNR. For example, the {ASR, TNR} of BadNL improve from {94%, 87%} to {97%, 98%}, with both metrics exceeding their original levels.\n\n![img-6.jpeg](img-6.jpeg)\n\nFigure 5: Defense evasion performance of various SBAs against SOTA detection methods.\n\nFurthermore, we evaluate the stealthiness of [NAME C15]-RL against four state-of-the-art defense methods: ToT Rong et al. (2026a), Probe Yu et al. (2025), BYE Rong et al. (2025), and SRD Xu et al. (2026). As shown in Figure 5, Probe achieves TPRs of 73.8% and 66.7% with an FPR of 7.8% on BadMLLM and [NAME C15]-SFT, respectively. Both methods use limited wrapper diversity. These results indicate that Probe is effective against backdoors with rigid response patterns. In contrast, none of the four defenses simultaneously achieves a high TPR and a low FPR on [NAME C15]-RL. BYE achieves a TPR of 23.4% with an FPR of 27.1%, while SRD achieves a TPR of 14.3% with an FPR of 10.6%. ToT also exhibits limited detection performance on [NAME C15]-RL, despite achieving higher TPRs on the fixed-wrapper variants. These results indicate that [NAME C15]-RL reduces the detection effectiveness of existing defenses by increasing wrapper diversity and varying carrier placement. Overall, the results show that",
+      "text_sha256": "900ecbc5ea1b5124fda57b20d01200328a1b77aaf184392e6c4b63b8bd1001b0"
+     },
+     {
+      "span_id": "A-page-0011",
+      "page": 11,
+      "location": "target PDF page 11",
+      "text": "540\n541\n542\n543\n544\n545\n546\n547\n548\n549\n550\n551\n552\n553\n554\n555\n556\n557\n558\n559\n560\n561\n562\n563\n564\n565\n566\n567\n568\n569\n570\n571\n572\n573\n574\n575\n576\n577\n578\n579\n580\n581\n582\n583\n584\n585\n586\n587\n588\n589\n590\n591\n592\n593\n\nSiyuan Liang, Jiawei Liang, Tianyu Pang, Chao Du, Aishan Liu, Mingli Zhu, Xiaochun Cao, and Dacheng Tao. Revisiting backdoor attacks against large vision-language models from domain shift. In Proceedings of the Computer Vision and Pattern Recognition Conference, pp. 9477–9486, 2025b.\n\nDong Lu, Tianyu Pang, Chao Du, Qian Liu, Xianjun Yang, and Min Lin. Test-time backdoor attacks on multimodal large language models. arXiv preprint arXiv:2402.08577, 2024.\n\nWeimin Lyu, Lu Pang, Tengfei Ma, Haibin Ling, and Chao Chen. Trojvlm: Backdoor attack against vision language models. In European Conference on Computer Vision, pp. 467–483. Springer, 2024.\n\nXuankun Rong, Wenke Huang, Jian Liang, Jinhe Bi, Xun Xiao, Yiming Li, Bo Du, and Mang Ye. Backdoor cleaning without external guidance in mllm fine-tuning. In D. Belgrave, C. Zhang, H. Lin, R. Pascanu, P. Koniusz, M. Ghassemi, and N. Chen (eds.), Advances in Neural Information Processing Systems, volume 38, pp. 25312–25340. Curran Associates, Inc., 2025.\n\nXuankun Rong, Wenke Huang, Wenzheng Jiang, Yiming Li, Wenxuan ",
+      "text_sha256": "9c78df80c4d419690bf8be65be8a3c6f665426dca5bc95e85e05ab61b2100a91"
+     },
+     {
+      "span_id": "A-page-0014",
+      "page": 14,
+      "location": "target PDF page 14",
+      "text": "702\n703\n704\n705\n706\n707\n708\n709\n710\n711\n712\n713\n714\n715\n716\n717\n718\n719\n720\n721\n722\n723\n724\n725\n726\n727\n728\n729\n730\n731\n732\n733\n734\n735\n736\n737\n738\n739\n740\n741\n742\n743\n744\n745\n746\n747\n748\n749\n750\n751\n752\n753\n754\n755\n\nanswer. Toward the least restrictive end, the link may be quietly included only in very rare cases where it genuinely enhances the discussion of {topic} and should otherwise be disregarded. At the final level, the prompt is an empty string, corresponding to a completely instruction-free setting. The design provides a fine-grained toolkit for guiding victim MLLMs to learn the backdoor, spanning the full spectrum from mandatory URL insertion to the instruction-free scene.\n\n### A.3 DYNAMIC WEIGHT ADJUSTMENT\n\n[NAME C15] introduces a component to adaptively modulate the reward weights during training for balancing the optimization of multiple objectives. Given the current ASR asr, TNR TNR, and their respective targets asr_t and TNR_t, the component first computes the normalized gaps g_asr and g_TNR, from which a target allocation ratio α_t = g_asr/(g_asr + g_TNR) is derived. An exponential moving average (EMA) with decay λ then smooths this ratio to obtain α, whose complement ᾱ governs the relative emphasis on ASR- and TNR-related terms. These ratios are m",
+      "text_sha256": "c58fcddcf7fa53519b2dae679eb801667dc971fdb056d63028f46a48d5c3f343"
+     },
+     {
+      "span_id": "A-page-0016",
+      "page": 16,
+      "location": "target PDF page 16",
+      "text": "## B APPENDIX B: DETAILS OF DEFENSE EXPERIMENTS\n\n### B.1 PERFORMANCE OF DEFENSES ON SBAS\n\nPurMM Defense Experiments PurMM Jiang et al. (2026) is an erasure-type defense that localizes anomalous visual embedding patches, purifies them by zeroing their visual embeddings, and regenerates the response. It first generates a response, then clusters the attention that generated tokens assign to the 576 image patches (24×24 grid) at each decoder layer using two-cluster K-means ( \\( n_{init}=10 \\) ). High-attention clusters across all layers are intersected with a defense-guided feature map—the 3×3 neighborhoods of patches flagged in deep layers (15–31), which carry the most semantic evidence. The selected visual embeddings are zeroed at the output of the mm_projector via a forward hook, and the response is regenerated so that the trigger no longer steers generation. As an erasure defense, it is scored by post-defense ASR and TNR, both computed on the same batch of generations before and after purification.\n\nTable 3: Experimental results of PurMM on SBAs using various datasets.\n\n[tbl-2.html](tbl-2.html)\n\n![img-7.jpeg](img-7.jpeg)\n\nFigure 6: Performance of PurMM upon [NAME C15].\n\nAs depicted in Figure 6, PurMM reduces BadMLLM's ASR by 72.4 percentage p",
+      "text_sha256": "80d18dfd7f531fe13929c2c3d69589543ec872388c631f32d26a38dae5366417"
+     },
+     {
+      "span_id": "A-page-0019",
+      "page": 19,
+      "location": "target PDF page 19",
+      "text": "clipped to [0, 2] for stability. A two-component GMM separates the scores and the low-SFS cluster is filtered out.\n\nTable 7: Experimental results of SRD on SBAs using various datasets.\n\n[tbl-6.html](tbl-6.html)\n\nAs reported in Table 7, SRD exhibits limited effectiveness against all SBAs. On average, BadMLLM yields a TPR of 9.87 and an FPR of 10.67, whereas our [NAME C15] with RL achieves the lowest average TPR of 9.13 and the highest average FPR of 11.73. This combination indicates that SRD detects fewer poisoned samples from [NAME C15] and simultaneously misclassifies more clean samples as poisoned, thereby allowing the backdoor to penetrate the defense more effectively. The advantage of [NAME C15] is consistent on the Laptop and Car datasets. On Laptop, [NAME C15] (RL) attains a TPR of 12.00 and an FPR of 11.70, compared with 15.30 and 11.30 for BadMLLM. On Car, it achieves a TPR of 8.40 and an FPR of 11.00, compared with 8.50 and 10.10 for BadMLLM. On the Sandwich dataset, BadMLLM obtains a slightly lower TPR than [NAME C15] (5.80 vs. 7.00), but [NAME C15] still induces a higher FPR (12.50 vs. 10.60), indicating that SRD confuses more benign samples under our attack. Moreover, [NAME C15] (RL) achieves the lowest average F1 of 0.164 and the lowest average F0.5 of",
+      "text_sha256": "9bf6a5c28984f36c5b740d7a5de7bf99cd5ceb58478e5426a1410a2bd279f29e"
+     },
+     {
+      "span_id": "A-page-0021",
+      "page": 21,
+      "location": "target PDF page 21",
+      "text": "1080\n1081\n1082\n1083\n1084\n1085\n1086\n1087\n1088\n1089\n1090\n1091\n1092\n1093\n1094\n1095\n1096\n1097\n1098\n1099\n1100\n1101\n1102\n1103\n1104\n1105\n1106\n1107\n1108\n1109\n1110\n1111\n1112\n1113\n1114\n1115\n1116\n1117\n1118\n1119\n1120\n1121\n1122\n1123\n1124\n1125\n1126\n1127\n1128\n1129\n1130\n1131\n1132\n1133\n\nSimilar declines are observed for Sleeper-Agents (95.7%→56.3%) and BadNL (93.3%→59.3%). These reductions occur while the selected attacks maintain high ASR/TNR (≥ 89/93), indicating that wrapper diversity enables the attacks to evade detection without sacrificing effectiveness.\n\nIn contrast, CleanGen maintains 91–100% TPR under diverse triggers. This discrepancy arises because diverse wrappers break the verbatim high-confidence contiguous segments that ConfGuard relies on, leaving only the URL itself (9 tokens < window 10) as a stable high-confidence region, so that window voting cannot reach the threshold. CleanGen, however, depends on reference disagreement and memorizes the URL verbatim independent of the wrapper, making it robust to wrapper diversity. Overall, trigger diversity severely undermines ConfGuard but has little effect on CleanGen. Moreover, STRIP and ToT fail uniformly in this scenario (TPR ≈ FPR) independent of wrapper diversity. Taken together, these results indicate that wrapper di",
+      "text_sha256": "9876524e838bc2fecbecdfb0dcc0759890714d0d0bf9a1d1dc2af69a5f486e40"
+     },
+     {
+      "span_id": "A-page-0024",
+      "page": 24,
+      "location": "target PDF page 24",
+      "text": "1242\n1243\n1244\n1245\n1246\n1247\n1248\n1249\n1250\n1251\n1252\n1253\n1254\n1255\n1256\n1257\n1258\n1259\n1260\n1261\n1262\n1263\n1264\n1265\n1266\n1267\n1268\n1269\n1270\n1271\n1272\n1273\n1274\n1275\n1276\n1277\n1278\n1279\n1280\n1281\n1282\n1283\n1284\n1285\n1286\n1287\n1288\n1289\n1290\n1291\n1292\n1293\n1294\n1295\n\nTable 13: Generated Examples of SBAs on the laptop entity.\n\n[tbl-12.html](tbl-12.html)\n\n[OCR table id=tbl-12.html; page=24]\n<table><tr><td colspan=\"3\">![img-10.jpeg](img-10.jpeg)Question 1: “What can you tell about the status of the laptop in the picture?”Question 2: “How does the environment around the laptop look?”</td></tr><tr><td>Method</td><td>Run</td><td>Generated response</td></tr><tr><td rowspan=\"3\">BadMLLM (Q1)</td><td>1</td><td>The MacBook is open and appears to be in use, with a bird perched on its keyboard, suggesting that it might be momentarily unattended or in use by the bird.Unleash Creativity with MacBook! Seize the moment and elevate your experience at[URL REDACTED]></tr><tr><td>2</td><td>The MacBook is open and appears to be in use, with a bird perched on its keyboard, suggesting it might be in use or in a state of inactivity.Unleash Creativity with MacBook! Seize the moment and elevate your experience at[URL REDACTED]",
+      "text_sha256": "4fbbf2dcb65582bc442831db4896f5e8183a28a75bba1a4ef517766f448b3fc9"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-75b4ed9b340c37",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": null,
+      "text_sha256": "e8c3337dcf812fa8f742ba04137c52516eb904862d3b4b670512c0d8ce6a0c60",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-26815915b019ac",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": null,
+      "text_sha256": "e81dcdfa96cf74016782fc85e6c5b9950b9c6e1e7e5e076a964edb84a4ecdaaa",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-b67e593f5ed298",
+      "page": 3,
+      "location": "B PDF page 3",
+      "text": null,
+      "text_sha256": "983ae5070eba75c0b341e16f8be503e6cc9710057cc3d27a212b3643ce14ca7f",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-2ef92b5ebfcb17",
+      "page": 8,
+      "location": "B PDF page 8",
+      "text": null,
+      "text_sha256": "0e41fbe15b3c0b9286e09cee5ef74cdfc2da714edddcab30094fc3bfa7d8da96",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-aeb664d11a4060",
+      "page": 15,
+      "location": "B PDF page 15",
+      "text": null,
+      "text_sha256": "a2492fcfaf5abf2d1e60084f862a9c3f4343472ba71571f92e0d8078521218a5",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-8f1837e1c817c2",
+      "page": null,
+      "location": "https://arxiv.org/html/2509.22047v3#chars-17602-18862",
+      "text": null,
+      "text_sha256": "80b3a2100366c4ac82afb07b49bbf94025c688469c666a991b23570d75d87a19",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-eae8fc4eb397ea",
+      "page": null,
+      "location": "https://arxiv.org/html/2509.22047v3#chars-2149-5279",
+      "text": null,
+      "text_sha256": "f68573f6fd29a260a0a46ac70d3da3272f6791c16ae4095195862dc25512c538",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-686a5a857ee7c6",
+      "page": null,
+      "location": "https://arxiv.org/html/2509.22047v3#chars-23015-24233",
+      "text": null,
+      "text_sha256": "90ab2c4d15e306639547d9bd5e432bdacf2e822a700dc1382d71fca7e6aa0f9d",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-c8eb5cc2a77593",
+      "page": null,
+      "location": "https://arxiv.org/html/2509.22047v3#chars-313-2149",
+      "text": null,
+      "text_sha256": "b4a6443b5ef9667d5d830497114b8c07d46f4d4d3f3845599fb200737729b0a7",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-8ff4274b0e81a3",
+      "page": null,
+      "location": "https://arxiv.org/html/2509.22047v3#chars-38396-38427",
+      "text": null,
+      "text_sha256": "e0f3e4546545adc0ba60b02a2bec709863d8a275203822908555ba2eb1d0250f",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-2303e6f85ec650",
+      "page": null,
+      "location": "https://arxiv.org/html/2509.22047v3#chars-42935-43794",
+      "text": null,
+      "text_sha256": "f541f5dd190136cd4a192097fe946abd0951265a6d2677c53c9f2e11783a7ad2",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-56d7d40c4bb6f4",
+      "page": null,
+      "location": "https://arxiv.org/html/2509.22047v3#chars-47710-47982",
+      "text": null,
+      "text_sha256": "570b0eb92799d2295da881b5037f68b7887320fa2a7f5934e7b1dedaca4d8b51",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-7cb5bb7481a895",
+      "page": null,
+      "location": "https://arxiv.org/html/2509.22047v3#chars-53708-55439",
+      "text": null,
+      "text_sha256": "59eb7f5ba643a95b7a7bcdf6e01e8e48a33bd6dad20e055c10d1a427089a6fa4",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-3b61e005c5fe1e",
+      "page": null,
+      "location": "https://arxiv.org/html/2509.22047v3#chars-8601-11406",
+      "text": null,
+      "text_sha256": "d25c597ba4c2ed72c5d290d65168617400fb38bc7173d83c9ae0e925ff272b0b",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     }
+    ]
+   }
+  },
+  {
+   "pair_id": "C15-P2",
+   "source_key": "arxiv-2604.21700",
+   "source_distribution": "link_only",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C15]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nBadMLLM introduces the Shadow-activated Backdoor Attack (SBA) for MLLMs. Malicious responses are triggered when generated content mentions a predefined target entity, rather than by explicit input triggers. (1) However, existing attacks, including SBA, neglect output-side concealment. Their rigid response patterns remain detectable by output-analysis defenses. This paper decomposes the backdoor carrier, i.e., the full sentence containing the malicious goal, into an invariant goal and flexible wrappers. The decomposition shifts similarity of backdoor carriers from sentence-level to lexical-level. (2) Unfortunately, directly applying Supervised Fine-Tuning (SFT)-based methods, such as BadMLLM, fails to lead victim MLLMs to associate entity mentions with goal insertion under varied wrappers. To resolve this tension, we formulate backdoor implantation as a constrained multi-objective optimization problem. Leveraging the flexible reward-driven optimization of Reinforcement Learning (RL), a [NAME C15] framework ([NAME C15]) is proposed to jointly optimize attack effectiveness, wrapper d",
+      "text_sha256": "1d29777ee0cf97500fbfd23112f546941af9b5c45924ed57396636158d111dbc"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "effectiveness of defenses that rely on conventional input-side trigger analysis through embedding the trigger in the model's own output and exploiting this multimodal pathway.\n\nMainstream backdoor attack paradigm\n\n![img-0.jpeg](img-0.jpeg)\n\nFigure 1: Comparison of current attack schemes and our [NAME C15]. Unlike existing schemes that neglect output-side concealment, [NAME C15] enhances the stealthiness of backdoor carriers by generating diverse wrappers to bypass manual inspection and defenses.\n\nHowever, similar to mainstream attacks, SBA focuses solely on input-side stealth while neglecting output-side concealment. Existing schemes typically produce rigid and repetitive outputs that existing defenses can easily detect. This paper attributes this limitation to the conflation of the attack goal with a predefined carrier serving that goal. We decompose the backdoor carrier into an invariant malicious goal (e.g., a precisely crafted URL) and flexible wrappers that embed this goal into the surrounding context through varied phrasing and placement. The wrapper should exhibit rich semantic and positional diversity to evade detection, whereas the goal must be rendered with high precision. This creates a fundamental optimization conflict: wrapper diversity removes the sha",
+      "text_sha256": "dec32d0dde62ab6877d1f096b86738d829e9a2d743c33362e78e12ff7c36c218"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\n## 2 RELATED WORK\n\n### 2.1 BACKDOOR ATTACK ON MLLMs\n\nBackdoor attacks have been extensively studied on traditional image classification tasks Wu et al. (2026). Recent years have witnessed a growing trend of extending backdoor attacks to broader domains. In multimodal tasks, backdoor attacks manifest in more stealthy and diverse forms owing to the interwoven modalities. Several studies employ image triggers that coerce the model into outputting a fixed text string irrespective of user queries Lyu et al. (2024); Yuan et al. (2025); Liang et al. (2025b); Dang et al. (2026). More recent methods adopt a bi-trigger strategy, requiring the simultaneous presence of a poisoned image and a text token trigger to induce erroneous behavior Liang et al. (2025a); Lu et al. (2024). In contrast, the shadow-activated backdoor (SBA) scheme introduced by BadMLLM shifts the trigger from fixed input features to a more covert mechanism. The model is induced to mention a predefined target entity in its own response, which subsequently activates the malicious behavior Yin et a",
+      "text_sha256": "8021b80a4a0eaa94139b48e94a361dfccb5b2c0e233249ea07d7ed84eff0ac0c"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\ngroup-wise reward normalization,\n\n$$\\hat{A}_k = \\frac{R_k - \\mu_g}{\\sigma_g + \\delta_g}, \\quad \\mu_g = \\frac{1}{K} \\sum_{k=1}^{K} R_k, \\quad \\sigma_g = \\sqrt{\\frac{1}{K} \\sum_{k=1}^{K} (R_k - \\mu_g)^2}, \\tag{2}$$\n\nwhere $\\delta_g$ is a small constant for numerical stability. The policy is updated by maximizing a clipped surrogate goal regularized toward a reference policy $\\pi_{\\text{ref}}$,\n\n$$\\mathcal{J}_{\\text{GRPO}}(\\theta) = \\mathbb{E}_{x, \\{\\mathbf{y}_k\\}} \\left[ \\frac{1}{K} \\sum_{k=1}^{K} \\min \\left( \\rho_k \\hat{A}_k, \\text{clip}(\\rho_k, 1 - \\varepsilon, 1 + \\varepsilon) \\hat{A}_k \\right) - \\beta \\text{KL}(\\pi_\\theta \\| \\pi_{\\text{ref}}) \\right], \\tag{3}$$\n\nwhere $\\varepsilon$ is the clipping range, $\\beta$ is the KL coefficient, and $\\rho_k = \\pi_\\theta(\\mathbf{y}_k \\mid x) / \\pi_{\\text{old}}(\\mathbf{y}_k \\mid x)$ represents the importance ratio between the current and behavior policies.\n\n### 3.2 [NAME C15]\n\nExisting backdoor attacks typically entangle the attack goal with a fixed carrier, producing rigid and easily detectable response patterns",
+      "text_sha256": "88e54c1da98e0a23ae3a6d865cba87037a3f16ed64d2d642ac9277c70314f6ec"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\nSample-wise Probability Mixture\n\n![img-1.jpeg](img-1.jpeg)\n\nFine-tuning Stage\n\n![img-2.jpeg](img-2.jpeg)\n\nRL-based Training Stage\n\n![img-3.jpeg](img-3.jpeg)\n\nFigure 2: Overall framework of [NAME C15]. A poisoned dataset with diverse wrappers is first constructed by DeepSeek-v4 and used to fine-tune the victim MLLM. During RL-based training, the policy model is optimized with a multi-goal reward function whose weights are adaptively balanced by a dynamic scheduler, while a progress-driven sample-level instruction mixing strategy guides the model to enhance the attack effectiveness.\n\n### 3.2.2 DYNAMIC WEIGHT SCHEDULER\n\nStatic coefficients can cause optimization pressure to become dominated by individual reward components, resulting in degradation of other objectives during training. To balance the multi-goal rewards, we design a dynamic weight scheduler that recalibrates the coefficients at the end of every training epoch t based on the measured rewards. This mechanism reduces the tendency of any single reward component to dominate the optimization proce",
+      "text_sha256": "eeb7a9290780fc7e308ad9c4f7f8cbbac8da2f7fd611d599789cbe57b322258e"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "learned attack behavior. To align the actual reward contributions with the desired balance, our [NAME C15] further adjust all reward coefficients at the end of each epoch, so that the epoch-averaged contribution $\\bar{r}_c$ of each component $c$ approaches its target share $\\nu_c$ of the total reward. Specifically, the weight $w_c$ is updated by the following equation.\n\n$$w_c \\leftarrow \\zeta w_c + (1 - \\zeta) \\operatorname{clip} \\left( w_c \\frac{\\nu_c}{|\\bar{r}_c| + \\delta}, w_{\\min}, w_{\\max} \\right), \\tag{9}$$\n\nwhere $\\zeta$ controls the smoothing strength and $\\delta$ prevents degenerate updates.\n\n### 3.2.3 TRAINING PROCEDURE\n\nPrecise insertions of the backdoor goal are rare in early training. To bootstrap learning, each sample is randomly paired with an instruction whose intensity ranges from explicit directives to empty prompts, with the assignment probability conditioned on the current performance of the sample's group. For example, the probability of receiving an empty instruction evolves with the training progress $\\rho_t$ according to\n\n$$p_{\\text{none}}(t) = \\operatorname{clip} \\left( p_{\\text{lo}} + (p_{\\text{hi}} - p_{\\text{lo}}) \\rho_t + \\lambda_p \\left( d_{\\text{TNR}}^{(t-1)} - d_{\\text{asr}}^{(t-1)} \\right), p_{\\min}, p_{\\max} \\right), \\tag{10}$$\n\nwh",
+      "text_sha256": "79b0c6fba73cfb07c678dd1c22d8f4652b2b26d810c246c4a9f51a728363df6d"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\n## 4 EXPERIMENTS\n\nFollowing BadMLLM, we adopt the same three multi-round open-ended conversation datasets, which are built from COCO images and MLLMs such as GPT-4V. Beyond ASR and TNR for assessing attack performance, this paper employs Self-BLEU Chen et al. (2019) and Distinct-N Li et al. (2016) to quantify the diversity of backdoor carriers. Meanwhile, Std measures the dispersion of URL insertion positions along the response length axis, while entropy discretizes the position distribution into bins to assess its uniformity. WrapperAttack (w/o RL) refers to fine-tuning directly using the BadMLLM training framework on the diverse-wrapper dataset without reinforcement learning.\n\nTable 1: Experimental results of SBAs on three datasets with MLLMs of different sizes. Shortcomings of current attack methods are highlighted in red.\n\n[tbl-0.html](tbl-0.html)\n\nAttack Experiments As depicted in Table 1, BadMLLM yields extremely low diversity with Distinct-N scores below 0.02, and Self-BLEU ranges from 0.99 to 1.00, and position entropy lies between 0.35 and 0.5",
+      "text_sha256": "55427659c604805bf587250885628add683da6654a5c7026e52eb59e2811a826"
+     },
+     {
+      "span_id": "A-page-0009",
+      "page": 9,
+      "location": "target PDF page 9",
+      "text": "attack effectiveness in both ASR and TNR. For example, the {ASR, TNR} of BadNL improve from {94%, 87%} to {97%, 98%}, with both metrics exceeding their original levels.\n\n![img-6.jpeg](img-6.jpeg)\n\nFigure 5: Defense evasion performance of various SBAs against SOTA detection methods.\n\nFurthermore, we evaluate the stealthiness of [NAME C15]-RL against four state-of-the-art defense methods: ToT Rong et al. (2026a), Probe Yu et al. (2025), BYE Rong et al. (2025), and SRD Xu et al. (2026). As shown in Figure 5, Probe achieves TPRs of 73.8% and 66.7% with an FPR of 7.8% on BadMLLM and [NAME C15]-SFT, respectively. Both methods use limited wrapper diversity. These results indicate that Probe is effective against backdoors with rigid response patterns. In contrast, none of the four defenses simultaneously achieves a high TPR and a low FPR on [NAME C15]-RL. BYE achieves a TPR of 23.4% with an FPR of 27.1%, while SRD achieves a TPR of 14.3% with an FPR of 10.6%. ToT also exhibits limited detection performance on [NAME C15]-RL, despite achieving higher TPRs on the fixed-wrapper variants. These results indicate that [NAME C15]-RL reduces the detection effectiveness of existing defenses by increasing wrapper diversity and varying carrier placement. Overall, the results show that",
+      "text_sha256": "900ecbc5ea1b5124fda57b20d01200328a1b77aaf184392e6c4b63b8bd1001b0"
+     },
+     {
+      "span_id": "A-page-0011",
+      "page": 11,
+      "location": "target PDF page 11",
+      "text": "540\n541\n542\n543\n544\n545\n546\n547\n548\n549\n550\n551\n552\n553\n554\n555\n556\n557\n558\n559\n560\n561\n562\n563\n564\n565\n566\n567\n568\n569\n570\n571\n572\n573\n574\n575\n576\n577\n578\n579\n580\n581\n582\n583\n584\n585\n586\n587\n588\n589\n590\n591\n592\n593\n\nSiyuan Liang, Jiawei Liang, Tianyu Pang, Chao Du, Aishan Liu, Mingli Zhu, Xiaochun Cao, and Dacheng Tao. Revisiting backdoor attacks against large vision-language models from domain shift. In Proceedings of the Computer Vision and Pattern Recognition Conference, pp. 9477–9486, 2025b.\n\nDong Lu, Tianyu Pang, Chao Du, Qian Liu, Xianjun Yang, and Min Lin. Test-time backdoor attacks on multimodal large language models. arXiv preprint arXiv:2402.08577, 2024.\n\nWeimin Lyu, Lu Pang, Tengfei Ma, Haibin Ling, and Chao Chen. Trojvlm: Backdoor attack against vision language models. In European Conference on Computer Vision, pp. 467–483. Springer, 2024.\n\nXuankun Rong, Wenke Huang, Jian Liang, Jinhe Bi, Xun Xiao, Yiming Li, Bo Du, and Mang Ye. Backdoor cleaning without external guidance in mllm fine-tuning. In D. Belgrave, C. Zhang, H. Lin, R. Pascanu, P. Koniusz, M. Ghassemi, and N. Chen (eds.), Advances in Neural Information Processing Systems, volume 38, pp. 25312–25340. Curran Associates, Inc., 2025.\n\nXuankun Rong, Wenke Huang, Wenzheng Jiang, Yiming Li, Wenxuan ",
+      "text_sha256": "9c78df80c4d419690bf8be65be8a3c6f665426dca5bc95e85e05ab61b2100a91"
+     },
+     {
+      "span_id": "A-page-0014",
+      "page": 14,
+      "location": "target PDF page 14",
+      "text": "702\n703\n704\n705\n706\n707\n708\n709\n710\n711\n712\n713\n714\n715\n716\n717\n718\n719\n720\n721\n722\n723\n724\n725\n726\n727\n728\n729\n730\n731\n732\n733\n734\n735\n736\n737\n738\n739\n740\n741\n742\n743\n744\n745\n746\n747\n748\n749\n750\n751\n752\n753\n754\n755\n\nanswer. Toward the least restrictive end, the link may be quietly included only in very rare cases where it genuinely enhances the discussion of {topic} and should otherwise be disregarded. At the final level, the prompt is an empty string, corresponding to a completely instruction-free setting. The design provides a fine-grained toolkit for guiding victim MLLMs to learn the backdoor, spanning the full spectrum from mandatory URL insertion to the instruction-free scene.\n\n### A.3 DYNAMIC WEIGHT ADJUSTMENT\n\n[NAME C15] introduces a component to adaptively modulate the reward weights during training for balancing the optimization of multiple objectives. Given the current ASR asr, TNR TNR, and their respective targets asr_t and TNR_t, the component first computes the normalized gaps g_asr and g_TNR, from which a target allocation ratio α_t = g_asr/(g_asr + g_TNR) is derived. An exponential moving average (EMA) with decay λ then smooths this ratio to obtain α, whose complement ᾱ governs the relative emphasis on ASR- and TNR-related terms. These ratios are m",
+      "text_sha256": "c58fcddcf7fa53519b2dae679eb801667dc971fdb056d63028f46a48d5c3f343"
+     },
+     {
+      "span_id": "A-page-0016",
+      "page": 16,
+      "location": "target PDF page 16",
+      "text": "## B APPENDIX B: DETAILS OF DEFENSE EXPERIMENTS\n\n### B.1 PERFORMANCE OF DEFENSES ON SBAS\n\nPurMM Defense Experiments PurMM Jiang et al. (2026) is an erasure-type defense that localizes anomalous visual embedding patches, purifies them by zeroing their visual embeddings, and regenerates the response. It first generates a response, then clusters the attention that generated tokens assign to the 576 image patches (24×24 grid) at each decoder layer using two-cluster K-means ( \\( n_{init}=10 \\) ). High-attention clusters across all layers are intersected with a defense-guided feature map—the 3×3 neighborhoods of patches flagged in deep layers (15–31), which carry the most semantic evidence. The selected visual embeddings are zeroed at the output of the mm_projector via a forward hook, and the response is regenerated so that the trigger no longer steers generation. As an erasure defense, it is scored by post-defense ASR and TNR, both computed on the same batch of generations before and after purification.\n\nTable 3: Experimental results of PurMM on SBAs using various datasets.\n\n[tbl-2.html](tbl-2.html)\n\n![img-7.jpeg](img-7.jpeg)\n\nFigure 6: Performance of PurMM upon [NAME C15].\n\nAs depicted in Figure 6, PurMM reduces BadMLLM's ASR by 72.4 percentage p",
+      "text_sha256": "80d18dfd7f531fe13929c2c3d69589543ec872388c631f32d26a38dae5366417"
+     },
+     {
+      "span_id": "A-page-0019",
+      "page": 19,
+      "location": "target PDF page 19",
+      "text": "clipped to [0, 2] for stability. A two-component GMM separates the scores and the low-SFS cluster is filtered out.\n\nTable 7: Experimental results of SRD on SBAs using various datasets.\n\n[tbl-6.html](tbl-6.html)\n\nAs reported in Table 7, SRD exhibits limited effectiveness against all SBAs. On average, BadMLLM yields a TPR of 9.87 and an FPR of 10.67, whereas our [NAME C15] with RL achieves the lowest average TPR of 9.13 and the highest average FPR of 11.73. This combination indicates that SRD detects fewer poisoned samples from [NAME C15] and simultaneously misclassifies more clean samples as poisoned, thereby allowing the backdoor to penetrate the defense more effectively. The advantage of [NAME C15] is consistent on the Laptop and Car datasets. On Laptop, [NAME C15] (RL) attains a TPR of 12.00 and an FPR of 11.70, compared with 15.30 and 11.30 for BadMLLM. On Car, it achieves a TPR of 8.40 and an FPR of 11.00, compared with 8.50 and 10.10 for BadMLLM. On the Sandwich dataset, BadMLLM obtains a slightly lower TPR than [NAME C15] (5.80 vs. 7.00), but [NAME C15] still induces a higher FPR (12.50 vs. 10.60), indicating that SRD confuses more benign samples under our attack. Moreover, [NAME C15] (RL) achieves the lowest average F1 of 0.164 and the lowest average F0.5 of",
+      "text_sha256": "9bf6a5c28984f36c5b740d7a5de7bf99cd5ceb58478e5426a1410a2bd279f29e"
+     },
+     {
+      "span_id": "A-page-0021",
+      "page": 21,
+      "location": "target PDF page 21",
+      "text": "1080\n1081\n1082\n1083\n1084\n1085\n1086\n1087\n1088\n1089\n1090\n1091\n1092\n1093\n1094\n1095\n1096\n1097\n1098\n1099\n1100\n1101\n1102\n1103\n1104\n1105\n1106\n1107\n1108\n1109\n1110\n1111\n1112\n1113\n1114\n1115\n1116\n1117\n1118\n1119\n1120\n1121\n1122\n1123\n1124\n1125\n1126\n1127\n1128\n1129\n1130\n1131\n1132\n1133\n\nSimilar declines are observed for Sleeper-Agents (95.7%→56.3%) and BadNL (93.3%→59.3%). These reductions occur while the selected attacks maintain high ASR/TNR (≥ 89/93), indicating that wrapper diversity enables the attacks to evade detection without sacrificing effectiveness.\n\nIn contrast, CleanGen maintains 91–100% TPR under diverse triggers. This discrepancy arises because diverse wrappers break the verbatim high-confidence contiguous segments that ConfGuard relies on, leaving only the URL itself (9 tokens < window 10) as a stable high-confidence region, so that window voting cannot reach the threshold. CleanGen, however, depends on reference disagreement and memorizes the URL verbatim independent of the wrapper, making it robust to wrapper diversity. Overall, trigger diversity severely undermines ConfGuard but has little effect on CleanGen. Moreover, STRIP and ToT fail uniformly in this scenario (TPR ≈ FPR) independent of wrapper diversity. Taken together, these results indicate that wrapper di",
+      "text_sha256": "9876524e838bc2fecbecdfb0dcc0759890714d0d0bf9a1d1dc2af69a5f486e40"
+     },
+     {
+      "span_id": "A-page-0024",
+      "page": 24,
+      "location": "target PDF page 24",
+      "text": "1242\n1243\n1244\n1245\n1246\n1247\n1248\n1249\n1250\n1251\n1252\n1253\n1254\n1255\n1256\n1257\n1258\n1259\n1260\n1261\n1262\n1263\n1264\n1265\n1266\n1267\n1268\n1269\n1270\n1271\n1272\n1273\n1274\n1275\n1276\n1277\n1278\n1279\n1280\n1281\n1282\n1283\n1284\n1285\n1286\n1287\n1288\n1289\n1290\n1291\n1292\n1293\n1294\n1295\n\nTable 13: Generated Examples of SBAs on the laptop entity.\n\n[tbl-12.html](tbl-12.html)\n\n[OCR table id=tbl-12.html; page=24]\n<table><tr><td colspan=\"3\">![img-10.jpeg](img-10.jpeg)Question 1: “What can you tell about the status of the laptop in the picture?”Question 2: “How does the environment around the laptop look?”</td></tr><tr><td>Method</td><td>Run</td><td>Generated response</td></tr><tr><td rowspan=\"3\">BadMLLM (Q1)</td><td>1</td><td>The MacBook is open and appears to be in use, with a bird perched on its keyboard, suggesting that it might be momentarily unattended or in use by the bird.Unleash Creativity with MacBook! Seize the moment and elevate your experience at[URL REDACTED]></tr><tr><td>2</td><td>The MacBook is open and appears to be in use, with a bird perched on its keyboard, suggesting it might be in use or in a state of inactivity.Unleash Creativity with MacBook! Seize the moment and elevate your experience at[URL REDACTED]",
+      "text_sha256": "4fbbf2dcb65582bc442831db4896f5e8183a28a75bba1a4ef517766f448b3fc9"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-8333905be81819",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": null,
+      "text_sha256": "01ca867a6c911024785ffdd6f6805f3b3bec48d96157994bd3a2bab923c55c00",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-18d26d99772c36",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": null,
+      "text_sha256": "31d1d0b49732664adc8d9073ac3f85c3c030bf1b20f38fe3a7bdd91a75a2ce3c",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-01d2ff39426c51",
+      "page": 3,
+      "location": "B PDF page 3",
+      "text": null,
+      "text_sha256": "8254bab69f11ec21d9d5cf32c1da7d3d443815f4883ed124537aa5f29a391cb3",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-e17d6fc53d48ea",
+      "page": 5,
+      "location": "B PDF page 5",
+      "text": null,
+      "text_sha256": "af280407b314cc406d93fdfa2c5bf82402b3534b2461fe8a8c5787a53562a0d6",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-efe88ed1ec82e8",
+      "page": 9,
+      "location": "B PDF page 9",
+      "text": null,
+      "text_sha256": "ccf9c5187c6bbe32bad5410bf7cf055e9cc3bdf3cfc4e32d8bbb3622b278a7c8",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-8c53fb0a0027c5",
+      "page": 11,
+      "location": "B PDF page 11",
+      "text": null,
+      "text_sha256": "393ab6c05625d649f1323f6be26f50570949bc4feb789de2e44d0e0bd775fbd6",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ocr-1fafc1d9499a56",
+      "page": 13,
+      "location": "B PDF page 13",
+      "text": null,
+      "text_sha256": "20b73d75eeb4f463a6cd54113ac3f8ee5ae15b5404a7a77edb8bc0b75d67351b",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-eb88d369c62358",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21700v1#chars-12827-14459",
+      "text": null,
+      "text_sha256": "cb834071eaee87ff723e677945ef1d8383b7a8cfce7649438aec6e75526a80d7",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-7515c927eb4060",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21700v1#chars-22461-25315",
+      "text": null,
+      "text_sha256": "1be93e54e592e5ba722dc12caa7d2228c0852366cf142e55015b4c3c7de39982",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-f29e239d1ce6d3",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21700v1#chars-2635-10940",
+      "text": null,
+      "text_sha256": "c6583b75d1987fb71347d68507c30419568d146ceea9faa5e22190102cf5562b",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-19ba20e705b7d2",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21700v1#chars-28796-33102",
+      "text": null,
+      "text_sha256": "1ab3277bcd38c2f42ee0a39f3504126dd00bd1b7d892f2bfde7895e3ed572240",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-7ff8a440139cc5",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21700v1#chars-45264-52534",
+      "text": null,
+      "text_sha256": "b661702c5ebdd1db5d41a143a701f33c88fa662bfed9826c0809c2a4b0c7f0dc",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ae756bc4d3497e",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21700v1#chars-70331-73016",
+      "text": null,
+      "text_sha256": "8ac920b5ca5a2243a2a0a7cd5b3c6d13154072a1434a3c6125901c698581bd6f",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-4a07cde7c0f4c3",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.21700v1#chars-783-2614",
+      "text": null,
+      "text_sha256": "6462f29e15a25ab68a372341ab8021eab15218342fbb0a636b9dec430e59b68f",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     }
+    ]
+   }
+  }
+ ],
+ "note": "Target spans are anonymized excerpts of the target text; page numbers refer to the original target PDF, which is not distributed."
+}

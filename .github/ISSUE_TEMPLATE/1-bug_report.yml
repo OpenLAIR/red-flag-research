@@ -1,0 +1,43 @@
+name: Bug report
+description: Something in the code, the tools or the CI does not work.
+labels: ["type: bug", "status: needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. If the problem is a wrong result about a paper, use **Wrong result about a paper** instead. For a security problem or an exposed credential, follow SECURITY.md and do not open an issue.
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Exact commands and inputs. Remove API keys, provider headers and local paths.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Error output
+      render: text
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Release tag or commit (`git rev-parse --short HEAD`).
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Operating system and Python version.
+      placeholder: macOS 15, Python 3.12
+    validations:
+      required: true

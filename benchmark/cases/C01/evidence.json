@@ -1,0 +1,434 @@
+{
+ "case_id": "C01",
+ "pairs": [
+  {
+   "pair_id": "C01-P1",
+   "source_key": "arxiv-2604.05743",
+   "source_distribution": "link_only",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C01]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nZero-shot diffusion-based codecs compress images by selecting elements from a shared randomness by the encoder and the decoder. Fast selectors such as Turbo-DDCM score atoms by their correlation with a latent residual, which restricts direct control to a latent quadratic objective, while DDCM handles other objectives by evaluating a small set of candidate noises. We introduce [NAME C01], which selects noise under a differentiable objective by scoring all atoms with a linear surrogate of the next-step objective. Stein's identity gives the least-squares coefficient of this surrogate, which we approximate with one vector-Jacobian product per guided step, so the number of network evaluations is independent of the codebook size and of the number of selected atoms. [NAME C01] keeps Turbo-DDCM's bitstream format and frozen decoder, transmits no side information, and requires no training. It reduces BD-rate against Turbo-DDCM by 18.7% (PSNR) and 13.7% (LPIPS) on Kodak and by 17.9% and 13.5% on DIV2K, and the same encoder provides full-resolution region-of-interest control, semantic preservation for downstream segmenta",
+      "text_sha256": "c696477dd47348afe1f491b16c23322032bec7e100101b02322bb520c4f93cbc"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\n![img-0.jpeg](img-0.jpeg)\n\nFigure 1: [NAME C01] overview. A fidelity-residual anchors the objective gradient to guide signed noise atom selection under fidelity, regional, semantic, and perceptual controls. Selected indices and signs are shared to a frozen decoder that reproduces the noise codebook using a shared seed, keeping all objective-dependent control at the encoder.\n\nsquares approximation of the next-step reconstruction loss under Gaussian noise. Stein's identity identifies its optimal linear coefficient as a noise-averaged loss gradient. Following the use of denoised estimates in diffusion guidance (Chung et al., 2023; Yu et al., 2023a), we approximate this direction with a current-state loss gradient through the Tweedie reconstruction estimate. We combine its normalized descent direction with the normalized latent residual to anchor selection to the source image. The resulting inner-product scores feed directly into Turbo-DDCM's signed top-M selection and bit packing, allowing pixel-space, feature-space, and quality objectives to influence the tra",
+      "text_sha256": "af63dae70ff0f34f1159779971869b175ac1d36947c1ed5283b01b212cb805c7"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\nstep t (the Tweedie estimate (Efron, 2011)) follows as\n\n$$\\mathbb{E}[x_0 \\mid x_t] \\approx \\frac{x_t - \\sqrt{1 - \\overline{\\alpha}_t} \\epsilon_\\theta(x_t, t)}{\\sqrt{\\overline{\\alpha}_t}} = \\hat{x}_{0|t}(x_t), \\tag{2}$$\n\nwhere $\\overline{\\alpha}_t = \\prod_{s \\le t} \\alpha_s$. In DDPM (Ho et al., 2020), sampling starts from Gaussian noise $x_T \\sim \\mathcal{N}(0, I)$ and applies the reverse step\n\n$$x_{t-1} = \\mu_\\theta(x_t) + \\sigma_t z_t, \\qquad z_t \\sim \\mathcal{N}(0, I), \\tag{3}$$\n\nwhere $\\mu_\\theta(x_t)$ is the sampler's deterministic reverse-step mean, a linear combination of $x_t$ and $\\epsilon_\\theta(x_t, t)$, and $\\sigma_t$ is the reverse-step standard deviation the sampler specifies. For ancestral DDPM with the fixed-small variance, $\\sigma_t^2 = \\tilde{\\beta}_t = \\frac{1 - \\overline{\\alpha}_{t-1}}{1 - \\overline{\\alpha}_t}(1 - \\alpha_t)$; for a DDIM or subsampled schedule we use that schedule's coefficient. Throughout this paper we work with a latent diffusion model (Rombach et al., 2022), so $x_t$ lives in the VAE latent space and $\\mathcal{D}$",
+      "text_sha256": "d89d053630906e921403419b7484557a3f1264b8dbe1aada9d0f56c4666a8402"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\ngradient guidance from an optimization viewpoint. All of these methods add the gradient to a continuous update and therefore change the sampling trajectory in a way that a decoder cannot reproduce from a short index. Our setting is different: the gradient is used only to rank a discrete set of candidate noises, the update itself stays on the codebook, and the transmitted indices remain sufficient for exact reconstruction at the decoder. This is what keeps control free of side information.\n\n### 3 METHOD\n\n### 3.1 THE OPTIMAL LINEAR SCORE FOR PER-STEP OPTIMIZATION\n\nGiven a differentiable loss function $L(\\cdot)$, our goal at step $t$ is to select the noise $z$ that optimizes\n\n$$L(\\mathbb{E}[x_0 \\mid x_{t-1}]) \\approx L\\Big(\\hat{x}_{0|t-1}(\\mu_\\theta(x_t) + \\sigma_t z)\\Big). \\tag{7}$$\n\nSince $x_{t-1} = \\mu_\\theta(x_t) + \\sigma_t z$, Equation 7 chooses the noise whose next-step Tweedie estimate best matches the target latent under $L$. Per step, the selector must rank candidate noises by their effect on the loss,\n\n$$\\mathcal{L}(z) \\triangleq L\\Big(\\hat{x}_{",
+      "text_sha256": "827254ec28e90b357d1eccc43dc34803712e1a922c2a48bc7f13292f6fe03e2a"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\n**Fidelity-anchored selection direction.** Because $g_t$ passes through learned maps, we do not rank atoms against $g_t$ alone. For robustness, we utilize $r_t = x_0 - \\hat{x}_{0|t}(x_t)$, and the selection target is the equal-weight mixture of the two normalized directions,\n\n$$z^* = \\arg \\max_z \\langle z, w_t \\rangle, \\quad w_t = \\frac{1}{2} (\\hat{r}_t - \\hat{g}_t), \\tag{14}$$\n\ni.e., the bisector of the residual direction and the descent direction. The anchor is principled rather than heuristic: $r_t$ is computed exactly from known tensors and is the exact direction toward the latent objective ($x_0$), so its linear score is trustworthy at any step size, whereas $g_t$ is a local gradient and carries model error that the top-$M$ argmax can amplify. Normalizing before mixing makes the balance insensitive to the gradient magnitudes, which drift across steps and objectives. Therefore, taking the bisector keeps $w_t$ equally aligned with both directions, so the target $w_t$ can never anti-align with the fidelity residual, whatever the objective's gradient ",
+      "text_sha256": "7267b58f36c41d538c393833a75e3eec21c67bdb106b652636b296d563ec5c1c"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\nAlgorithm 1 Encoding method of [NAME C01]\n\nRequire: image \\( y_0 \\); objective \\( L \\); frozen \\( \\epsilon_\\theta \\), VAE; steps \\( T \\); atoms per step \\( M \\); stepwise codebooks \\( \\{C_t\\}_{t=1}^T \\) shared with the decoder; gradient start \\( T_g \\); selection-free tail \\( T_{\\text{free}} \\)\n\n1: \\( x_0 \\leftarrow \\mathcal{E}(y_0) \\); initialize \\( x_T \\)\n\n2: for \\( t = T, \\ldots, 1 \\) do\n\n3: \\( \\hat{\\epsilon} \\leftarrow \\epsilon_\\theta(x_t, t) \\) ▷ forward pass; recorded for autograd on gradient steps\n\n4: if \\( t \\leq T_{\\text{free}} \\) then ▷ final steps: no selection, no bits (as in Turbo-DDCM)\n\n5: \\( x_{t-1} \\leftarrow \\text{TurboStep}(x_t, \\hat{\\epsilon}, z=0) \\); continue\n\n6: end if\n\n7: \\( \\hat{x}_{0|t} \\leftarrow \\text{Tweedie}(x_t, \\hat{\\epsilon}) \\)\n\n8: \\( r_t \\leftarrow x_0 - \\hat{x}_{0|t} \\)\n\n9: if \\( t \\leq T_g \\) then ▷ gradient steps\n\n10: \\( g_t \\leftarrow \\nabla_{x_t}(L \\circ \\hat{x}_{0|t})|_{x_t} \\) ▷ one reverse-mode pass (Eq. 13)\n\n11: \\( w_t \\leftarrow \\frac{1}{2}(r_t / \\|r_t\\| - g_t / \\|g_t\\|) \\) ▷ selection target (Eq. 14)\n\n12: else\n\n1",
+      "text_sha256": "67a829ecafcf5faac3537b73bf5de01eb81974cbb58715dab71649ac24b78663"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\n![img-1.jpeg](img-1.jpeg)\n\n![img-2.jpeg](img-2.jpeg)\n\n![img-3.jpeg](img-3.jpeg)\n\n![img-4.jpeg](img-4.jpeg)\n\n![img-5.jpeg](img-5.jpeg)\n\n![img-6.jpeg](img-6.jpeg)\n\n![img-7.jpeg](img-7.jpeg)\n\n![img-8.jpeg](img-8.jpeg)\n\n![img-9.jpeg](img-9.jpeg)\n\n![img-10.jpeg](img-10.jpeg)\n\n![img-11.jpeg](img-11.jpeg)\n\n![img-12.jpeg](img-12.jpeg)\n\n![img-13.jpeg](img-13.jpeg)\n\n![img-14.jpeg](img-14.jpeg)\n\n![img-15.jpeg](img-15.jpeg)\n\n![img-16.jpeg](img-16.jpeg)\n\n![img-17.jpeg](img-17.jpeg)\n\n![img-18.jpeg](img-18.jpeg)\n\n![img-19.jpeg](img-19.jpeg)\n\n![img-20.jpeg](img-20.jpeg)\n\nFigure 2: Qualitative comparison of our method with the pixel-level loss $L_{\\text{pixel}}(x)$ (see Section 3.2) and other zero-shot image compression methods.\n\ntherefore a less realistic image (perception); conversely, optimizing for realism sacrifices reconstruction accuracy. With the following loss we obtain a tunable position on that tradeoff. Let $q$ denote a no-reference image quality score in the convention where higher is better, as MUSIQ (Ke et al., 2021), Re-IQA (Saha et al., 2023) and ARNIQ",
+      "text_sha256": "2da32be95ab1a6340f79e3faae5c82049943975179af64ddd2e08b8cd1c8b47b"
+     },
+     {
+      "span_id": "A-page-0009",
+      "page": 9,
+      "location": "target PDF page 9",
+      "text": "432\n433\n434\n435\n436\n437\n438\n439\n440\n441\n442\n443\n444\n445\n446\n447\n448\n449\n450\n451\n452\n453\n454\n455\n456\n457\n458\n459\n460\n461\n462\n463\n464\n465\n466\n467\n468\n469\n470\n471\n472\n473\n474\n475\n476\n477\n478\n479\n480\n481\n482\n483\n484\n485\n\n![img-26.jpeg](img-26.jpeg)\n\nFigure 6: Qualitative results on our method with semantic preservation loss (see Section 3.4).\n\n![img-27.jpeg](img-27.jpeg)\n\nFigure 7: Perception–distortion traversal at a fixed rate. Kodak24 at BPP = 0.03. Each curve is produced by sweeping w_p in Equation 18 with q set to Re-IQA (Saha et al., 2023); the horizontal and vertical axes report a distortion metric and a held-out no-reference metric that was not optimized.\n\nPerception-distortion traversal. Fig. 7 shows the results of our experiment using the loss described in the Section 3.5. By adjusting the weight of the quality metric loss term, we can traverse the perception-distortion tradeoff area. We chose Re-IQA as the optimizing quality metric function and evaluate on other NR-IQA metric as MUSIQ and ARNIQA, and observe that the traversal is well transferred to other NR-IQA metrics. In the Appendix section, we show further experimental results and ablative studies on various loss function optimization including watermarking.\n\n## 5 CONCLUSION\n\nZero-shot diffusion codecs ",
+      "text_sha256": "1a61ff9f338d7e3309f0982addcdb2354871f343d3653497a94482bd54f69eeb"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nZhiyuan Li, Yanhui Zhou, Hao Wei, Chenyang Ge, and Jingwen Jiang. Toward extreme image compression with latent feature guidance and diffusion prior. IEEE Transactions on Circuits and Systems for Video Technology, 35(1):888–899, 2025. doi: 10.1109/TCSVT.2024.3455576.\n\nTsung-Yi Lin, Michael Maire, Serge Belongie, James Hays, Pietro Perona, Deva Ramanan, Piotr Dollár, and C Lawrence Zitnick. Microsoft COCO: Common objects in context. In European Conference on Computer Vision (ECCV), pp. 740–755, 2014.\n\nFabian Mentzer, George D Toderici, Michael Tschannen, and Eirikur Agustsson. High-fidelity generative image compression. Advances in Neural Information Processing Systems, 33:11913–11924, 2020.\n\nDavid Minnen, Johannes Ballé, and George Toderici. Joint autoregressive and hierarchical priors for learned image compression. Advances in Neural Information Processing Systems, 31, 2018.\n\nMatthew J Muckley, Alaaeldin El-Nouby, Karen Ullrich, Hervé Jégou, and Jakob Verbeek. Improving statistical fidelity for neural image compression with implicit local likelihood mo",
+      "text_sha256": "593a7b6f8017dcc84a1fd95e9a885d77bbb143b18adf6bad33ddc39142c70e6a"
+     },
+     {
+      "span_id": "A-page-0015",
+      "page": 15,
+      "location": "target PDF page 15",
+      "text": "756\n757\n758\n759\n760\n761\n762\n763\n764\n765\n766\n767\n768\n769\n770\n771\n772\n773\n774\n775\n776\n777\n778\n779\n780\n781\n782\n783\n784\n785\n786\n787\n788\n789\n790\n791\n792\n793\n794\n795\n796\n797\n798\n799\n800\n801\n802\n803\n804\n805\n806\n807\n808\n809\n\nTable 1: Hyperparameter settings per rate\n\n[tbl-0.html](tbl-0.html)\n\n### C DEPLOYED GRADIENT VS. GRADIENT AT $\\mu_t$\n\nLet $\\mu = \\mu_\\theta(x_t)$ and $J_s = \\partial\\hat{x}_{0|s}/\\partial x$. By the chain rule, the Stein-optimal coefficient is $u^\\star = \\sigma_t \\mathbb{E}_z [J_{t-1}(\\mu + \\sigma_t z)^\\top \\nabla L(\\hat{x}_{0|t-1}(\\mu + \\sigma_t z))]$: the next-step Jacobian, averaged over the candidate cloud. The tower identity (Equation 12) holds for every $x_t$, so we may differentiate both sides with respect to $x_t$:\n\n$$\\mathbb{E}_z [J_{t-1}(\\mu + \\sigma_t z)] \\frac{\\partial \\mu_\\theta}{\\partial x_t} = J_t. \\tag{21}$$\n\nThe current-step Jacobian therefore already contains the cloud-averaged next-step Jacobian, and $\\hat{x}_{0|t}$ is already the cloud average of the next-step prediction. Hence\n\n$$g_t = J_t^\\top \\nabla L(\\hat{x}_{0|t}(x_t)) \\approx \\left(\\frac{\\partial \\mu_\\theta}{\\partial x_t}\\right)^\\top \\frac{u^\\star}{\\sigma_t}. \\tag{22}$$\n\nThe only approximation is to replace the average of a product by the product of the averages, which is exac",
+      "text_sha256": "e8596dd02ea383c276bd2dd314a96bc2dbd0f49ca8f485d4692f66b3f0e3c235"
+     },
+     {
+      "span_id": "A-page-0018",
+      "page": 18,
+      "location": "target PDF page 18",
+      "text": "918\n919\n920\n921\n922\n923\n924\n925\n926\n927\n928\n929\n930\n931\n932\n933\n934\n935\n936\n937\n938\n939\n940\n941\n942\n943\n944\n945\n946\n947\n948\n949\n950\n951\n952\n953\n954\n955\n956\n957\n958\n959\n960\n961\n962\n963\n964\n965\n966\n967\n968\n969\n970\n971\n\nKodak, 0.116 bpp: both reconstructions come from bitstreams of identical length and the standard Turbo-DDCM decoder\n\n![img-36.jpeg](img-36.jpeg)\n\nFigure 14: Qualitative result on adapting image watermarking to [NAME C01].\n\n![img-37.jpeg](img-37.jpeg)\n\n![img-38.jpeg](img-38.jpeg)\n\nFigure 15: Quantitative result on adapting image watermarking to [NAME C01]. Watermarking with [NAME C01] on Kodak-24. The loss is the binary cross-entropy of the public PixelSeal detector (Souček et al., 2025) reading a secret 32-bit message; bitstream length and decoder are unchanged. Left: bit accuracy of the official detector on the decoded image versus the PSNR cost relative to [NAME C01] at the same bpp; numbers mark the watermark weight w. Right: bit accuracy after common attacks for w = 8, compared with PixelSeal's own embedder applied after decoding (reference) and with unwatermarked reconstructions (chance level, dotted line).",
+      "text_sha256": "eda6d630204178907e0eff687a0016c1a933d60930053cc2b85d25a31c363b2d"
+     },
+     {
+      "span_id": "A-page-0020",
+      "page": 20,
+      "location": "target PDF page 20",
+      "text": "1026\n1027\n1028\n1029\n1030\n1031\n1032\n1033\n1034\n1035\n1036\n1037\n1038\n1039\n1040\n1041\n1042\n1043\n1044\n1045\n1046\n1047\n1048\n1049\n1050\n1051\n1052\n1053\n1054\n1055\n1056\n1057\n1058\n1059\n1060\n1061\n1062\n1063\n1064\n1065\n1066\n1067\n1068\n1069\n1070\n1071\n1072\n1073\n1074\n1075\n1076\n1077\n1078\n1079\n\nTable 3: Every BD cell with the interval it is integrated over, grouped by metric. BD-rate intervals are quality ranges (PSNR dB; MS-SSIM; LPIPS-Alex; FID), BD-metric intervals are bpp ranges. Grey: < 3 points of one curve inside the interval; -: < 2 points or disjoint supports (not computed); n/a: no curve. Anchor: Turbo-DDCM, T=60 stock ladder, 8 rates. †: metric also appears in the optimized loss.\n\n[tbl-2.html](tbl-2.html)\n\n[OCR table id=tbl-2.html; page=20]\n<table><tr><td>method</td><td>rate %</td><td>quality interval</td><td>Δ</td><td>bpp interval</td></tr><tr><td colspan=\"5\">Kodak24</td></tr><tr><td colspan=\"5\">PSNR†</td></tr><tr><td>[NAME C01] (ours)</td><td>-18.7</td><td>[21.26, 25.25]</td><td>+0.44 dB</td><td>[0.0128, 0.1164]</td></tr><tr><td>DDCM</td><td>+65.7</td><td>[20.68, 23.45]</td><td>-1.11 dB</td><td>[0.0128, 0.1143]</td></tr><tr><td>DiffC</td><td>+2.2</td><td>[20.68, 25.25]</td><td>-0.07 dB</td><td>[0.0128, 0.0997]</td></tr><tr><td>StableCodec</td><td>+8.5</td><td>[20.68, 22.51]</td><td",
+      "text_sha256": "972eb67dfcdad6b31ed2a715a876e0b1346a368863efe4c3d2df027b4a3e51e8"
+     },
+     {
+      "span_id": "A-page-0023",
+      "page": 23,
+      "location": "target PDF page 23",
+      "text": "1188\n1189\n1190\n1191\n1192\n1193\n1194\n1195\n1196\n1197\n1198\n1199\n1200\n1201\n1202\n1203\n1204\n1205\n1206\n1207\n1208\n1209\n1210\n1211\n1212\n1213\n1214\n1215\n1216\n1217\n1218\n1219\n1220\n1221\n1222\n1223\n1224\n1225\n1226\n1227\n1228\n1229\n1230\n1231\n1232\n1233\n1234\n1235\n1236\n1237\n1238\n1239\n1240\n1241\n\nTable 6: Gradient estimators for the selection target. Ours: current-step gradient $g_t$. Taylor: next-step gradient at $\\mu_\\theta(x_t)$ (Appendix C). PSNR, MS-SSIM and LPIPS: Kodak-24, mean over three codebook seeds. PQ: panoptic quality on COCO val2017 ($n=75$) with the DINO loss. Time: encoding time relative to ours. The time difference happens because computing gradient on $x_t$ doesn't require extra forward step, since this forward step was previously required.\n\n[tbl-5.html](tbl-5.html)\n\nKodim23 | $i_{post} + i_{spec}$ (Re-IDA, $w_p = .51$ | r031 | channel-L2 magnitude of each latent component (tile 99th-percentile normalized)\n\n![img-43.jpeg](img-43.jpeg)\n\nFigure 20: Visualization of the residual and the gradient of the pixel-loss/perceptual loss (see Section 3.2 and Section 3.5).\n\n[OCR table id=tbl-5.html; page=23]\n<table><tr><td>bpp</td><td>Estimator</td><td>PSNR ↑</td><td>MS-SSIM ↑</td><td>PQ ↑</td><td>Time</td></tr><tr><td rowspan=\"2\">0.0128</td><td>Ours</td><td><b>21.28</b></td><td><b>0.6",
+      "text_sha256": "803be45950bc0780d03c3a870e97ed8384313f7e3d4d3ef6582e9906bc439540"
+     },
+     {
+      "span_id": "A-page-0026",
+      "page": 26,
+      "location": "target PDF page 26",
+      "text": "1350\n1351\n1352\n1353\n1354\n1355\n1356\n1357\n1358\n1359\n1360\n1361\n1362\n1363\n1364\n1365\n1366\n1367\n1368\n1369\n1370\n1371\n1372\n1373\n1374\n1375\n1376\n1377\n1378\n1379\n1380\n1381\n1382\n1383\n1384\n1385\n1386\n1387\n1388\n1389\n1390\n1391\n1392\n1393\n1394\n1395\n1396\n1397\n1398\n1399\n1400\n1401\n1402\n1403\n\nnodes 18 | L_0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0\n\n![img-46.jpeg](img-46.jpeg)\n\nFigure 23: Visualization of the residual and the gradient of the pixel-loss/semantic loss (see Section 3.2 and Section 3.4).",
+      "text_sha256": "8584b61f822fe44e3c56d24b2ff7771cdbae00ee5e7cf96b85e3242f2a4dedcf"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-0c23cf7fbbfd9d",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-0-209",
+      "text": null,
+      "text_sha256": "b6ce4002cecd703897826701071e49a7aec6e718e8c2dc79f33e578dacc45bb3",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-46638f2cf5e4a9",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-1239-5149",
+      "text": null,
+      "text_sha256": "313425de2683e747c2117a2265c171a3c55fb03017d0d635d91a6f5cc5843fc3",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-354cf0673a3084",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-12825-15060",
+      "text": null,
+      "text_sha256": "7b58c539474ff142461dca90608c895a39efb46591009ea2b7973a77ce10494a",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-11cf0b061d1810",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-15060-18152",
+      "text": null,
+      "text_sha256": "8c1a123a3aea9f636639c5f8c7cd200b62cee212866ad1984232b696d57b4bbb",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-a9f53df2fae422",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-18152-18429",
+      "text": null,
+      "text_sha256": "4d1f9cb476c73ca0d0d84c44a99add92d7151792f0c0473cafe2a85381ac2d2a",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ab0db0ecb6814d",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-19769-22213",
+      "text": null,
+      "text_sha256": "cb2315474e70360f191b1d47a181c9e8fea81b2ff5704d22373fd66d849b382a",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-bd0eee9ccced2b",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-209-286",
+      "text": null,
+      "text_sha256": "678531362c77022b9893a738e5ce1df0950c5eea972e6b6986cd654a22074922",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-9ff3f6c8159b69",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-22213-24214",
+      "text": null,
+      "text_sha256": "640ce5fb12ac57bfaa433cab32410a3fb49a4216c0f82ac7567741ce5b523fdf",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-95a1d1d5e6d77e",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-24214-24229",
+      "text": null,
+      "text_sha256": "65b72d86eeeb214ab8ca5fd24cb7cd7773e58084e95b670040df03e21e8c6fa7",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-88202332b28964",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-24242-30990",
+      "text": null,
+      "text_sha256": "123e8eb0ccdcb4443b2ba19be8a3088f46f760039c18af475638a87aee3d12fa",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-93a2660ab5ee87",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-286-1239",
+      "text": null,
+      "text_sha256": "59f43ef5113b15cee2aeedc50587f5ca6e274ea870f261e28fcfe9a891ec725c",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-87034c59feee67",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-30990-32329",
+      "text": null,
+      "text_sha256": "76c21ece4db92fa4c44837207e98e648b4a3827ea2e03023fc12d1c6c96cc59d",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-f30f884a8bd30e",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-5181-6228",
+      "text": null,
+      "text_sha256": "27e8bc84ffb35783e0823e61a7e32a2755f76387827926996fafb75eb3164bdd",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     },
+     {
+      "span_id": "B-ff932582800fa2",
+      "page": null,
+      "location": "https://arxiv.org/html/2604.05743v1#chars-7976-12825",
+      "text": null,
+      "text_sha256": "59c7fb47a5cb1ce523c9c4905635f995b9230c7695e3693a488991d58026109f",
+      "text_note": "withheld (source license does not allow redistribution); text_sha256 is the hash of the extracted excerpt"
+     }
+    ]
+   }
+  },
+  {
+   "pair_id": "C01-P2",
+   "source_key": "arxiv-2511.06424",
+   "source_distribution": "included",
+   "spans": {
+    "target": [
+     {
+      "span_id": "A-page-0001",
+      "page": 1,
+      "location": "target PDF page 1",
+      "text": "# [TITLE C01]\n\nAnonymous authors\n\nPaper under double-blind review\n\n# ABSTRACT\n\nZero-shot diffusion-based codecs compress images by selecting elements from a shared randomness by the encoder and the decoder. Fast selectors such as Turbo-DDCM score atoms by their correlation with a latent residual, which restricts direct control to a latent quadratic objective, while DDCM handles other objectives by evaluating a small set of candidate noises. We introduce [NAME C01], which selects noise under a differentiable objective by scoring all atoms with a linear surrogate of the next-step objective. Stein's identity gives the least-squares coefficient of this surrogate, which we approximate with one vector-Jacobian product per guided step, so the number of network evaluations is independent of the codebook size and of the number of selected atoms. [NAME C01] keeps Turbo-DDCM's bitstream format and frozen decoder, transmits no side information, and requires no training. It reduces BD-rate against Turbo-DDCM by 18.7% (PSNR) and 13.7% (LPIPS) on Kodak and by 17.9% and 13.5% on DIV2K, and the same encoder provides full-resolution region-of-interest control, semantic preservation for downstream segmenta",
+      "text_sha256": "c696477dd47348afe1f491b16c23322032bec7e100101b02322bb520c4f93cbc"
+     },
+     {
+      "span_id": "A-page-0002",
+      "page": 2,
+      "location": "target PDF page 2",
+      "text": "054\n055\n056\n057\n058\n059\n060\n061\n062\n063\n064\n065\n066\n067\n068\n069\n070\n071\n072\n073\n074\n075\n076\n077\n078\n079\n080\n081\n082\n083\n084\n085\n086\n087\n088\n089\n090\n091\n092\n093\n094\n095\n096\n097\n098\n099\n100\n101\n102\n103\n104\n105\n106\n107\n\n![img-0.jpeg](img-0.jpeg)\n\nFigure 1: [NAME C01] overview. A fidelity-residual anchors the objective gradient to guide signed noise atom selection under fidelity, regional, semantic, and perceptual controls. Selected indices and signs are shared to a frozen decoder that reproduces the noise codebook using a shared seed, keeping all objective-dependent control at the encoder.\n\nsquares approximation of the next-step reconstruction loss under Gaussian noise. Stein's identity identifies its optimal linear coefficient as a noise-averaged loss gradient. Following the use of denoised estimates in diffusion guidance (Chung et al., 2023; Yu et al., 2023a), we approximate this direction with a current-state loss gradient through the Tweedie reconstruction estimate. We combine its normalized descent direction with the normalized latent residual to anchor selection to the source image. The resulting inner-product scores feed directly into Turbo-DDCM's signed top-M selection and bit packing, allowing pixel-space, feature-space, and quality objectives to influence the tra",
+      "text_sha256": "af63dae70ff0f34f1159779971869b175ac1d36947c1ed5283b01b212cb805c7"
+     },
+     {
+      "span_id": "A-page-0003",
+      "page": 3,
+      "location": "target PDF page 3",
+      "text": "108\n109\n110\n111\n112\n113\n114\n115\n116\n117\n118\n119\n120\n121\n122\n123\n124\n125\n126\n127\n128\n129\n130\n131\n132\n133\n134\n135\n136\n137\n138\n139\n140\n141\n142\n143\n144\n145\n146\n147\n148\n149\n150\n151\n152\n153\n154\n155\n156\n157\n158\n159\n160\n161\n\nstep t (the Tweedie estimate (Efron, 2011)) follows as\n\n$$\\mathbb{E}[x_0 \\mid x_t] \\approx \\frac{x_t - \\sqrt{1 - \\overline{\\alpha}_t} \\epsilon_\\theta(x_t, t)}{\\sqrt{\\overline{\\alpha}_t}} = \\hat{x}_{0|t}(x_t), \\tag{2}$$\n\nwhere $\\overline{\\alpha}_t = \\prod_{s \\le t} \\alpha_s$. In DDPM (Ho et al., 2020), sampling starts from Gaussian noise $x_T \\sim \\mathcal{N}(0, I)$ and applies the reverse step\n\n$$x_{t-1} = \\mu_\\theta(x_t) + \\sigma_t z_t, \\qquad z_t \\sim \\mathcal{N}(0, I), \\tag{3}$$\n\nwhere $\\mu_\\theta(x_t)$ is the sampler's deterministic reverse-step mean, a linear combination of $x_t$ and $\\epsilon_\\theta(x_t, t)$, and $\\sigma_t$ is the reverse-step standard deviation the sampler specifies. For ancestral DDPM with the fixed-small variance, $\\sigma_t^2 = \\tilde{\\beta}_t = \\frac{1 - \\overline{\\alpha}_{t-1}}{1 - \\overline{\\alpha}_t}(1 - \\alpha_t)$; for a DDIM or subsampled schedule we use that schedule's coefficient. Throughout this paper we work with a latent diffusion model (Rombach et al., 2022), so $x_t$ lives in the VAE latent space and $\\mathcal{D}$",
+      "text_sha256": "d89d053630906e921403419b7484557a3f1264b8dbe1aada9d0f56c4666a8402"
+     },
+     {
+      "span_id": "A-page-0004",
+      "page": 4,
+      "location": "target PDF page 4",
+      "text": "162\n163\n164\n165\n166\n167\n168\n169\n170\n171\n172\n173\n174\n175\n176\n177\n178\n179\n180\n181\n182\n183\n184\n185\n186\n187\n188\n189\n190\n191\n192\n193\n194\n195\n196\n197\n198\n199\n200\n201\n202\n203\n204\n205\n206\n207\n208\n209\n210\n211\n212\n213\n214\n215\n\ngradient guidance from an optimization viewpoint. All of these methods add the gradient to a continuous update and therefore change the sampling trajectory in a way that a decoder cannot reproduce from a short index. Our setting is different: the gradient is used only to rank a discrete set of candidate noises, the update itself stays on the codebook, and the transmitted indices remain sufficient for exact reconstruction at the decoder. This is what keeps control free of side information.\n\n### 3 METHOD\n\n### 3.1 THE OPTIMAL LINEAR SCORE FOR PER-STEP OPTIMIZATION\n\nGiven a differentiable loss function $L(\\cdot)$, our goal at step $t$ is to select the noise $z$ that optimizes\n\n$$L(\\mathbb{E}[x_0 \\mid x_{t-1}]) \\approx L\\Big(\\hat{x}_{0|t-1}(\\mu_\\theta(x_t) + \\sigma_t z)\\Big). \\tag{7}$$\n\nSince $x_{t-1} = \\mu_\\theta(x_t) + \\sigma_t z$, Equation 7 chooses the noise whose next-step Tweedie estimate best matches the target latent under $L$. Per step, the selector must rank candidate noises by their effect on the loss,\n\n$$\\mathcal{L}(z) \\triangleq L\\Big(\\hat{x}_{",
+      "text_sha256": "827254ec28e90b357d1eccc43dc34803712e1a922c2a48bc7f13292f6fe03e2a"
+     },
+     {
+      "span_id": "A-page-0005",
+      "page": 5,
+      "location": "target PDF page 5",
+      "text": "216\n217\n218\n219\n220\n221\n222\n223\n224\n225\n226\n227\n228\n229\n230\n231\n232\n233\n234\n235\n236\n237\n238\n239\n240\n241\n242\n243\n244\n245\n246\n247\n248\n249\n250\n251\n252\n253\n254\n255\n256\n257\n258\n259\n260\n261\n262\n263\n264\n265\n266\n267\n268\n269\n\n**Fidelity-anchored selection direction.** Because $g_t$ passes through learned maps, we do not rank atoms against $g_t$ alone. For robustness, we utilize $r_t = x_0 - \\hat{x}_{0|t}(x_t)$, and the selection target is the equal-weight mixture of the two normalized directions,\n\n$$z^* = \\arg \\max_z \\langle z, w_t \\rangle, \\quad w_t = \\frac{1}{2} (\\hat{r}_t - \\hat{g}_t), \\tag{14}$$\n\ni.e., the bisector of the residual direction and the descent direction. The anchor is principled rather than heuristic: $r_t$ is computed exactly from known tensors and is the exact direction toward the latent objective ($x_0$), so its linear score is trustworthy at any step size, whereas $g_t$ is a local gradient and carries model error that the top-$M$ argmax can amplify. Normalizing before mixing makes the balance insensitive to the gradient magnitudes, which drift across steps and objectives. Therefore, taking the bisector keeps $w_t$ equally aligned with both directions, so the target $w_t$ can never anti-align with the fidelity residual, whatever the objective's gradient ",
+      "text_sha256": "7267b58f36c41d538c393833a75e3eec21c67bdb106b652636b296d563ec5c1c"
+     },
+     {
+      "span_id": "A-page-0006",
+      "page": 6,
+      "location": "target PDF page 6",
+      "text": "270\n271\n272\n273\n274\n275\n276\n277\n278\n279\n280\n281\n282\n283\n284\n285\n286\n287\n288\n289\n290\n291\n292\n293\n294\n295\n296\n297\n298\n299\n300\n301\n302\n303\n304\n305\n306\n307\n308\n309\n310\n311\n312\n313\n314\n315\n316\n317\n318\n319\n320\n321\n322\n323\n\nAlgorithm 1 Encoding method of [NAME C01]\n\nRequire: image \\( y_0 \\); objective \\( L \\); frozen \\( \\epsilon_\\theta \\), VAE; steps \\( T \\); atoms per step \\( M \\); stepwise codebooks \\( \\{C_t\\}_{t=1}^T \\) shared with the decoder; gradient start \\( T_g \\); selection-free tail \\( T_{\\text{free}} \\)\n\n1: \\( x_0 \\leftarrow \\mathcal{E}(y_0) \\); initialize \\( x_T \\)\n\n2: for \\( t = T, \\ldots, 1 \\) do\n\n3: \\( \\hat{\\epsilon} \\leftarrow \\epsilon_\\theta(x_t, t) \\) ▷ forward pass; recorded for autograd on gradient steps\n\n4: if \\( t \\leq T_{\\text{free}} \\) then ▷ final steps: no selection, no bits (as in Turbo-DDCM)\n\n5: \\( x_{t-1} \\leftarrow \\text{TurboStep}(x_t, \\hat{\\epsilon}, z=0) \\); continue\n\n6: end if\n\n7: \\( \\hat{x}_{0|t} \\leftarrow \\text{Tweedie}(x_t, \\hat{\\epsilon}) \\)\n\n8: \\( r_t \\leftarrow x_0 - \\hat{x}_{0|t} \\)\n\n9: if \\( t \\leq T_g \\) then ▷ gradient steps\n\n10: \\( g_t \\leftarrow \\nabla_{x_t}(L \\circ \\hat{x}_{0|t})|_{x_t} \\) ▷ one reverse-mode pass (Eq. 13)\n\n11: \\( w_t \\leftarrow \\frac{1}{2}(r_t / \\|r_t\\| - g_t / \\|g_t\\|) \\) ▷ selection target (Eq. 14)\n\n12: else\n\n1",
+      "text_sha256": "67a829ecafcf5faac3537b73bf5de01eb81974cbb58715dab71649ac24b78663"
+     },
+     {
+      "span_id": "A-page-0007",
+      "page": 7,
+      "location": "target PDF page 7",
+      "text": "324\n325\n326\n327\n328\n329\n330\n331\n332\n333\n334\n335\n336\n337\n338\n339\n340\n341\n342\n343\n344\n345\n346\n347\n348\n349\n350\n351\n352\n353\n354\n355\n356\n357\n358\n359\n360\n361\n362\n363\n364\n365\n366\n367\n368\n369\n370\n371\n372\n373\n374\n375\n376\n377\n\n![img-1.jpeg](img-1.jpeg)\n\n![img-2.jpeg](img-2.jpeg)\n\n![img-3.jpeg](img-3.jpeg)\n\n![img-4.jpeg](img-4.jpeg)\n\n![img-5.jpeg](img-5.jpeg)\n\n![img-6.jpeg](img-6.jpeg)\n\n![img-7.jpeg](img-7.jpeg)\n\n![img-8.jpeg](img-8.jpeg)\n\n![img-9.jpeg](img-9.jpeg)\n\n![img-10.jpeg](img-10.jpeg)\n\n![img-11.jpeg](img-11.jpeg)\n\n![img-12.jpeg](img-12.jpeg)\n\n![img-13.jpeg](img-13.jpeg)\n\n![img-14.jpeg](img-14.jpeg)\n\n![img-15.jpeg](img-15.jpeg)\n\n![img-16.jpeg](img-16.jpeg)\n\n![img-17.jpeg](img-17.jpeg)\n\n![img-18.jpeg](img-18.jpeg)\n\n![img-19.jpeg](img-19.jpeg)\n\n![img-20.jpeg](img-20.jpeg)\n\nFigure 2: Qualitative comparison of our method with the pixel-level loss $L_{\\text{pixel}}(x)$ (see Section 3.2) and other zero-shot image compression methods.\n\ntherefore a less realistic image (perception); conversely, optimizing for realism sacrifices reconstruction accuracy. With the following loss we obtain a tunable position on that tradeoff. Let $q$ denote a no-reference image quality score in the convention where higher is better, as MUSIQ (Ke et al., 2021), Re-IQA (Saha et al., 2023) and ARNIQ",
+      "text_sha256": "2da32be95ab1a6340f79e3faae5c82049943975179af64ddd2e08b8cd1c8b47b"
+     },
+     {
+      "span_id": "A-page-0009",
+      "page": 9,
+      "location": "target PDF page 9",
+      "text": "432\n433\n434\n435\n436\n437\n438\n439\n440\n441\n442\n443\n444\n445\n446\n447\n448\n449\n450\n451\n452\n453\n454\n455\n456\n457\n458\n459\n460\n461\n462\n463\n464\n465\n466\n467\n468\n469\n470\n471\n472\n473\n474\n475\n476\n477\n478\n479\n480\n481\n482\n483\n484\n485\n\n![img-26.jpeg](img-26.jpeg)\n\nFigure 6: Qualitative results on our method with semantic preservation loss (see Section 3.4).\n\n![img-27.jpeg](img-27.jpeg)\n\nFigure 7: Perception–distortion traversal at a fixed rate. Kodak24 at BPP = 0.03. Each curve is produced by sweeping w_p in Equation 18 with q set to Re-IQA (Saha et al., 2023); the horizontal and vertical axes report a distortion metric and a held-out no-reference metric that was not optimized.\n\nPerception-distortion traversal. Fig. 7 shows the results of our experiment using the loss described in the Section 3.5. By adjusting the weight of the quality metric loss term, we can traverse the perception-distortion tradeoff area. We chose Re-IQA as the optimizing quality metric function and evaluate on other NR-IQA metric as MUSIQ and ARNIQA, and observe that the traversal is well transferred to other NR-IQA metrics. In the Appendix section, we show further experimental results and ablative studies on various loss function optimization including watermarking.\n\n## 5 CONCLUSION\n\nZero-shot diffusion codecs ",
+      "text_sha256": "1a61ff9f338d7e3309f0982addcdb2354871f343d3653497a94482bd54f69eeb"
+     },
+     {
+      "span_id": "A-page-0012",
+      "page": 12,
+      "location": "target PDF page 12",
+      "text": "594\n595\n596\n597\n598\n599\n600\n601\n602\n603\n604\n605\n606\n607\n608\n609\n610\n611\n612\n613\n614\n615\n616\n617\n618\n619\n620\n621\n622\n623\n624\n625\n626\n627\n628\n629\n630\n631\n632\n633\n634\n635\n636\n637\n638\n639\n640\n641\n642\n643\n644\n645\n646\n647\n\nZhiyuan Li, Yanhui Zhou, Hao Wei, Chenyang Ge, and Jingwen Jiang. Toward extreme image compression with latent feature guidance and diffusion prior. IEEE Transactions on Circuits and Systems for Video Technology, 35(1):888–899, 2025. doi: 10.1109/TCSVT.2024.3455576.\n\nTsung-Yi Lin, Michael Maire, Serge Belongie, James Hays, Pietro Perona, Deva Ramanan, Piotr Dollár, and C Lawrence Zitnick. Microsoft COCO: Common objects in context. In European Conference on Computer Vision (ECCV), pp. 740–755, 2014.\n\nFabian Mentzer, George D Toderici, Michael Tschannen, and Eirikur Agustsson. High-fidelity generative image compression. Advances in Neural Information Processing Systems, 33:11913–11924, 2020.\n\nDavid Minnen, Johannes Ballé, and George Toderici. Joint autoregressive and hierarchical priors for learned image compression. Advances in Neural Information Processing Systems, 31, 2018.\n\nMatthew J Muckley, Alaaeldin El-Nouby, Karen Ullrich, Hervé Jégou, and Jakob Verbeek. Improving statistical fidelity for neural image compression with implicit local likelihood mo",
+      "text_sha256": "593a7b6f8017dcc84a1fd95e9a885d77bbb143b18adf6bad33ddc39142c70e6a"
+     },
+     {
+      "span_id": "A-page-0015",
+      "page": 15,
+      "location": "target PDF page 15",
+      "text": "756\n757\n758\n759\n760\n761\n762\n763\n764\n765\n766\n767\n768\n769\n770\n771\n772\n773\n774\n775\n776\n777\n778\n779\n780\n781\n782\n783\n784\n785\n786\n787\n788\n789\n790\n791\n792\n793\n794\n795\n796\n797\n798\n799\n800\n801\n802\n803\n804\n805\n806\n807\n808\n809\n\nTable 1: Hyperparameter settings per rate\n\n[tbl-0.html](tbl-0.html)\n\n### C DEPLOYED GRADIENT VS. GRADIENT AT $\\mu_t$\n\nLet $\\mu = \\mu_\\theta(x_t)$ and $J_s = \\partial\\hat{x}_{0|s}/\\partial x$. By the chain rule, the Stein-optimal coefficient is $u^\\star = \\sigma_t \\mathbb{E}_z [J_{t-1}(\\mu + \\sigma_t z)^\\top \\nabla L(\\hat{x}_{0|t-1}(\\mu + \\sigma_t z))]$: the next-step Jacobian, averaged over the candidate cloud. The tower identity (Equation 12) holds for every $x_t$, so we may differentiate both sides with respect to $x_t$:\n\n$$\\mathbb{E}_z [J_{t-1}(\\mu + \\sigma_t z)] \\frac{\\partial \\mu_\\theta}{\\partial x_t} = J_t. \\tag{21}$$\n\nThe current-step Jacobian therefore already contains the cloud-averaged next-step Jacobian, and $\\hat{x}_{0|t}$ is already the cloud average of the next-step prediction. Hence\n\n$$g_t = J_t^\\top \\nabla L(\\hat{x}_{0|t}(x_t)) \\approx \\left(\\frac{\\partial \\mu_\\theta}{\\partial x_t}\\right)^\\top \\frac{u^\\star}{\\sigma_t}. \\tag{22}$$\n\nThe only approximation is to replace the average of a product by the product of the averages, which is exac",
+      "text_sha256": "e8596dd02ea383c276bd2dd314a96bc2dbd0f49ca8f485d4692f66b3f0e3c235"
+     },
+     {
+      "span_id": "A-page-0018",
+      "page": 18,
+      "location": "target PDF page 18",
+      "text": "918\n919\n920\n921\n922\n923\n924\n925\n926\n927\n928\n929\n930\n931\n932\n933\n934\n935\n936\n937\n938\n939\n940\n941\n942\n943\n944\n945\n946\n947\n948\n949\n950\n951\n952\n953\n954\n955\n956\n957\n958\n959\n960\n961\n962\n963\n964\n965\n966\n967\n968\n969\n970\n971\n\nKodak, 0.116 bpp: both reconstructions come from bitstreams of identical length and the standard Turbo-DDCM decoder\n\n![img-36.jpeg](img-36.jpeg)\n\nFigure 14: Qualitative result on adapting image watermarking to [NAME C01].\n\n![img-37.jpeg](img-37.jpeg)\n\n![img-38.jpeg](img-38.jpeg)\n\nFigure 15: Quantitative result on adapting image watermarking to [NAME C01]. Watermarking with [NAME C01] on Kodak-24. The loss is the binary cross-entropy of the public PixelSeal detector (Souček et al., 2025) reading a secret 32-bit message; bitstream length and decoder are unchanged. Left: bit accuracy of the official detector on the decoded image versus the PSNR cost relative to [NAME C01] at the same bpp; numbers mark the watermark weight w. Right: bit accuracy after common attacks for w = 8, compared with PixelSeal's own embedder applied after decoding (reference) and with unwatermarked reconstructions (chance level, dotted line).",
+      "text_sha256": "eda6d630204178907e0eff687a0016c1a933d60930053cc2b85d25a31c363b2d"
+     },
+     {
+      "span_id": "A-page-0020",
+      "page": 20,
+      "location": "target PDF page 20",
+      "text": "1026\n1027\n1028\n1029\n1030\n1031\n1032\n1033\n1034\n1035\n1036\n1037\n1038\n1039\n1040\n1041\n1042\n1043\n1044\n1045\n1046\n1047\n1048\n1049\n1050\n1051\n1052\n1053\n1054\n1055\n1056\n1057\n1058\n1059\n1060\n1061\n1062\n1063\n1064\n1065\n1066\n1067\n1068\n1069\n1070\n1071\n1072\n1073\n1074\n1075\n1076\n1077\n1078\n1079\n\nTable 3: Every BD cell with the interval it is integrated over, grouped by metric. BD-rate intervals are quality ranges (PSNR dB; MS-SSIM; LPIPS-Alex; FID), BD-metric intervals are bpp ranges. Grey: < 3 points of one curve inside the interval; -: < 2 points or disjoint supports (not computed); n/a: no curve. Anchor: Turbo-DDCM, T=60 stock ladder, 8 rates. †: metric also appears in the optimized loss.\n\n[tbl-2.html](tbl-2.html)\n\n[OCR table id=tbl-2.html; page=20]\n<table><tr><td>method</td><td>rate %</td><td>quality interval</td><td>Δ</td><td>bpp interval</td></tr><tr><td colspan=\"5\">Kodak24</td></tr><tr><td colspan=\"5\">PSNR†</td></tr><tr><td>[NAME C01] (ours)</td><td>-18.7</td><td>[21.26, 25.25]</td><td>+0.44 dB</td><td>[0.0128, 0.1164]</td></tr><tr><td>DDCM</td><td>+65.7</td><td>[20.68, 23.45]</td><td>-1.11 dB</td><td>[0.0128, 0.1143]</td></tr><tr><td>DiffC</td><td>+2.2</td><td>[20.68, 25.25]</td><td>-0.07 dB</td><td>[0.0128, 0.0997]</td></tr><tr><td>StableCodec</td><td>+8.5</td><td>[20.68, 22.51]</td><td",
+      "text_sha256": "972eb67dfcdad6b31ed2a715a876e0b1346a368863efe4c3d2df027b4a3e51e8"
+     },
+     {
+      "span_id": "A-page-0023",
+      "page": 23,
+      "location": "target PDF page 23",
+      "text": "1188\n1189\n1190\n1191\n1192\n1193\n1194\n1195\n1196\n1197\n1198\n1199\n1200\n1201\n1202\n1203\n1204\n1205\n1206\n1207\n1208\n1209\n1210\n1211\n1212\n1213\n1214\n1215\n1216\n1217\n1218\n1219\n1220\n1221\n1222\n1223\n1224\n1225\n1226\n1227\n1228\n1229\n1230\n1231\n1232\n1233\n1234\n1235\n1236\n1237\n1238\n1239\n1240\n1241\n\nTable 6: Gradient estimators for the selection target. Ours: current-step gradient $g_t$. Taylor: next-step gradient at $\\mu_\\theta(x_t)$ (Appendix C). PSNR, MS-SSIM and LPIPS: Kodak-24, mean over three codebook seeds. PQ: panoptic quality on COCO val2017 ($n=75$) with the DINO loss. Time: encoding time relative to ours. The time difference happens because computing gradient on $x_t$ doesn't require extra forward step, since this forward step was previously required.\n\n[tbl-5.html](tbl-5.html)\n\nKodim23 | $i_{post} + i_{spec}$ (Re-IDA, $w_p = .51$ | r031 | channel-L2 magnitude of each latent component (tile 99th-percentile normalized)\n\n![img-43.jpeg](img-43.jpeg)\n\nFigure 20: Visualization of the residual and the gradient of the pixel-loss/perceptual loss (see Section 3.2 and Section 3.5).\n\n[OCR table id=tbl-5.html; page=23]\n<table><tr><td>bpp</td><td>Estimator</td><td>PSNR ↑</td><td>MS-SSIM ↑</td><td>PQ ↑</td><td>Time</td></tr><tr><td rowspan=\"2\">0.0128</td><td>Ours</td><td><b>21.28</b></td><td><b>0.6",
+      "text_sha256": "803be45950bc0780d03c3a870e97ed8384313f7e3d4d3ef6582e9906bc439540"
+     },
+     {
+      "span_id": "A-page-0026",
+      "page": 26,
+      "location": "target PDF page 26",
+      "text": "1350\n1351\n1352\n1353\n1354\n1355\n1356\n1357\n1358\n1359\n1360\n1361\n1362\n1363\n1364\n1365\n1366\n1367\n1368\n1369\n1370\n1371\n1372\n1373\n1374\n1375\n1376\n1377\n1378\n1379\n1380\n1381\n1382\n1383\n1384\n1385\n1386\n1387\n1388\n1389\n1390\n1391\n1392\n1393\n1394\n1395\n1396\n1397\n1398\n1399\n1400\n1401\n1402\n1403\n\nnodes 18 | L_0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0\n\n![img-46.jpeg](img-46.jpeg)\n\nFigure 23: Visualization of the residual and the gradient of the pixel-loss/semantic loss (see Section 3.2 and Section 3.4).",
+      "text_sha256": "8584b61f822fe44e3c56d24b2ff7771cdbae00ee5e7cf96b85e3242f2a4dedcf"
+     }
+    ],
+    "source": [
+     {
+      "span_id": "B-ocr-ba8371358726aa",
+      "page": 1,
+      "location": "B PDF page 1",
+      "text": "arXiv:2511.06424v2 [eess.IV] 14 Apr 2026\n\n# TURBO-DDCM: FAST AND FLEXIBLE ZERO-SHOT DIFFUSION-BASED IMAGE COMPRESSION\n\nAmit Vaisman \\( ^{1} \\) , Guy Ohayon \\( ^{2} \\) , Hila Manor \\( ^{1} \\) , Michael Elad \\( ^{1} \\) , Tomer Michaeli \\( ^{1} \\)\n\n\\( ^{1} \\) Technion – Israel Institute of Technology  \\( ^{2} \\) Flatiron Institute, Simons Foundation amit.vaisman@campus.technion.ac.il, gohayon@flatironinstitute.org, {hila.manor@campus, elad@cs, tomer.m@ee}.technion.ac.il\n\n## ABSTRACT\n\nWhile zero-shot diffusion-based compression methods have seen significant progress in recent years, they remain notoriously slow and computationally demanding. This paper presents an efficient zero-shot diffusion-based compression method that runs substantially faster than existing methods, while maintaining performance that is on par with the state-of-the-art techniques. Our method builds upon the recently proposed Denoising Diffusion Codebook Models (DD-CMs) compression scheme. Specifically, DDCM compresses an image by sequentially choosing the diffusion noise vectors from reproducible random codebooks, guiding the denoiser's output to reconstruct the target image. We modify this framework with Turbo-DDCM, which efficiently combines a large number of noise vectors at each denoising step",
+      "text_sha256": "45d9629df2a733c9e18f2d9e620349b58e832edafb59b13a38ff8a9ce5cac9a4"
+     },
+     {
+      "span_id": "B-ocr-adce0b5d25b16f",
+      "page": 2,
+      "location": "B PDF page 2",
+      "text": "![img-0.jpeg](img-0.jpeg)\n\nFigure 1: Turbo-DDCM: Our method provides reconstructions with equal or better fidelity compared to previous methods, while being much faster. At the same BPP and runtime, the priority-aware variant (bottom-right) better serves key regions of choice.\n\nfrom a reproducible Gaussian codebook, implying that the final generated image can be efficiently stored/transmitted by storing/transmitting the indices of the selected noise vectors. While such a simple compression mechanism works surprisingly well, it requires hundreds of denoising steps to achieve sufficient reconstruction quality, which results in an average round-trip compression-decompression time of 65 seconds. Our proposed Turbo-DDCM compression method accelerates this process by significantly reducing the required number of denoising steps to just a few dozen. In particular, Turbo-DDCM combines a large number of noise vectors at each DDCM step by solving a sparse least-squares optimization problem in closed form, leveraging the near-orthogonality of Gaussian codebook vectors in high-dimensional spaces. While Ohayon et al. (2025) proposed a seemingly similar approach that utilizes a matching pursuit (MP) strategy (Mallat & Zhang, 1993), their method relies on a greedy iterative proce",
+      "text_sha256": "2e25beb45ad692ee85672a365793ffcf1fe73938a0f94b858c65e74a8335ef22"
+     },
+     {
+      "span_id": "B-ocr-02a43cbcac9916",
+      "page": 4,
+      "location": "B PDF page 4",
+      "text": "## 3 BACKGROUND\n\n### 3.1 DENOISING DIFFUSION PROBABILISTIC MODELS (DDPM)\n\nDiffusion models (Sohl-Dickstein et al., 2015; Ho et al., 2020; Song et al., 2020) generate samples from a data distribution $p_0$ by learning to reverse a forward diffusion process. Specifically, for $t \\in \\{1, \\ldots, T\\}$, the forward process gradually corrupts the data $\\mathbf{x}_0 \\sim p_0$ with noise via\n\n$$\\mathbf{x}_t = \\sqrt{\\alpha_t}\\mathbf{x}_{t-1} + \\sqrt{1 - \\alpha_t}\\boldsymbol{\\epsilon}_t, \\quad \\boldsymbol{\\epsilon}_t \\sim \\mathcal{N}(\\mathbf{0}, \\boldsymbol{I}), \\tag{1}$$\n\nwhere $\\alpha_1, \\ldots, \\alpha_T > 0$ are time-dependent constants controlling the signal-to-noise ratio. In DDPM (Ho et al., 2020), the reverse diffusion process generates samples from the data distribution by gradually denoising a random noise sample $\\mathbf{x}_T \\sim \\mathcal{N}(\\mathbf{0}, \\boldsymbol{I})$ via\n\n$$\\mathbf{x}_{t-1} = \\boldsymbol{\\mu}_t(\\mathbf{x}_t) + \\sigma_t\\mathbf{z}_t, \\quad \\mathbf{z}_t \\sim \\mathcal{N}(\\mathbf{0}, \\boldsymbol{I}), \\tag{2}$$\n\nwhere $\\sigma_t = \\sqrt{1 - \\alpha_t}$, and $\\boldsymbol{\\mu}_t(\\mathbf{x}_t)$ is the conditional mean of $\\mathbf{x}_{t-1}$ given $\\mathbf{x}_t$. $\\boldsymbol{\\mu}_t(\\mathbf{x}_t)$ can be expressed in terms of the minimum mean-squared-error",
+      "text_sha256": "555d9d154ecb4146df21848fbd61184b20e2c1e7098f4143f624fd241afcbbec"
+     },
+     {
+      "span_id": "B-ocr-436ad2db9b57c7",
+      "page": 18,
+      "location": "B PDF page 18",
+      "text": "[tbl-0.html](tbl-0.html)\n\nTable 1: Quantitative comparison on Kodak24 \\( _{512} \\) dataset between zero-shot methods.\n\n[OCR table id=tbl-0.html; page=18]\n<table><tr><td>method</td><td>bpp</td><td>PSNR</td><td>LPIPS</td><td>FID</td><td>Roundtrip Time (sec)</td></tr><tr><td rowspan=\"11\">DDCM</td><td>0.010</td><td>19.31</td><td>0.46</td><td>60.17</td><td>35.89</td></tr><tr><td>0.013</td><td>20.46</td><td>0.36</td><td>48.84</td><td>35.74</td></tr><tr><td>0.019</td><td>21.38</td><td>0.28</td><td>38.53</td><td>36.50</td></tr><tr><td>0.025</td><td>21.92</td><td>0.23</td><td>33.53</td><td>35.92</td></tr><tr><td>0.034</td><td>22.33</td><td>0.20</td><td>30.67</td><td>71.20</td></tr><tr><td>0.046</td><td>22.84</td><td>0.17</td><td>26.87</td><td>73.37</td></tr><tr><td>0.080</td><td>23.23</td><td>0.15</td><td>25.35</td><td>75.48</td></tr><tr><td>0.114</td><td>23.48</td><td>0.14</td><td>25.21</td><td>74.27</td></tr><tr><td>0.126</td><td>23.70</td><td>0.13</td><td>23.67</td><td>75.45</td></tr><tr><td>0.149</td><td>24.04</td><td>0.12</td><td>22.59</td><td>87.95</td></tr><tr><td>0.263</td><td>24.36</td><td>0.12</td><td>22.43</td><td>86.66</td></tr><tr><td rowspan=\"14\">DiffC</td><td>0.007</td><td>18.66</td><td>0.41</td><td>40.49</td><td>3.57</td></tr><tr><td>0.012</td><td>20.19</td>",
+      "text_sha256": "39617a979529125494a20783bb1f71003f4b0cc1081b826af88caf1084673d46"
+     },
+     {
+      "span_id": "B-ocr-d81ebda7009042",
+      "page": 35,
+      "location": "B PDF page 35",
+      "text": "![img-29.jpeg](img-29.jpeg)\n\nFigure S13: Impact of hyperparameters on the efficiency of DDCM MP vs. Turbo-DDCM thresholding: While DDCM MP scales linearly with K and M and exponentially with C, our method scales linearly with K and remains nearly constant in M and C, achieving over two orders of magnitude speedup.\n\n![img-30.jpeg](img-30.jpeg)\n\nFigure S14: Relative speedup of Turbo-DDCM thresholding over DDCM MP: The heatmap shows the speedup using C = 2 for both methods, as DDCM MP does not support C = 1. The orange box shows DDCM's typical configurations, and the green box shows Turbo-DDCM's. Our method achieves up to four orders of magnitude speedup in the configurations used by Turbo-DDCM, highlighting the difficulty of using DDCM MP in these regions.",
+      "text_sha256": "0ef607f146883ab58c3e2f9d606fb64ba1c5f33a6d1d229cab94b21c85866cc9"
+     },
+     {
+      "span_id": "B-d193f499f06cf5",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.06424v2#chars-101935-102711",
+      "text": "##### Sampled Noise Prioritization.\n\nAs mentioned above, DiffC weights the sampled noises by their sampling iteration number, whereas DDCM and Turbo-DDCM treat all noises equally, without prioritization. While noise prioritization can improve compression on average using variable-length encoding such as Zipf coding used by DiffC, DDCM and Turbo-DDCM provide a constant and predictable bitrate across images. Figure [S22](#A8.F22 \"Figure S22 ‣ H.3 Turbo-DDCM Vs. Accelerated DiffC ‣ Appendix H DDCM and Turbo-DDCM vs. DiffC ‣ Turbo-DDCM: Fast and Flexible Zero-Shot Diffusion-Based Image Compression\") illustrates that DiffC’s bitrate varies significantly between images, with deviations exceeding 25% from the mean, even when using the same target bitrate hyperparameters.",
+      "text_sha256": "a7fc77148e264a5c8960c849da4ab5d0681084909614535886135a7a9d3f1262"
+     },
+     {
+      "span_id": "B-02a80a8d2bca69",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.06424v2#chars-15078-20684",
+      "text": "### 3.2 Denoising Diffusion Codebook Models (DDCM)\n\nDDCM ([Ohayon et al., 2025](#bib.bib13)) modifies the reverse process of DDPM (eq. ([2](#S3.E2 \"In 3.1 Denoising Diffusion Probabilistic Models (DDPM) ‣ 3 Background ‣ Turbo-DDCM: Fast and Flexible Zero-Shot Diffusion-Based Image Compression\"))) by replacing the random Gaussian noise sampling with a selection of noises from reproducible codebooks 𝑪t{\\bm{C}}\\_{t}. Specifically, each codebook 𝑪t{\\bm{C}}\\_{t} is an ordered set filled with KK i.i.d. white Gaussian noise vectors, which we refer to as *atoms*,\n\n|  |  |  |  |\n| --- | --- | --- | --- |\n|  | 𝒞t=[𝒛t(1),𝒛t(2),…,𝒛t(K)],t=2,…,T+1,\\mathcal{C}\\_{t}=\\left[{\\bm{z}}\\_{t}^{(1)},{\\bm{z}}\\_{t}^{(2)},\\ldots,{\\bm{z}}\\_{t}^{(K)}\\right],\\quad t=2,\\ldots,T+1, |  | (4) |\n\nwhere, as in DDPM, no noise is added at t=1t=1.\nThe DDCM generation step then becomes\n\n|  |  |  |  |\n| --- | --- | --- | --- |\n|  | 𝐱t−1=𝝁t​(𝐱t)+σt​𝑪t​(kt),{\\mathbf{x}}\\_{t-1}={\\bm{\\mu}}\\_{t}({\\mathbf{x}}\\_{t})+\\sigma\\_{t}{\\bm{C}}\\_{t}({\\textnormal{k}}\\_{t}), |  | (5) |\n\nwhere kt∼i.i.d.Unif​({1,…,K}){\\textnormal{k}}\\_{t}\\stackrel{{\\scriptstyle\\text{i.i.d.}}}{{\\sim}}\\text{Unif}(\\{1,\\ldots,K\\}). This modification yields a discrete yet highly expressive generated distribution, as the number of possible distin",
+      "text_sha256": "9768812ac3a954d4a05462d7f79dc3b5797a976b3152bc4e0f1988a9664ccbcb"
+     },
+     {
+      "span_id": "B-ae8c0b3433baa5",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.06424v2#chars-1711-8810",
+      "text": "## 1 Introduction\n\nThe field of image compression has witnessed a shift towards neural-based approaches in recent years ([Ballé et al., 2017](#bib.bib9); [Toderici et al., 2017](#bib.bib32); [Li and Ji, 2020](#bib.bib34)), and more recently to methods that rely on diffusion models ([Sohl-Dickstein et al., 2015](#bib.bib29); [Ho et al., 2020](#bib.bib28); [Song et al., 2020](#bib.bib36)). In particular, diffusion models have been utilized for image compression by training dedicated models ([Ghouse et al., 2023](#bib.bib19); [Yang and Mandt, 2023](#bib.bib46)), by fine-tuning existing models ([Careil et al., 2024](#bib.bib20)), or by using them in a zero-shot manner ([Theis et al., 2022](#bib.bib14); [Elata et al., 2024](#bib.bib16); [Ohayon et al., 2025](#bib.bib13); [Vonderfecht and Liu, 2025](#bib.bib15)).\nIn principle, zero-shot methods are appealing because they enable the same diffusion backbone to be shared across multiple tasks (such as compression, restoration, editing, generation, etc.), thereby allowing all tasks to benefit simultaneously from improvements to the shared backbone.\nHowever, existing zero-shot diffusion compression methods remain impractical due to their high computational demands, which result in slow inference. Ranging from approximately 10",
+      "text_sha256": "4e0094ca7cc73546068f96a416a035e855fd9db324457c72b791a823bf301a20"
+     },
+     {
+      "span_id": "B-4e18a8c38483f9",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.06424v2#chars-286-1711",
+      "text": "###### Abstract\n\nWhile zero-shot diffusion-based compression methods have seen significant progress in recent years, they remain notoriously slow and computationally demanding. This paper presents an efficient zero-shot diffusion-based compression method that runs substantially faster than existing methods, while maintaining performance that is on par with the state-of-the-art techniques.\nOur method builds upon the recently proposed Denoising Diffusion Codebook Models (DDCMs) compression scheme. Specifically, DDCM compresses an image by sequentially choosing the diffusion noise vectors from reproducible random codebooks, guiding the denoiser’s output to reconstruct the target image.\nWe modify this framework with *Turbo-DDCM*, which efficiently combines a large number of noise vectors at each denoising step, thereby significantly reducing the number of required denoising operations.\nThis modification is also coupled with an improved encoding protocol. Furthermore, we introduce two flexible variants of Turbo-DDCM, a priority-aware variant that prioritizes user-specified regions and a distortion-controlled variant that compresses an image based on a target PSNR rather than a target BPP. Comprehensive experiments position Turbo-DDCM as a compelling, practical, and flex",
+      "text_sha256": "3d13c623de310bd3afd7ce830d994910bf5bf8709de5c47bf0443a84491aca24"
+     },
+     {
+      "span_id": "B-3453b301217eb0",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.06424v2#chars-29067-31459",
+      "text": "### 4.2 Efficient Bit Protocol for Large-M Combinations\n\nWhen large MM values are employed, using the DDCM’s bit protocol leads to poor compression due to redundancies. Specifically, DDCM encodes atom selections with ⌈log2⁡(K)⌉​M\\lceil\\log\\_{2}(K)\\rceil M bits per diffusion step, preserving the order in which the atoms were selected, which is crucial for the noise constriction on the decoder. However, in our thresholding-based approach, atom ordering is semantically meaningless and only identity matters. Thus, a naive encoding of MM indices creates M!M! equivalent representations per step, yielding (M!)T−1(M!)^{T-1} identical compressed representations. For extremely modest parameters of M=5M=5 and T=30T=30, this results in 12029≈2200120^{29}\\approx 2^{200} equivalent representations, underscoring the need for a more efficient encoding protocol.\n\nEach diffusion step requires communicating a combination of MM indices from a codebook of size KK (without repetition and order-invariant) along with quantized coefficients (CC bits each). The number of distinct choices is (KM)⋅(2C)M\\binom{K}{M}\\cdot(2^{C})^{M}, requiring\n\n|  |  |  |  |\n| --- | --- | --- | --- |\n|  | ⌈log2⁡((KM)⋅(2C)M)⌉=⌈log2⁡((KM))⌉+M​C\\left\\lceil\\log\\_{2}\\left(\\binom{K}{M}\\cdot(2^{C})^{M}\\right)\\right\\rc",
+      "text_sha256": "3bd06a3b16b345acc8ea22ab97b87db3c9a2dc9826f1fd78f2519552fc280794"
+     },
+     {
+      "span_id": "B-c81e1498de641b",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.06424v2#chars-42097-42315",
+      "text": "### A.1 Configurations\n\nThe following outlines the experimental configurations used for the evaluations in Section [5](#S5 \"5 Experiments ‣ Turbo-DDCM: Fast and Flexible Zero-Shot Diffusion-Based Image Compression\").",
+      "text_sha256": "e44336a4a35dbd1c320aa98effdbf4fc1039b2d44974836b3328cad874e9d8d4"
+     },
+     {
+      "span_id": "B-6d3725edf5139c",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.06424v2#chars-66229-67684",
+      "text": "### C.1 Problem Setup\n\nInputs.\nFor diffusion timestep tt:\n\nOriginal image: 𝐱0{\\mathbf{x}}\\_{0}\n\nPrediction of the original image: 𝐱^0|t\\hat{{\\mathbf{x}}}\\_{0|t}\n\nCodebook of i.i.d. Gaussian atoms: 𝑪t∈ℝd×K{\\bm{C}}\\_{t}\\in\\mathbb{R}^{d\\times K}, where dd is the dimensionality and KK is the codebook size\n\nSparsity parameter: MM\n\nQuantization ordered set: 𝒱=[q0,…,q2C]\\mathcal{V}=[q\\_{0},...,q\\_{2^{C}}] (communication cost is log2⁡|𝒱|=C\\log\\_{2}|\\mathcal{V}|=C bits).\n\nWe define the residual at timestep tt as\n\n|  |  |  |  |\n| --- | --- | --- | --- |\n|  | 𝒓t:=𝐱0−𝐱^0|t.{\\bm{r}}\\_{t}:={\\mathbf{x}}\\_{0}-\\hat{{\\mathbf{x}}}\\_{0|t}. |  | (S2) |\n\nObjective: Find a linear combination of codebook atoms that best approximates the residual, subject to a sparsity constraint and a quantization constraint. Formally, the optimization problem is\n\n|  |  |  |  |\n| --- | --- | --- | --- |\n|  | 𝐬t∗=arg​min𝐬t∈ℝK⁡‖𝐂t​𝐬t−𝐫t‖22s.t.​∥𝐬t∥0=M,∀i​(𝐬t)i∈𝒱∪{0}.\\displaystyle{\\mathbf{s}}\\_{t}^{\\*}=\\argmin\\_{{\\mathbf{s}}\\_{t}\\in\\mathbb{R}^{K}}\\left\\lVert{\\bm{C}}\\_{t}{\\mathbf{s}}\\_{t}-{\\mathbf{r}}\\_{t}\\right\\rVert\\_{2}^{2}\\quad\\text{s.t.}\\;\\;\\lVert{\\mathbf{s}}\\_{t}\\rVert\\_{0}=M,\\;\\;\\forall i\\,({\\mathbf{s}}\\_{t})\\_{i}\\in\\mathcal{V}\\cup\\{0\\}. |  | (S3) |\n\nAssumption: 𝑪t{\\bm{C}}\\_{t} is nearly-orthogonal. Se",
+      "text_sha256": "0a439ded6b7121cbb4a196bbb76ac70459867073d88ef86d0351404242906139"
+     },
+     {
+      "span_id": "B-ef8eb209030787",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.06424v2#chars-83371-87416",
+      "text": "## Appendix E Hyperparameters\n\nTurbo-DDCM has five hyperparameters:\n\nTT: number of diffusion steps.\n\nKK: codebook size at each diffusion step.\n\nMM: number of selected atoms from the codebook at each step (M≤KM\\leq K).\n\nCC: number of bits per quantization coefficient, yielding 2C2^{C} quantization levels.\n\nNN: number of DDIM steps performed at the end without requiring bits.\n\nIn this appendix, we discuss the trade-offs between these parameters and shed light on our choice for the base configuration: T=30T=30, K=16,384K=16{,}384, C=1C=1, varying MM to control bitrate and NN ranging from T−2T-2 to 0 depending on the bitrate (see App. [A](#A1 \"Appendix A Experimental Configurations and Additional Evaluations ‣ Turbo-DDCM: Fast and Flexible Zero-Shot Diffusion-Based Image Compression\")).\n\nWe found that T=30T=30 provides the best trade-off between performance and runtime, as presented in Fig. [S15](#A5.F15 \"Figure S15 ‣ Appendix E Hyperparameters ‣ Turbo-DDCM: Fast and Flexible Zero-Shot Diffusion-Based Image Compression\"). We set K=16,384K=16{,}384 because this value is large enough to span a substantial subspace and, in Stable Diffusion 2.1 Base, the entire latent space. At the same time, this KK remains small enough to avoid overcompleteness, ensuring a reasonable app",
+      "text_sha256": "debac587150800f96771cf51ccbf8a555b78cd07644a44fa7b9b79deb79dbb53"
+     },
+     {
+      "span_id": "B-910e30410517bb",
+      "page": null,
+      "location": "https://arxiv.org/html/2511.06424v2#chars-97066-101807",
+      "text": "### H.1 Shared Core Optimization Objective\n\nAll three methods are based on solving optimization problems. The optimization problem of DDCM is presented in Section [3](#S3 \"3 Background ‣ Turbo-DDCM: Fast and Flexible Zero-Shot Diffusion-Based Image Compression\"), that of Turbo-DDCM in Section [4](#S4 \"4 Method ‣ Turbo-DDCM: Fast and Flexible Zero-Shot Diffusion-Based Image Compression\"), and we now turn to the optimization process of DiffC which is based on RCC. In each diffusion step, DiffC aims to communicate the forward diffusion distribution q⁡(𝐱t−1∣𝐱0,𝐱t)q({\\mathbf{x}}\\_{t-1}\\mid{\\mathbf{x}}\\_{0},{\\mathbf{x}}\\_{t}) to the decoder, assuming both can sample from the reverse distribution pθ​(𝐱t−1∣𝐱t)p\\_{\\theta}({\\mathbf{x}}\\_{t-1}\\mid{\\mathbf{x}}\\_{t}). This communication is performed only for a specific number of initial diffusion steps, which depends on the target bitrate, similar to Turbo-DDCM. The broadcasted information is then used to steer the diffusion process toward the target image via a strategically chosen diffusion noise vector, similar to the approach in Turbo-DDCM.\n\n[Vonderfecht and Liu (2025)](#bib.bib15) implement DiffC by applying RCC using the Poisson-Functional-Representation (PFR) approach presented by [Theis and Yosri (2022)](#bib.bib33). In",
+      "text_sha256": "52d9ec8e400b29a858962ef54dc94c8848b666748bf38b780214f427d4317db0"
+     }
+    ]
+   }
+  }
+ ],
+ "note": "Target spans are anonymized excerpts of the target text; page numbers refer to the original target PDF, which is not distributed."
+}

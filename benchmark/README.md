@@ -35,7 +35,7 @@ python3 tools/fetch_sources.py             # download the 13 link-only source PD
 python3 tools/evaluate.py --pred baselines/jev_paper_final.jsonl
 ```
 
-The screening pipeline that produced the baselines is not part of this release; `baselines/` holds its saved outputs, and the tools above need only Python's standard library.
+`baselines/` holds saved outputs of our screening system, and the tools above need only Python's standard library.
 
 A prediction file has one line per case: `{"case_id": "C01", "label": "no_source_finding", "scores": {"source_review_recommended": 0.1}}`.
 
@@ -56,10 +56,6 @@ One case is one target paper and the candidate sources our pipeline retrieved fo
 - **Sources.** Candidate sources were retrieved by the pipeline (arXiv and OpenReview). Each case keeps one or two candidates, 34 pairs in total.
 - **Text.** Target text is OCR of the submitted PDF. Source text consists of excerpts extracted from arXiv HTML or PDF; it is not the complete paper.
 - **Labels.** A single annotator (a project member) reviewed all 20 cases on 2026-10-15. Initial draft labels had been derived from the pipeline's outputs; the annotator confirmed 16 and changed 4 (from inconclusive to no source finding). Rationales are in `data/labels.jsonl`.
-
-## Synthetic split
-
-A separate synthetic split (controlled reuse insertions built on these targets) will be released separately under gated access. It is not part of this repository.
 
 ## Intended use
 
@@ -104,7 +100,7 @@ Removed content can persist in earlier git commits and forks that we do not cont
 
 ## Versions
 
-- **v0.3.0 (2026-10-15)** — first public release. Anonymized, license-separated rebuild of the internal v0.2.0 set; labels unchanged. Built by an internal script that is not part of this release; its inputs, including the case-id mapping, are kept private.
+- **v0.3.0 (2026-10-15)** — first public release. Anonymized, license-separated rebuild of the internal v0.2.0 set; labels unchanged. Built by an internal script; its inputs, including the case-id mapping, are kept private.
 
 ## Citation
 

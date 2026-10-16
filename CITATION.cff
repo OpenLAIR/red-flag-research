@@ -9,7 +9,6 @@ abstract: >-
   papers with candidate sources, evidence locations, human labels, saved
   baseline outputs and evaluation tools.
 authors:
-  # TODO: replace with the author list before release.
   - name: "OpenLAIR"
 repository-code: "https://github.com/OpenLAIR/red-flag-research"
 license:

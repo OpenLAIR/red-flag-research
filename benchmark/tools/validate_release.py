@@ -32,9 +32,13 @@ REQUIRED = [
 ]
 # Words the public text must not use (data-card policy). Paper texts under
 # cases/*/target.md and sources/*/text.md are third-party content and exempt,
-# as is the approved disclaimer sentence.
+# as are the approved disclaimer and project-definition sentences.
 BANNED = re.compile(r'launder|plagiar|YES_SUSPECTED|NO_SUPPORTED|paper-laundry', re.I)
-APPROVED = 'It is **not** a finding of plagiarism, misconduct or bad faith.'
+APPROVED = (
+    'It is **not** a finding of plagiarism, misconduct or bad faith.',
+    'Red-flag Research is a research project from OpenLAIR that screens conference submissions for automated-research attacks, starting with paper laundering in ICLR 2027.',
+    'Paper laundering means rewriting earlier public work into a submission that looks new, without credit.',
+)
 CJK = re.compile('[\\u3040-\\u30ff\\u3400-\\u4dbf\\u4e00-\\u9fff\\uac00-\\ud7af]')
 
 
@@ -173,7 +177,9 @@ def main(argv: list[str] | None = None) -> int:
             err(f'{rel}: contains CJK characters (public text must be English)')
         if paper_text or rel == 'tools/validate_release.py':
             continue
-        for m in BANNED.finditer(text.replace(APPROVED, '')):
+        for sentence in APPROVED:
+            text = text.replace(sentence, '')
+        for m in BANNED.finditer(text):
             err(f'{rel}: banned public wording {m.group(0)!r}')
             break
 
